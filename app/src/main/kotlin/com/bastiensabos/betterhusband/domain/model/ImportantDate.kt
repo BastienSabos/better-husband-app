@@ -22,7 +22,9 @@ data class ImportantDate(
 
 /** D'où vient une échéance affichée. Le domaine ne porte aucun texte : l'UI traduit chaque libellé. */
 sealed interface DateLabel {
-    data object PartnerBirthday : DateLabel
+    data class PartnerBirthday(
+        val name: String,
+    ) : DateLabel
 
     data object RelationshipStart : DateLabel
 
