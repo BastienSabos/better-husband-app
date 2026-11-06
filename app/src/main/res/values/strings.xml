@@ -4,4 +4,13 @@
     <string name="app_name">Better husband</string>
     <string name="today_title">Aujourd\'hui</string>
     <string name="today_empty">Rien de prévu pour l\'instant. Ajoute une date qui compte pour commencer.</string>
+    <string name="onboarding_title">Pour qui est cette appli ?</string>
+    <string name="onboarding_intro">Quelques secondes pour commencer. Tu pourras tout modifier ensuite.</string>
+    <string name="onboarding_first_name_label">Prénom de ton ou ta partenaire</string>
+    <string name="onboarding_address_form_question">Comment veux-tu en parler ?</string>
+    <string name="address_form_masculine">Mon partenaire</string>
+    <string name="address_form_feminine">Ma partenaire</string>
+    <string name="address_form_neutral">Sans accord de genre</string>
+    <string name="onboarding_privacy_note">Tout reste sur ton téléphone, chiffré. Rien n\'est envoyé nulle part.</string>
+    <string name="onboarding_submit">Commencer</string>
 </resources>
