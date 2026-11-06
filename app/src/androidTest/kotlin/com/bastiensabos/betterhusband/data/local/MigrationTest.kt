@@ -37,6 +37,19 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun migrate2To3AddsImportantDates() {
+        helper.createDatabase(DB_NAME, 2).close()
+
+        val db = helper.runMigrationsAndValidate(DB_NAME, 3, true, MIGRATION_2_3)
+
+        db.execSQL("INSERT INTO important_date (title, kind, date, recurring) VALUES ('Mariage', 'ANNIVERSARY', '2015-06-20', 1)")
+        db.query("SELECT COUNT(*) FROM important_date").use {
+            it.moveToFirst()
+            assertThat(it.getInt(0)).isEqualTo(1)
+        }
+    }
+
     private companion object {
         const val DB_NAME = "migration-test"
     }

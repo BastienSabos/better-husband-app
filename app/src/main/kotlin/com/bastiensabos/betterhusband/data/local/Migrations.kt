@@ -23,3 +23,15 @@ val MIGRATION_1_2 =
             )
         }
     }
+
+/** v2 → v3 : dates qui comptent saisies par l'utilisateur. */
+val MIGRATION_2_3 =
+    object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `important_date` " +
+                    "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, " +
+                    "`kind` TEXT NOT NULL, `date` TEXT NOT NULL, `recurring` INTEGER NOT NULL)",
+            )
+        }
+    }
