@@ -80,8 +80,8 @@ Ma recommandation : Kotlin natif avec Jetpack Compose, stockage local chiffré, 
 | Sujet | Recommandation | Alternative | Pourquoi |
 | --- | --- | --- | --- |
 | Langage / UI | Kotlin + Jetpack Compose | Flutter | Android seul visé ; widgets, notifications et partage natifs plus simples |
-| Stockage | Room + SQLCipher, local | Cloud dès le départ | Données intimes ; zéro serveur au MVP |
-| Synchro (post-MVP) | Supabase ou Firebase | Backend maison | Comptes, temps réel et partage à deux sans infra à gérer |
+| Stockage | Room + SQLCipher, local ; modèle de données pensé dès le départ pour le partage à deux (listes de cadeaux, tâches) | Cloud dès le départ | Données intimes ; zéro serveur au MVP |
+| Synchro (v1.1) | Supabase ou Firebase | Backend maison | Comptes, temps réel et partage à deux sans infra à gérer |
 | Rappels | WorkManager + notifications | AlarmManager | Fiable, respecte la batterie |
 | IA (v2) | API Claude via un proxy serveur | Modèle embarqué | Qualité des suggestions ; clé jamais dans l'app ; seul le contexte utile est envoyé, rien n'est stocké côté serveur |
 | Monétisation | Aucune au lancement ; freemium envisagé en v2 (coach IA et mode duo payants) | Paiement unique | Couvre le coût de l'IA et du serveur |
@@ -105,6 +105,8 @@ Sortie visée sur le Play Store la semaine du 8 février 2027 : 10 semaines de t
 | Sortie | Semaine du 8 fév. | Publication en production | v1 sur le Play Store |
 
 **À prévoir avant la bêta :** compte Google Play Console (25 $), nom définitif de l'app, politique de confidentialité hébergée, 12 testeurs recrutés.
+
+**Ensuite, v1.1 mode duo (environ 4 semaines, mi-février à mi-mars 2027) :** comptes, invitation du ou de la partenaire, synchro Supabase, listes de cadeaux et d'envies partagées, tâches du foyer partagées, carnet privé conservé de chaque côté.
 
 ## Questions ouvertes
 
