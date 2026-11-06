@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.bastiensabos.betterhusband.data.local.AppDatabase
 import com.bastiensabos.betterhusband.data.local.DatabaseKeyProvider
 import com.bastiensabos.betterhusband.data.local.KeystoreDatabaseKeyProvider
+import com.bastiensabos.betterhusband.data.local.MIGRATION_1_2
 import com.bastiensabos.betterhusband.data.local.dao.PartnerDao
 import dagger.Binds
 import dagger.Module
@@ -35,6 +36,8 @@ object DatabaseModule {
         return Room
             .databaseBuilder(context, AppDatabase::class.java, AppDatabase.NAME)
             .openHelperFactory(SupportOpenHelperFactory(keyProvider.passphrase()))
+            // Jamais de migration destructive : on ne perd pas les souvenirs d'un couple.
+            .addMigrations(MIGRATION_1_2)
             .build()
     }
 

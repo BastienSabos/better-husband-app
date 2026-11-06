@@ -2,12 +2,17 @@ package com.bastiensabos.betterhusband
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.feature.onboarding.OnboardingRoute
+import com.bastiensabos.betterhusband.feature.partner.PartnerProfileRoute
 import com.bastiensabos.betterhusband.feature.today.TodayRoute
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +31,15 @@ class MainActivity : ComponentActivity() {
                     // Rien tant que la base n'est pas lue : évite de faire clignoter l'onboarding.
                     AppUiState.Loading -> Unit
                     AppUiState.NeedsOnboarding -> OnboardingRoute()
-                    AppUiState.Ready -> TodayRoute()
+                    AppUiState.Ready -> {
+                        var showPartner by rememberSaveable { mutableStateOf(false) }
+                        if (showPartner) {
+                            BackHandler { showPartner = false }
+                            PartnerProfileRoute(onDone = { showPartner = false })
+                        } else {
+                            TodayRoute(onOpenPartner = { showPartner = true })
+                        }
+                    }
                 }
             }
         }
