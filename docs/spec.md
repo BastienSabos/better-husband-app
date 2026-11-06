@@ -87,6 +87,25 @@ Ma recommandation : Kotlin natif avec Jetpack Compose, stockage local chiffré, 
 | Monétisation | Aucune au lancement ; freemium envisagé en v2 (coach IA et mode duo payants) | Paiement unique | Couvre le coût de l'IA et du serveur |
 | Conformité | RGPD : consentement explicite, export et suppression | — | Données sur un tiers (la partenaire) et données de santé possibles |
 
+## Roadmap v1
+
+Sortie visée sur le Play Store la semaine du 8 février 2027 : 10 semaines de travail à partir du 9 novembre 2026, une fois la conf de dev IA en place (harness, SDLC, agents, skills, traitée à part), 2 semaines de pause pendant les fêtes, puis 2 semaines de bêta fermée. Google l'impose avant la mise en production pour un nouveau compte développeur personnel : 12 testeurs pendant 14 jours.
+
+| Phase | Dates | Contenu | Livrable |
+| --- | --- | --- | --- |
+| 0. Fondations | 9 – 13 nov. | Projet Kotlin + Compose, architecture, CI, design system, maquettes des 5 écrans clés | App vide qui build et passe la CI |
+| 1. Fiche partenaire | 16 – 27 nov. | Onboarding, fiche partenaire, stockage Room + SQLCipher | On crée et modifie la fiche |
+| 2. Dates et rappels | 30 nov. – 11 déc. | Calendrier des dates, rappels J-14 / J-3 / jour J (WorkManager), notifications neutres | Rappels fiables, testés sur 3 appareils |
+| 3. Carnet d'idées | 14 – 18 déc. | Capture rapide, partage Android vers l'app, catégories | On capture une idée en moins de 10 secondes |
+| Pause | 21 déc. – 1er janv. | Fêtes | — |
+| 4. Tâches du foyer | 4 – 8 janv. | Tâches récurrentes, fait / pas fait | Liste des tâches qui tourne |
+| 5. Flux du jour | 11 – 15 janv. | Carte du jour, banque d'idées d'attentions (environ 150, rédigées à la main), séries | Écran d'accueil complet |
+| 6. Finitions | 18 – 22 janv. | Verrouillage biométrique, export et suppression RGPD, accessibilité, icône, fiche Play Store | Version candidate |
+| 7. Bêta fermée | 25 janv. – 5 fév. | 12 testeurs minimum, 14 jours, corrections | Retours traités, crash-free ≥ 99 % |
+| Sortie | Semaine du 8 fév. | Publication en production | v1 sur le Play Store |
+
+**À prévoir avant la bêta :** compte Google Play Console (25 $), nom définitif de l'app, politique de confidentialité hébergée, 12 testeurs recrutés.
+
 ## Questions ouvertes
 
 - [x] Décidé : la partenaire peut connaître l'app, sans que ce soit requis. L'app est complète en solo ; le mode duo est une invitation optionnelle.
