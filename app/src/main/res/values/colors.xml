@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#FF8E3B46</color>
+    <!-- Fond de fenêtre avant le premier rendu Compose : évite un flash blanc. Aligné sur Linen / Cocoa. -->
+    <color name="window_background">#FFFAF6F2</color>
 </resources>

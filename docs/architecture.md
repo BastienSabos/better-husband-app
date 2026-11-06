@@ -50,4 +50,4 @@ Quand modulariser : voir le skill `.claude/skills/add-module`.
 
 ## Décisions
 
-Voir [`docs/adr/`](adr/README.md).
+Voir [`docs/adr/`](adr/README.md). Design system : [`docs/design-system.md`](design-system.md).
