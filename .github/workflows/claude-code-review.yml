@@ -1,0 +1,57 @@
+# Revue automatique de chaque PR par Claude, avec la grille de .claude/agents/.
+# Prérequis : secret CLAUDE_CODE_OAUTH_TOKEN ou ANTHROPIC_API_KEY (voir docs/ai-harness.md).
+name: Claude review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+    steps:
+      - name: Check Claude credentials
+        id: auth
+        env:
+          OAUTH: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "$OAUTH" ] || [ -n "$API_KEY" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else
+            echo "::notice::Aucun secret Claude configuré, étape ignorée (voir docs/ai-harness.md)."; echo "ok=false" >> "$GITHUB_OUTPUT"; fi
+
+      - uses: actions/checkout@v5
+        if: steps.auth.outputs.ok == 'true'
+        with:
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        if: steps.auth.outputs.ok == 'true'
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          track_progress: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Relis cette pull request en suivant AGENTS.md et les grilles de
+            .claude/agents/code-reviewer.md et .claude/agents/privacy-guardian.md
+            (et .claude/agents/ux-copy-reviewer.md si des textes ou écrans changent).
+
+            - Vérifie chaque constat dans le code avant de le publier ; zéro constat est une réponse valide.
+            - Commentaires en ligne pour les problèmes précis (mcp__github_inline_comment__create_inline_comment),
+              puis un commentaire de synthèse court en français avec un verdict.
+            - Ne modifie pas le code et ne pousse rien.
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Read,Glob,Grep"

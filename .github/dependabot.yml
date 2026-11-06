@@ -1,0 +1,28 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "build(deps)"
+    groups:
+      kotlin-and-tooling:
+        patterns: ["org.jetbrains.kotlin*", "com.google.devtools.ksp*", "com.android.tools.build*", "com.android.application", "com.android.library"]
+      androidx:
+        patterns: ["androidx.*"]
+      hilt:
+        patterns: ["com.google.dagger*"]
+      testing:
+        patterns: ["junit*", "com.google.truth*", "app.cash.turbine*", "org.jetbrains.kotlinx:kotlinx-coroutines-test"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      actions:
+        patterns: ["*"]
