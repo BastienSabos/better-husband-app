@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icône provisoire (cœur), à remplacer par l'identité visuelle définitive. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M54,74 L50.8,71.1 C39.4,60.8 32,54.1 32,45.9 C32,39.2 37.2,34 43.9,34 C47.7,34 51.3,35.8 54,38.6 C56.7,35.8 60.3,34 64.1,34 C70.8,34 76,39.2 76,45.9 C76,54.1 68.6,60.8 57.2,71.1 Z" />
+</vector>

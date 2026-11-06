@@ -1,0 +1,27 @@
+# Gradle / Android
+.gradle/
+build/
+/local.properties
+/captures
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+
+# IDE
+.idea/
+*.iml
+.DS_Store
+
+# Secrets : ne jamais committer
+*.jks
+*.keystore
+keystore.properties
+google-services.json
+play-service-account*.json
+.env
+.env.*
+
+# Claude Code : réglages perso (les réglages d'équipe sont dans .claude/settings.json)
+.claude/settings.local.json
+CLAUDE.local.md

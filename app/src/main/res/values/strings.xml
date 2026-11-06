@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Nom de travail : l'app est une appli de couple, la marque définitive reste à choisir. -->
+    <string name="app_name">Better husband</string>
+    <string name="today_title">Aujourd\'hui</string>
+    <string name="today_empty">Rien de prévu pour l\'instant. Ajoute une date qui compte pour commencer.</string>
+</resources>

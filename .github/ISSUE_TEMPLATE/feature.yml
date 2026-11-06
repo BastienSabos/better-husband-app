@@ -1,0 +1,44 @@
+name: Fonctionnalité
+description: Une fonctionnalité ou une amélioration, rédigée pour être exploitable par un humain ou un agent IA
+labels: [feature]
+body:
+  - type: textarea
+    id: why
+    attributes:
+      label: Pourquoi
+      description: Le besoin utilisateur, en une ou deux phrases. Lien vers la section de la spec si possible.
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: Comportement attendu
+      description: Le parcours, du point de vue de l'utilisateur.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critères d'acceptation
+      description: Liste vérifiable, un critère par ligne.
+      placeholder: |
+        - [ ] Quand j'ajoute une date, un rappel est prévu à J-14, J-3 et le jour J
+        - [ ] La notification ne montre aucun prénom sur l'écran verrouillé
+    validations:
+      required: true
+  - type: textarea
+    id: out
+    attributes:
+      label: Hors périmètre
+  - type: dropdown
+    id: brick
+    attributes:
+      label: Brique MVP
+      options:
+        - Onboarding et fiche partenaire
+        - Dates et rappels
+        - Carnet d'idées
+        - Flux du jour
+        - Tâches du foyer
+        - Hors MVP
+        - Technique / outillage
