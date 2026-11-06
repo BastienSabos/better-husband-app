@@ -3,6 +3,7 @@ package com.bastiensabos.betterhusband.feature.today
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +13,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,11 +29,17 @@ import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 /** Point d'entrée « stateful » : branche le ViewModel. */
 @Composable
 fun TodayRoute(
+    onOpenPartner: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    TodayScreen(uiState = uiState, onCardDone = viewModel::onCardDone, modifier = modifier)
+    TodayScreen(
+        uiState = uiState,
+        onCardDone = viewModel::onCardDone,
+        onOpenPartner = onOpenPartner,
+        modifier = modifier,
+    )
 }
 
 /** Écran « stateless » : ne dépend que de son état et de ses callbacks, donc prévisualisable et testable. */
@@ -39,6 +47,7 @@ fun TodayRoute(
 fun TodayScreen(
     uiState: TodayUiState,
     onCardDone: (String) -> Unit,
+    onOpenPartner: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(modifier = modifier) { padding ->
@@ -47,6 +56,9 @@ fun TodayScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(text = stringResource(R.string.today_title), style = MaterialTheme.typography.headlineMedium)
+            TextButton(onClick = onOpenPartner, modifier = Modifier.heightIn(min = 48.dp)) {
+                Text(stringResource(R.string.today_open_partner))
+            }
             when (uiState) {
                 TodayUiState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -85,6 +97,7 @@ private fun TodayScreenReadyPreview() {
                 ),
             ),
             onCardDone = {},
+            onOpenPartner = {},
         )
     }
 }
@@ -93,6 +106,6 @@ private fun TodayScreenReadyPreview() {
 @Composable
 private fun TodayScreenEmptyPreview() {
     BetterHusbandTheme(dynamicColor = false) {
-        TodayScreen(uiState = TodayUiState.Empty, onCardDone = {})
+        TodayScreen(uiState = TodayUiState.Empty, onCardDone = {}, onOpenPartner = {})
     }
 }
