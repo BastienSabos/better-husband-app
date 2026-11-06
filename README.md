@@ -3,7 +3,7 @@
 Appli de couple Android : retenir ce qui compte pour l'autre et savoir quoi faire aujourd'hui pour que ça aille
 encore mieux, en moins de 5 minutes par jour. Pour tous les couples. Local d'abord, données chiffrées sur l'appareil.
 
-- Spec produit : https://claude.ai/artifact/NW89XjhsbHK3ChuPxDXFZu
+- Spec produit et roadmap : [`docs/spec.md`](docs/spec.md)
 - Architecture : [`docs/architecture.md`](docs/architecture.md) · Décisions : [`docs/adr/`](docs/adr/README.md)
 - Cycle de dev : [`docs/sdlc.md`](docs/sdlc.md) · Config IA : [`docs/ai-harness.md`](docs/ai-harness.md)
 

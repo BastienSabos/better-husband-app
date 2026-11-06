@@ -11,7 +11,7 @@ Objectif : une PR petite, testée, relue, verte en CI, conforme à la Definition
 ## 1. Comprendre
 
 - Si un numéro d'issue est fourni, lis l'issue et ses commentaires (GitHub MCP ou `gh issue view`).
-- Relis la section concernée de la spec produit et `AGENTS.md`. Vérifie que c'est dans le MVP.
+- Relis la section concernée de `docs/spec.md` et `AGENTS.md`. Vérifie que c'est dans le MVP.
 - Reformule en une phrase l'objectif et liste les critères d'acceptation. S'ils manquent ou sont ambigus,
   pose la question avant de coder (une seule fois, toutes les questions ensemble).
 

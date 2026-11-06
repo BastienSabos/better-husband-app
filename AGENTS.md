@@ -10,7 +10,8 @@ parent) plus présent, en moins de 5 minutes par jour. Ce n'est pas une appli «
 tous les couples, mariés ou non, quel que soit le genre. « Better husband » n'est qu'un nom de travail. Rôle double : **assistant** (retenir dates, goûts, envies, tâches) et
 **coach** (suggérer des gestes concrets). Francophone d'abord, publiée sur le Play Store.
 
-- Spec produit (source de vérité fonctionnelle) : https://claude.ai/artifact/NW89XjhsbHK3ChuPxDXFZu
+- Spec produit et roadmap v1 (source de vérité fonctionnelle) : [`docs/spec.md`](docs/spec.md), version de
+  travail éditable sur https://claude.ai/artifact/NW89XjhsbHK3ChuPxDXFZu. Sortie Play Store visée : février 2027.
 - MVP : mono-utilisateur, **local d'abord, sans serveur, sans IA, sans monétisation**. Cinq briques :
   fiche partenaire, dates et rappels, carnet d'idées, flux du jour, tâches du foyer.
 - Hors MVP : coach IA (v2, API Claude via proxy), mode duo, synchro cloud, monétisation.
