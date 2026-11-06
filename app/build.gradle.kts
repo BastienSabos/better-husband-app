@@ -3,6 +3,12 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.room)
+}
+
+// Schémas Room exportés puis committés : ils servent aux tests de migration et ne se modifient jamais à la main.
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {
@@ -65,6 +71,11 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.sqlcipher.android)
+
     testImplementation(libs.junit)
     testImplementation(libs.truth)
     testImplementation(libs.turbine)
@@ -73,4 +84,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 }
