@@ -82,6 +82,27 @@
     <string name="ideas_empty">Note ici ce que ton ou ta partenaire dit aimer, pour y repenser au bon moment.</string>
     <string name="ideas_empty_filtered">Rien dans cette catégorie pour l\'instant.</string>
     <string name="ideas_done_description">Marquer comme fait</string>
+    <string name="today_open_tasks">Tâches</string>
+    <string name="tasks_title">Tâches du foyer</string>
+    <string name="tasks_input_label">Une tâche à répéter</string>
+    <string name="tasks_add">Ajouter</string>
+    <string name="tasks_repeat_daily">Chaque jour</string>
+    <string name="tasks_repeat_weekly">Chaque semaine</string>
+    <string name="tasks_repeat_biweekly">Toutes les 2 semaines</string>
+    <string name="tasks_repeat_monthly">Chaque mois</string>
+    <string name="tasks_empty">Ajoute les tâches qui reviennent à la maison, et coche-les quand c\'est fait. Elles reviennent toutes seules à la bonne date.</string>
+    <string name="tasks_done_description">Marquer comme fait</string>
+    <string name="tasks_editor_title">Modifier la tâche</string>
+    <string name="tasks_due_today">À faire aujourd\'hui</string>
+    <string name="tasks_row_support">%1$s · %2$s</string>
+    <plurals name="tasks_overdue_days">
+        <item quantity="one">En retard d\'%d jour</item>
+        <item quantity="other">En retard de %d jours</item>
+    </plurals>
+    <plurals name="tasks_next_in_days">
+        <item quantity="one">Prochaine fois dans %d jour</item>
+        <item quantity="other">Prochaine fois dans %d jours</item>
+    </plurals>
     <string name="ideas_editor_title">Modifier l\'idée</string>
     <string name="share_idea_label">Ajouter au carnet</string>
     <string name="share_idea_title">Ajouter au carnet d\'idées</string>

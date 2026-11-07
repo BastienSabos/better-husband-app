@@ -15,12 +15,13 @@ import com.bastiensabos.betterhusband.feature.dates.DatesRoute
 import com.bastiensabos.betterhusband.feature.ideas.IdeasRoute
 import com.bastiensabos.betterhusband.feature.onboarding.OnboardingRoute
 import com.bastiensabos.betterhusband.feature.partner.PartnerProfileRoute
+import com.bastiensabos.betterhusband.feature.tasks.TasksRoute
 import com.bastiensabos.betterhusband.feature.today.TodayRoute
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Navigation à plat tant qu'il n'y a que quelques écrans ; Navigation Compose viendra avec les onglets. */
-private enum class Destination { TODAY, PARTNER, DATES, IDEAS }
+private enum class Destination { TODAY, PARTNER, DATES, IDEAS, TASKS }
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
                                     onOpenPartner = { destination = Destination.PARTNER },
                                     onOpenDates = { destination = Destination.DATES },
                                     onOpenIdeas = { destination = Destination.IDEAS },
+                                    onOpenTasks = { destination = Destination.TASKS },
                                 )
                             }
 
@@ -64,6 +66,10 @@ class MainActivity : ComponentActivity() {
 
                             Destination.IDEAS -> {
                                 IdeasRoute(onBack = { destination = Destination.TODAY })
+                            }
+
+                            Destination.TASKS -> {
+                                TasksRoute(onBack = { destination = Destination.TODAY })
                             }
                         }
                     }
