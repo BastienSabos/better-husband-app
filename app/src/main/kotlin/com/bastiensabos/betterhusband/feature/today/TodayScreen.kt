@@ -35,6 +35,7 @@ fun TodayRoute(
     onOpenPartner: () -> Unit,
     onOpenDates: () -> Unit,
     onOpenIdeas: () -> Unit,
+    onOpenTasks: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
@@ -45,6 +46,7 @@ fun TodayRoute(
         onOpenPartner = onOpenPartner,
         onOpenDates = onOpenDates,
         onOpenIdeas = onOpenIdeas,
+        onOpenTasks = onOpenTasks,
         modifier = modifier,
     )
 }
@@ -57,6 +59,7 @@ fun TodayScreen(
     onOpenPartner: () -> Unit,
     onOpenDates: () -> Unit,
     onOpenIdeas: () -> Unit,
+    onOpenTasks: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(modifier = modifier) { padding ->
@@ -77,6 +80,9 @@ fun TodayScreen(
                 }
                 TextButton(onClick = onOpenIdeas, modifier = Modifier.heightIn(min = 48.dp)) {
                     Text(stringResource(R.string.today_open_ideas))
+                }
+                TextButton(onClick = onOpenTasks, modifier = Modifier.heightIn(min = 48.dp)) {
+                    Text(stringResource(R.string.today_open_tasks))
                 }
             }
             when (uiState) {
@@ -121,6 +127,7 @@ private fun TodayScreenReadyPreview() {
             onOpenPartner = {},
             onOpenDates = {},
             onOpenIdeas = {},
+            onOpenTasks = {},
         )
     }
 }
@@ -129,6 +136,13 @@ private fun TodayScreenReadyPreview() {
 @Composable
 private fun TodayScreenEmptyPreview() {
     BetterHusbandTheme(dynamicColor = false) {
-        TodayScreen(uiState = TodayUiState.Empty, onCardComplete = {}, onOpenPartner = {}, onOpenDates = {}, onOpenIdeas = {})
+        TodayScreen(
+            uiState = TodayUiState.Empty,
+            onCardComplete = {},
+            onOpenPartner = {},
+            onOpenDates = {},
+            onOpenIdeas = {},
+            onOpenTasks = {},
+        )
     }
 }
