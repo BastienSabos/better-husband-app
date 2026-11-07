@@ -24,6 +24,20 @@
             </intent-filter>
         </activity>
 
+        <!-- Partage Android (texte) : « Ajouter au carnet ». Hors des récents, rien n'est enregistré sans validation. -->
+        <activity
+            android:name=".feature.ideas.ShareIdeaActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:label="@string/share_idea_label"
+            android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
         <!-- WorkManager est initialisé par l'Application (HiltWorkerFactory) : on retire l'initialiseur par défaut. -->
         <provider
             android:name="androidx.startup.InitializationProvider"
