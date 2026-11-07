@@ -901,4 +901,183 @@
         <item>Faites une pause étirements au milieu de la soirée.</item>
         <item>Rangez ensemble un coin de la maison pour en faire un espace apaisant.</item>
     </string-array>
+
+    <!-- Temps forts : proposés à la place du tirage autour d'une date (MomentCalendar). -->
+    <string-array name="attention_bank_anniversary_day">
+        <item>Souhaite-lui votre anniversaire dès le matin, avec un mot ou un geste.</item>
+        <item>Raconte-lui ton souvenir préféré de votre première année.</item>
+        <item>Dis-lui ce qui t\'a donné envie de rester toutes ces années.</item>
+        <item>Regardez ensemble des photos de vos débuts ce soir.</item>
+        <item>Rejouez un moment de votre rencontre : le lieu, le plat ou la musique.</item>
+        <item>Parlez de ce que vous avez envie de vivre l\'an prochain.</item>
+        <item>Envoie-lui dans la journée un message sur ce que tu aimes dans votre couple.</item>
+        <item>Offre ton cadeau en expliquant ce que tu y as mis de vous.</item>
+        <item>Prends une photo de vous deux pour la mettre à côté de celle de l\'an dernier.</item>
+        <item>Remerciez-vous l\'un l\'autre pour une chose précise de cette année.</item>
+        <item>Coupez les écrans ce soir et prenez le temps de parler de vous.</item>
+        <item>Écrivez chacun une phrase pour l\'an prochain et ouvrez-la dans un an.</item>
+    </string-array>
+
+    <string-array name="attention_bank_anniversary_prepare">
+        <item>Réserve la soirée de votre anniversaire avant que l\'agenda ne se remplisse.</item>
+        <item>Retrouve une photo de vos débuts pour la lui montrer le jour venu.</item>
+        <item>Choisis un cadeau qui rappelle un moment de votre histoire.</item>
+        <item>Réserve une table ou une activité qui vous ressemble.</item>
+        <item>Écris une lettre sur ce que vous avez traversé ensemble cette année.</item>
+        <item>Organise la garde des enfants pour avoir la soirée à vous.</item>
+        <item>Pense à un retour sur un lieu qui compte : rencontre, demande, voyage.</item>
+        <item>Prépare la liste des moments forts de votre année à deux.</item>
+        <item>Cherche le symbole de votre nombre d\'années de couple pour t\'en inspirer.</item>
+        <item>Demande-lui ce qui lui ferait plaisir pour fêter ça.</item>
+        <item>Prévois une surprise simple si la soirée ne peut pas être libérée.</item>
+        <item>Mets de côté la musique de votre première danse ou d\'un souvenir commun.</item>
+        <item>Vérifie ce qui reste à réserver ou à commander pour le jour venu.</item>
+    </string-array>
+
+    <string-array name="attention_bank_back_to_school_day">
+        <item>Prépare toi-même le petit déjeuner et les sacs du jour de la rentrée.</item>
+        <item>Prends la photo de rentrée et envoie-la à ton ou ta partenaire.</item>
+        <item>Prends des nouvelles de la journée des enfants ce soir, à table.</item>
+        <item>Demande à ton ou ta partenaire comment cette rentrée se vit de son côté.</item>
+        <item>Prévois un dîner simple ce soir pour une soirée sans stress.</item>
+    </string-array>
+
+    <string-array name="attention_bank_back_to_school_prepare">
+        <item>Prends en charge la liste des fournitures et les courses de la rentrée.</item>
+        <item>Vérifie les papiers de la rentrée : assurance, inscriptions, cantine.</item>
+        <item>Mettez-vous d\'accord sur qui dépose et qui récupère les enfants chaque jour.</item>
+        <item>Inscris les activités de l\'année dans l\'agenda que vous partagez.</item>
+        <item>Fais le tri des vêtements trop petits et note ce à racheter.</item>
+        <item>Prévois un dîner à deux juste avant la rentrée, pour souffler.</item>
+        <item>Organise la garde des mercredis et des imprévus de l\'année.</item>
+        <item>Propose de remplir les fiches et autorisations de l\'école ce soir.</item>
+    </string-array>
+
+    <string-array name="attention_bank_christmas_day">
+        <item>Lève-toi le premier pour préparer le petit déjeuner de Noël.</item>
+        <item>Garde un cadeau pour ton ou ta partenaire à ouvrir au calme, à deux.</item>
+        <item>Gère la vaisselle et le rangement après le repas.</item>
+        <item>Prends un moment avec ton ou ta partenaire pour souffler dans la journée.</item>
+        <item>Prends des photos de la famille et pense à en faire une de vous deux.</item>
+        <item>Remercie ton ou ta partenaire pour tout ce qui a rendu ce Noël possible.</item>
+        <item>Écoute les petites tensions de famille sans prendre parti, puis parlez-en à deux.</item>
+        <item>Propose une balade digestive à deux après le repas.</item>
+    </string-array>
+
+    <string-array name="attention_bank_christmas_prepare">
+        <item>Fais la liste des cadeaux à prévoir et partage-la avec ton ou ta partenaire.</item>
+        <item>Prends en charge une partie des cadeaux de la famille, jusqu\'à l\'emballage.</item>
+        <item>Fixe avec ton ou ta partenaire un budget pour les cadeaux de Noël.</item>
+        <item>Mettez-vous d\'accord tôt sur où et avec qui vous passez les fêtes.</item>
+        <item>Note dès maintenant une idée de cadeau entendue au fil des conversations.</item>
+        <item>Commande les cadeaux qui viennent de loin, tant qu\'on peut les recevoir.</item>
+        <item>Propose de décorer la maison ensemble ce week-end.</item>
+        <item>Prends en charge les courses du repas de Noël.</item>
+        <item>Occupe-toi des cartes ou des messages de fin d\'année.</item>
+        <item>Réserve les billets de train ou organise le trajet des fêtes.</item>
+        <item>Prévois une soirée à deux avant le tourbillon des fêtes.</item>
+        <item>Choisis le cadeau de ton ou ta partenaire avant celui des autres.</item>
+        <item>Emballe les cadeaux un soir en écoutant de la musique de Noël.</item>
+        <item>Demande à ton ou ta partenaire ce qui lui pèse dans les préparatifs, et prends-le.</item>
+        <item>Prévois un moment calme pendant les fêtes rien que pour vous deux.</item>
+        <item>Pense aux personnes seules de votre entourage et propose de les inviter.</item>
+        <item>Vérifie que rien ne manque pour le réveillon : courses, sièges, vaisselle.</item>
+    </string-array>
+
+    <string-array name="attention_bank_new_year_day">
+        <item>Raconte-lui tes trois moments préférés de votre année.</item>
+        <item>Dites-vous chacun ce qui a compté dans votre année à deux.</item>
+        <item>Choisissez ensemble un projet ou un voyage pour l\'année qui vient.</item>
+        <item>Écris-lui un vœu pour l\'année, à lire à minuit.</item>
+        <item>Remercie ton ou ta partenaire pour une chose précise de l\'année.</item>
+        <item>Garde un moment à deux avant ou après minuit, loin de la foule.</item>
+    </string-array>
+
+    <string-array name="attention_bank_new_year_prepare">
+        <item>Décidez ensemble comment vous voulez passer le réveillon du Nouvel An.</item>
+        <item>Prévois le repas ou réserve l\'endroit du réveillon.</item>
+        <item>Organise la garde des enfants si vous sortez le soir du réveillon.</item>
+        <item>Note les meilleurs moments de votre année pour les relire le 31 au soir.</item>
+        <item>Prépare une petite surprise pour minuit, même simple.</item>
+    </string-array>
+
+    <string-array name="attention_bank_partner_birthday_day">
+        <item>Souhaite-lui son anniversaire avant tout le monde, dès le réveil.</item>
+        <item>Prends en charge toutes les tâches du jour sans rien demander en retour.</item>
+        <item>Dis-lui ce que cette année avec toi t\'a apporté.</item>
+        <item>Écris-lui un message dans la journée qui rappelle un souvenir de l\'année.</item>
+        <item>Laisse-lui choisir le programme de la soirée, le repas et le film.</item>
+        <item>Organise un appel vidéo surprise avec un proche qui vit loin.</item>
+        <item>Offre ton cadeau en racontant pourquoi tu l\'as choisi.</item>
+        <item>Glisse un mot dans son sac, sa poche ou sa voiture.</item>
+        <item>Prépare ou commande son plat préféré pour ce soir.</item>
+        <item>Garde ton téléphone de côté pendant le repas d\'anniversaire.</item>
+        <item>Prends une photo de vous deux aujourd\'hui, pour l\'album des anniversaires.</item>
+        <item>Termine la journée en lui disant ce que tu lui souhaites pour l\'année.</item>
+    </string-array>
+
+    <string-array name="attention_bank_partner_birthday_prepare">
+        <item>Note trois envies qu\'on t\'a confiées ces derniers mois pour trouver le cadeau.</item>
+        <item>Réserve dès maintenant la soirée de son anniversaire dans ton agenda.</item>
+        <item>Demande discrètement à un proche une idée de cadeau qui ferait vraiment plaisir.</item>
+        <item>Commande le cadeau aujourd\'hui pour le recevoir à temps.</item>
+        <item>Prévois qui garde les enfants ou qui gère le quotidien ce jour-là.</item>
+        <item>Choisis une carte et écris dedans un vrai message, pas seulement une signature.</item>
+        <item>Contacte deux ou trois proches pour leur proposer d\'envoyer un mot le jour venu.</item>
+        <item>Prévois un petit plaisir pour le matin : petit déjeuner, fleurs ou mot.</item>
+        <item>Vérifie que le cadeau est emballé et caché à un endroit sûr.</item>
+        <item>Réserve une table, une activité ou un moment rien qu\'à vous deux.</item>
+        <item>Regarde dans ton carnet d\'idées ce que tu avais noté pour cette occasion.</item>
+        <item>Prépare une playlist des chansons qui comptent dans votre histoire.</item>
+        <item>Rassemble quelques photos de l\'année pour un petit album ou un montage.</item>
+        <item>Libère la journée de son anniversaire de toute corvée prévue.</item>
+        <item>Demande-lui l\'air de rien comment cette journée lui ferait plaisir.</item>
+        <item>Prévois un plan B si le temps ou l\'agenda bouleverse ton idée.</item>
+        <item>Fais la liste des courses pour le gâteau ou commande-le.</item>
+    </string-array>
+
+    <string-array name="attention_bank_relative_birthday_day">
+        <item>Pense à souhaiter l\'anniversaire du jour, par un appel plutôt qu\'un message.</item>
+        <item>Gère la logistique de la fête pour que ton ou ta partenaire en profite.</item>
+        <item>Prends des photos de la fête et partage-les ensuite avec la famille.</item>
+        <item>Range et nettoie après la fête sans qu\'on te le demande.</item>
+        <item>Rappelle à ton ou ta partenaire de souhaiter l\'anniversaire, si c\'est son proche.</item>
+        <item>Prends des nouvelles ce soir de la personne fêtée et de sa journée.</item>
+        <item>Remercie ton ou ta partenaire pour tout ce qui a été organisé.</item>
+    </string-array>
+
+    <string-array name="attention_bank_relative_birthday_prepare">
+        <item>Prends en charge le cadeau de l\'anniversaire qui approche, du choix à l\'emballage.</item>
+        <item>Propose de vous répartir les tâches de l\'anniversaire qui arrive.</item>
+        <item>Note l\'anniversaire qui approche dans l\'agenda que vous partagez.</item>
+        <item>Commande ou prépare le gâteau sans attendre qu\'on te le demande.</item>
+        <item>Occupe-toi des invitations ou des messages aux invités.</item>
+        <item>Demande à ton ou ta partenaire ce qui l\'aiderait le plus pour cette fête.</item>
+        <item>Prévois une carte et fais-la signer par toute la famille.</item>
+        <item>Vérifie les bougies, les assiettes et de quoi décorer.</item>
+        <item>Propose d\'appeler toi-même pour organiser la fête ou la visite.</item>
+        <item>Pense au trajet et à l\'heure d\'arrivée si la fête a lieu ailleurs.</item>
+    </string-array>
+
+    <string-array name="attention_bank_valentines_day">
+        <item>Commence la journée par un mot doux laissé en évidence.</item>
+        <item>Envoie-lui un message à midi pour dire que tu penses à vous.</item>
+        <item>Offre ton cadeau en disant ce qui t\'a fait y penser.</item>
+        <item>Dîne sans téléphone et parlez de vos meilleurs moments.</item>
+        <item>Dis-lui ce qui t\'a fait craquer au début, et ce qui te plaît encore.</item>
+        <item>Si vous fêtez ça un autre jour, offre quand même un petit mot aujourd\'hui.</item>
+        <item>Rejouez votre premier rendez-vous, même à la maison.</item>
+        <item>Termine la soirée par un slow dans le salon.</item>
+    </string-array>
+
+    <string-array name="attention_bank_valentines_prepare">
+        <item>Réserve une table pour la Saint-Valentin tant que la place existe.</item>
+        <item>Si les restaurants sont pleins, prévois un dîner maison aux chandelles.</item>
+        <item>Organise la garde des enfants pour le soir de la Saint-Valentin.</item>
+        <item>Choisis un petit cadeau qui parle de vous, pas un cadeau de vitrine.</item>
+        <item>Demande-lui si la Saint-Valentin compte, ou si une autre soirée ferait plus plaisir.</item>
+        <item>Écris une carte avec trois choses que tu aimes chez ton ou ta partenaire.</item>
+        <item>Prépare la playlist de la soirée avec vos chansons.</item>
+        <item>Pense aux fleurs préférées de ton ou ta partenaire, ou à une plante.</item>
+    </string-array>
 </resources>

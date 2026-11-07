@@ -70,6 +70,22 @@ enum class AttentionGroup(
 
     /** Se voir en vrai (une balade, un câlin) : tout le monde, sauf qui a dit vivre à distance. */
     IN_PERSON(300_000, { it.profile.living != LivingArrangement.LONG_DISTANCE }),
+
+    // Temps forts (Moment) : jamais tirés au hasard, ils passent devant les jours choisis autour de la date.
+    PARTNER_BIRTHDAY_PREPARE(400_000, { false }),
+    PARTNER_BIRTHDAY_DAY(410_000, { false }),
+    ANNIVERSARY_PREPARE(420_000, { false }),
+    ANNIVERSARY_DAY(430_000, { false }),
+    RELATIVE_BIRTHDAY_PREPARE(440_000, { false }),
+    RELATIVE_BIRTHDAY_DAY(450_000, { false }),
+    VALENTINES_PREPARE(460_000, { false }),
+    VALENTINES_DAY(470_000, { false }),
+    CHRISTMAS_PREPARE(480_000, { false }),
+    CHRISTMAS_DAY(490_000, { false }),
+    NEW_YEAR_PREPARE(500_000, { false }),
+    NEW_YEAR_DAY(510_000, { false }),
+    BACK_TO_SCHOOL_PREPARE(520_000, { false }),
+    BACK_TO_SCHOOL_DAY(530_000, { false }),
     ;
 
     fun appliesTo(context: AttentionContext): Boolean = appliesTo.invoke(context)

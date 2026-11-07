@@ -11,6 +11,7 @@ import com.bastiensabos.betterhusband.domain.AttentionCatalog
 import com.bastiensabos.betterhusband.domain.AttentionContext
 import com.bastiensabos.betterhusband.domain.AttentionGroup
 import com.bastiensabos.betterhusband.domain.AttentionPicker
+import com.bastiensabos.betterhusband.domain.MomentCalendar
 import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
 import com.bastiensabos.betterhusband.domain.StreakMath
 import com.bastiensabos.betterhusband.domain.TaskMath
@@ -32,6 +33,7 @@ import javax.inject.Inject
 /**
  * Flux du jour : une attention suggérée, les tâches du foyer à faire, la prochaine date à préparer, et la série.
  * L'attention du jour est choisie une fois (au premier affichage de la journée) puis conservée dans l'historique.
+ * Autour d'un temps fort (anniversaire, Saint-Valentin, Noël…), elle vient des idées de ce temps fort.
  */
 @HiltViewModel
 class TodayViewModel
@@ -41,7 +43,7 @@ class TodayViewModel
         private val taskRepository: HouseholdTaskRepository,
         private val partnerRepository: PartnerRepository,
         private val coupleProfile: CoupleProfileRepository,
-        observeUpcomingDates: ObserveUpcomingDatesUseCase,
+        private val observeUpcomingDates: ObserveUpcomingDatesUseCase,
         private val bank: AttentionBank,
         private val clock: Clock,
     ) : ViewModel() {
@@ -112,14 +114,24 @@ class TodayViewModel
                 log
                     .filter { it.date < today && it.date >= today.minusDays(AttentionPicker.NO_REPEAT_DAYS.toLong()) }
                     .map { it.attentionId }
-            return AttentionPicker.pick(today, eligibleIds(today), recent, skipped)
+            val profile = coupleProfile.observe().first()
+            val moments = MomentCalendar.priorityGroups(observeUpcomingDates().first(), profile.kids, today)
+            // Un temps fort passe devant le tirage ; une fois toutes ses idées écartées, on revient au tirage habituel.
+            val pool =
+                MomentCalendar
+                    .priorityIds(bank.groupSizes, moments)
+                    .filterNot { it in skipped }
+                    .ifEmpty { eligibleIds(today, profile) }
+            return AttentionPicker.pick(today, pool, recent, skipped)
         }
 
         /** Les attentions qui conviennent aujourd'hui ; si aucune ne convient, toute la banque commune. */
-        private suspend fun eligibleIds(today: LocalDate): List<Int> {
+        private suspend fun eligibleIds(
+            today: LocalDate,
+            profile: CoupleProfile,
+        ): List<Int> {
             val partner = partnerRepository.observePartner().first()
             val years = partner?.relationshipStart?.let { Period.between(it, today).years }
-            val profile = coupleProfile.observe().first()
             val context = AttentionContext(profile = profile, relationshipYears = years, month = today.month)
             val eligible = AttentionCatalog.eligibleIds(bank.groupSizes, context)
             return eligible.ifEmpty { (0 until (bank.groupSizes[AttentionGroup.EVERYONE] ?: 0)).toList() }
