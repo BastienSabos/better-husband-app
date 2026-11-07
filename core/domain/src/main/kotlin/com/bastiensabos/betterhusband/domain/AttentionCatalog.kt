@@ -3,6 +3,7 @@ package com.bastiensabos.betterhusband.domain
 import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.domain.model.Budget
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
+import com.bastiensabos.betterhusband.domain.model.FamilySituation
 import com.bastiensabos.betterhusband.domain.model.Interest
 import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LifeRhythm
@@ -80,6 +81,12 @@ enum class AttentionGroup(
      */
     PARTNER_MASCULINE(310_000, { it.addressForm == AddressForm.MASCULINE }),
     PARTNER_FEMININE(320_000, { it.addressForm == AddressForm.FEMININE }),
+
+    /** Famille recomposée : qu'on soit le parent ou le beau-parent des enfants. */
+    STEPFAMILY(330_000, { FamilySituation.STEPFAMILY in it.profile.family }),
+
+    /** Garde alternée ou partagée : des semaines avec les enfants, d'autres sans. */
+    SHARED_CUSTODY(340_000, { FamilySituation.SHARED_CUSTODY in it.profile.family }),
 
     // Temps forts (Moment) : jamais tirés au hasard, ils passent devant les jours choisis autour de la date.
     PARTNER_BIRTHDAY_PREPARE(400_000, { false }),

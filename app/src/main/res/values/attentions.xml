@@ -442,7 +442,7 @@
         <item>Prépare le goûter des enfants pour toute la semaine.</item>
         <item>Organise un petit-déjeuner en famille un peu spécial.</item>
         <item>Laisse-lui une matinée de repos pendant que tu sors avec les enfants.</item>
-        <item>Parlez de ce que vous voulez transmettre ensemble à vos enfants.</item>
+        <item>Parlez de ce que vous voulez transmettre ensemble aux enfants.</item>
         <item>Prends en charge les inscriptions et papiers de la rentrée.</item>
         <item>Propose une soirée film en famille, puis une tisane à deux.</item>
         <item>Demande-lui un souvenir d\'enfance à raconter aux enfants.</item>
@@ -513,6 +513,54 @@
         <item>Organise un dîner à deux un soir où les ados sont occupés.</item>
         <item>Prends le relais pour les réveils difficiles du matin.</item>
         <item>Dis-lui que vous tenez bon tous les deux, et que ça compte.</item>
+    </string-array>
+
+    <!-- Famille recomposée : des enfants de l'un ou de l'autre, qu'on soit le parent ou le beau-parent. -->
+    <string-array name="attention_bank_stepfamily">
+        <item>Propose-lui un moment en tête-à-tête avec ses enfants, sans toi.</item>
+        <item>Demande-lui comment se passe sa place auprès des enfants qui ne sont pas les siens.</item>
+        <item>Parlez à deux des règles de la maison avant d\'en parler aux enfants.</item>
+        <item>Remercie pour la place faite à tes enfants, avec un exemple précis.</item>
+        <item>Laisse chaque parent trancher en premier pour ses propres enfants.</item>
+        <item>Parle de l\'autre parent des enfants avec respect, même en son absence.</item>
+        <item>Note les anniversaires de tous les enfants de la famille, sans exception.</item>
+        <item>Prévois une activité où chaque enfant de la maison se sent à sa place.</item>
+        <item>Demande-lui ce qui est le plus dur dans votre famille recomposée, et écoute.</item>
+        <item>Ne force pas les liens avec les enfants : propose, puis laisse venir.</item>
+        <item>Garde un rituel rien qu\'à vous deux, à l\'abri de la logistique familiale.</item>
+        <item>Fêtez à votre façon la date où votre famille s\'est réunie.</item>
+        <item>Partage le calendrier des enfants avec tous les adultes qui s\'en occupent.</item>
+        <item>Cherche à connaître une passion de chaque enfant de la maison.</item>
+        <item>Évite de comparer les enfants entre eux, même pour plaisanter.</item>
+        <item>Pense aux grands-parents de chaque côté au moment des fêtes.</item>
+        <item>Parlez à deux de la façon de répartir les fêtes entre les familles.</item>
+        <item>Soutiens ton ou ta partenaire après un échange tendu avec l\'autre parent.</item>
+        <item>Demande-lui comment l\'aider avec ses enfants, sans prendre la place de personne.</item>
+        <item>Prends une photo de toute votre famille, même imparfaite.</item>
+        <item>Reconnais à voix haute les efforts de chacun pour faire famille.</item>
+        <item>Laisse un enfant te faire découvrir un jeu, une série ou une musique.</item>
+    </string-array>
+
+    <!-- Garde alternée ou partagée : des semaines avec les enfants, d'autres sans. -->
+    <string-array name="attention_bank_shared_custody">
+        <item>Profitez d\'une semaine sans enfants pour une soirée rien qu\'à vous.</item>
+        <item>Préparez à deux l\'arrivée des enfants : courses, chambres, programme.</item>
+        <item>Envoie-lui un mot doux le soir où les enfants repartent.</item>
+        <item>Demande-lui comment se passe le retour au calme quand les enfants partent.</item>
+        <item>Planifiez ensemble le calendrier de garde du mois prochain.</item>
+        <item>Réserve une sortie à deux pour la prochaine semaine sans enfants.</item>
+        <item>Prépare un dîner tranquille le soir où les enfants repartent.</item>
+        <item>Accueille les enfants avec leur repas préféré, le jour de leur retour.</item>
+        <item>Prends en charge un trajet de passage entre les deux maisons.</item>
+        <item>Vérifiez ensemble qu\'aucune affaire ne manque avant le départ des enfants.</item>
+        <item>Demande-lui ce qui l\'aiderait à passer des semaines avec aux semaines sans.</item>
+        <item>Laisse du temps pour se réhabituer quand les enfants reviennent.</item>
+        <item>Proposez aux enfants un petit rituel de retour, toujours le même.</item>
+        <item>Partagez le planning des activités des enfants avec l\'autre maison.</item>
+        <item>Profitez d\'un week-end sans enfants pour voir des amis ensemble.</item>
+        <item>Gardez du repos dans les semaines sans enfants, sans tout remplir.</item>
+        <item>Prévoyez une activité à faire tous ensemble dès le retour des enfants.</item>
+        <item>Demande-lui si une semaine sans les enfants lui pèse, et écoute.</item>
     </string-array>
 
     <!-- Moins de deux ans ensemble. -->

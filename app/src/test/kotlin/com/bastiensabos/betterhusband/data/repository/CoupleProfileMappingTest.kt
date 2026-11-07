@@ -3,6 +3,7 @@ package com.bastiensabos.betterhusband.data.repository
 import com.bastiensabos.betterhusband.data.local.entity.CoupleProfileEntity
 import com.bastiensabos.betterhusband.domain.model.Budget
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
+import com.bastiensabos.betterhusband.domain.model.FamilySituation
 import com.bastiensabos.betterhusband.domain.model.Interest
 import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LifeRhythm
@@ -20,6 +21,7 @@ class CoupleProfileMappingTest {
                 budget = Budget.MODERATE,
                 rhythm = LifeRhythm.VERY_BUSY,
                 interests = setOf(Interest.MUSIC, Interest.NATURE),
+                family = setOf(FamilySituation.STEPFAMILY, FamilySituation.SHARED_CUSTODY),
             )
 
         assertThat(profile.toEntity().toDomain()).isEqualTo(profile)

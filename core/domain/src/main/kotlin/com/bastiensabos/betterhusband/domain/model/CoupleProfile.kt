@@ -20,6 +20,15 @@ enum class LivingArrangement {
     LONG_DISTANCE,
 }
 
+/** Ce qui décrit la famille au-delà du nombre d'enfants. Plusieurs réponses possibles, aucune obligatoire. */
+enum class FamilySituation {
+    /** Des enfants de l'un ou de l'autre, d'une union précédente. */
+    STEPFAMILY,
+
+    /** Les enfants vivent une partie du temps dans une autre maison. */
+    SHARED_CUSTODY,
+}
+
 enum class Budget {
     TIGHT,
     MODERATE,
@@ -56,4 +65,5 @@ data class CoupleProfile(
     val budget: Budget? = null,
     val rhythm: LifeRhythm? = null,
     val interests: Set<Interest> = emptySet(),
+    val family: Set<FamilySituation> = emptySet(),
 )

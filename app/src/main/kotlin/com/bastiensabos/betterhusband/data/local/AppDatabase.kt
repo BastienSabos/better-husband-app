@@ -35,7 +35,7 @@ import com.bastiensabos.betterhusband.data.local.entity.TasteEntity
         AttentionLogEntity::class,
         CoupleProfileEntity::class,
     ],
-    version = 7,
+    version = 8,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)

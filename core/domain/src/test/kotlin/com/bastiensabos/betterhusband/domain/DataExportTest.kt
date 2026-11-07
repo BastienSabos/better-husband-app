@@ -127,5 +127,6 @@ class DataExportTest {
         assertThat(json).contains("\"kids\": \"YOUNG\"")
         assertThat(json).contains("\"living\": null")
         assertThat(json).contains("\"CULTURE\",\n      \"SPORT\"")
+        assertThat(json).contains("\"family\": []")
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.bastiensabos.betterhusband.data.repository.CoupleProfileRepository
 import com.bastiensabos.betterhusband.domain.model.Budget
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
+import com.bastiensabos.betterhusband.domain.model.FamilySituation
 import com.bastiensabos.betterhusband.domain.model.Interest
 import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LifeRhythm
@@ -55,6 +56,9 @@ class CoupleProfileViewModel
 
         fun onInterestToggle(value: Interest) =
             edit { it.copy(interests = if (value in it.interests) it.interests - value else it.interests + value) }
+
+        fun onFamilyToggle(value: FamilySituation) =
+            edit { it.copy(family = if (value in it.family) it.family - value else it.family + value) }
 
         fun onSave() {
             val state = _uiState.value

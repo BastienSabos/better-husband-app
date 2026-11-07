@@ -3,6 +3,7 @@ package com.bastiensabos.betterhusband.domain
 import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.domain.model.Budget
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
+import com.bastiensabos.betterhusband.domain.model.FamilySituation
 import com.bastiensabos.betterhusband.domain.model.Interest
 import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LifeRhythm
@@ -81,6 +82,16 @@ class AttentionCatalogTest {
     fun `without gender agreement no gendered attention is offered`() {
         assertThat(groups(addressForm = AddressForm.NEUTRAL))
             .containsNoneOf(AttentionGroup.PARTNER_MASCULINE, AttentionGroup.PARTNER_FEMININE)
+    }
+
+    @Test
+    fun `stepfamily and shared custody each open their group`() {
+        assertThat(groups(CoupleProfile(family = setOf(FamilySituation.STEPFAMILY))))
+            .containsAtLeast(AttentionGroup.STEPFAMILY, AttentionGroup.EVERYONE)
+        assertThat(groups(CoupleProfile(family = setOf(FamilySituation.STEPFAMILY))))
+            .doesNotContain(AttentionGroup.SHARED_CUSTODY)
+        assertThat(groups(CoupleProfile(family = setOf(FamilySituation.SHARED_CUSTODY)))).contains(AttentionGroup.SHARED_CUSTODY)
+        assertThat(groups()).containsNoneOf(AttentionGroup.STEPFAMILY, AttentionGroup.SHARED_CUSTODY)
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.bastiensabos.betterhusband.feature.couple
 import com.bastiensabos.betterhusband.data.repository.FakeCoupleProfileRepository
 import com.bastiensabos.betterhusband.domain.model.Budget
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
+import com.bastiensabos.betterhusband.domain.model.FamilySituation
 import com.bastiensabos.betterhusband.domain.model.Interest
 import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LifeRhythm
@@ -39,6 +40,7 @@ class CoupleProfileViewModelTest {
             viewModel.onLivingChange(LivingArrangement.TOGETHER)
             viewModel.onRhythmChange(LifeRhythm.BALANCED)
             viewModel.onInterestToggle(Interest.GAMES)
+            viewModel.onFamilyToggle(FamilySituation.SHARED_CUSTODY)
             advanceUntilIdle()
             assertThat(repository.state.value.kids).isNull()
 
@@ -53,6 +55,7 @@ class CoupleProfileViewModelTest {
                         budget = Budget.TIGHT,
                         rhythm = LifeRhythm.BALANCED,
                         interests = setOf(Interest.GAMES),
+                        family = setOf(FamilySituation.SHARED_CUSTODY),
                     ),
                 )
             assertThat(viewModel.uiState.value.saved).isTrue()
@@ -67,6 +70,8 @@ class CoupleProfileViewModelTest {
             viewModel.onBudgetChange(Budget.TIGHT)
             viewModel.onInterestToggle(Interest.MUSIC)
             viewModel.onInterestToggle(Interest.MUSIC)
+            viewModel.onFamilyToggle(FamilySituation.STEPFAMILY)
+            viewModel.onFamilyToggle(FamilySituation.STEPFAMILY)
 
             assertThat(viewModel.uiState.value.profile).isEqualTo(CoupleProfile())
         }

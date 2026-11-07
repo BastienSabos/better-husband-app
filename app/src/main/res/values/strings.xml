@@ -127,7 +127,7 @@
     <string name="dates_label_relationship_start">Début de votre relation</string>
     <string name="dates_editor_new">Nouvelle date</string>
     <string name="dates_editor_edit">Modifier la date</string>
-    <string name="dates_editor_title_label">Nom (anniversaire de mariage, rendez-vous…)</string>
+    <string name="dates_editor_title_label">Nom (rencontre, PACS, mariage, rendez-vous…)</string>
     <string name="dates_editor_date_label">Date</string>
     <string name="dates_editor_recurring">Revient chaque année</string>
     <string name="dates_editor_delete">Supprimer</string>
@@ -229,6 +229,9 @@
     <string name="couple_kids_young">Des petits</string>
     <string name="couple_kids_teens">Des ados ou des grands</string>
     <string name="couple_kids_both">Les deux</string>
+    <string name="couple_family_title">Votre famille</string>
+    <string name="couple_family_stepfamily">Recomposée</string>
+    <string name="couple_family_shared_custody">Garde alternée ou partagée</string>
     <string name="couple_living_title">Vous vivez…</string>
     <string name="couple_living_together">Ensemble</string>
     <string name="couple_living_apart">Chacun chez soi</string>
@@ -260,7 +263,7 @@
     <string name="nav_back">Retour</string>
     <string name="today_open_partner_of">Ouvrir la fiche de %1$s</string>
     <string name="settings_title">Réglages</string>
-    <string name="settings_couple_body">Enfants, vie commune, budget, envies : pour des idées qui vous ressemblent.</string>
+    <string name="settings_couple_body">Enfants, famille, vie commune, budget, envies : pour des idées qui vous ressemblent.</string>
     <string name="settings_my_data_body">Verrouillage, export et suppression de tes données.</string>
     <string name="undo">Annuler</string>
     <string name="ideas_deleted">Idée supprimée</string>

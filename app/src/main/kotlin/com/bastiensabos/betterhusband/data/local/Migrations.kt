@@ -82,3 +82,11 @@ val MIGRATION_6_7 =
             )
         }
     }
+
+/** v7 → v8 : situation familiale du profil (famille recomposée, garde alternée), pour des attentions qui s'y prêtent. */
+val MIGRATION_7_8 =
+    object : Migration(7, 8) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `couple_profile` ADD COLUMN `family` TEXT NOT NULL DEFAULT ''")
+        }
+    }
