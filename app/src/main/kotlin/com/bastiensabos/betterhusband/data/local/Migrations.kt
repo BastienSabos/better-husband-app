@@ -35,3 +35,15 @@ val MIGRATION_2_3 =
             )
         }
     }
+
+/** v3 → v4 : carnet d'idées. */
+val MIGRATION_3_4 =
+    object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `idea` " +
+                    "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `text` TEXT NOT NULL, " +
+                    "`category` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `done` INTEGER NOT NULL)",
+            )
+        }
+    }
