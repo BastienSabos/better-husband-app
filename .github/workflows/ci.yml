@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   # Formatage, tests, couverture et detekt du domaine : sans SDK Android, donc rapide et rejouable en session cloud
-  # (`scripts/check.sh --jvm`).
+  # (`scripts/check.sh --jvm`, qui lance aussi `:architecture:test`).
   jvm:
     name: Format & domain
     runs-on: ubuntu-latest

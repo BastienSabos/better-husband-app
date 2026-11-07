@@ -13,8 +13,8 @@ jvm_only=false
 
 step() { printf '\n\033[1m==> %s\033[0m\n' "$*"; }
 
-step "formatage et domaine (tests, couverture, detekt)"
-"$gradle" -PjvmOnly=true spotlessCheck :core:domain:test :core:domain:koverVerify :core:domain:detekt
+step "formatage, domaine (tests, couverture, detekt) et règles d'architecture"
+"$gradle" -PjvmOnly=true spotlessCheck :core:domain:test :core:domain:koverVerify :core:domain:detekt :architecture:test
 
 if [ "$jvm_only" = true ]; then
   echo "check : :app laissé à la CI (sans SDK Android, ou --jvm)." >&2

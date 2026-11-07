@@ -24,6 +24,7 @@ turbine = "1.2.0"
 spotless = "8.3.0"
 kover = "0.9.11"
 detekt = "1.23.8"
+konsist = "0.18.1"
 ktlint = "1.8.0"
 composeRules = "0.6.8"
 
@@ -55,6 +56,7 @@ junit = { module = "junit:junit", version.ref = "junit4" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 sqlcipher-android = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlcipher" }
+konsist = { group = "com.lemonappdev", name = "konsist", version.ref = "konsist" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 # Utilisé par Spotless uniquement (règles ktlint pour Compose).
