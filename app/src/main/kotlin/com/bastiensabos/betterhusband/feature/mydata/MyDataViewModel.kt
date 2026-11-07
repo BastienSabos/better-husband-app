@@ -3,6 +3,8 @@ package com.bastiensabos.betterhusband.feature.mydata
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bastiensabos.betterhusband.data.export.DocumentWriter
+import com.bastiensabos.betterhusband.data.security.BiometricAuthenticator
+import com.bastiensabos.betterhusband.data.security.LockSettings
 import com.bastiensabos.betterhusband.domain.DeleteAllUserDataUseCase
 import com.bastiensabos.betterhusband.domain.ExportUserDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +18,7 @@ import java.time.Clock
 import java.time.LocalDate
 import javax.inject.Inject
 
-/** « Mes données » : exporter en fichier, ou tout effacer après confirmation. */
+/** « Mes données » : verrouillage, export en fichier, ou tout effacer après confirmation. */
 @HiltViewModel
 class MyDataViewModel
     @Inject
@@ -24,10 +26,22 @@ class MyDataViewModel
         private val exportUserData: ExportUserDataUseCase,
         private val deleteAllUserData: DeleteAllUserDataUseCase,
         private val writer: DocumentWriter,
+        private val lockSettings: LockSettings,
+        authenticator: BiometricAuthenticator,
         private val clock: Clock,
     ) : ViewModel() {
-        private val _uiState = MutableStateFlow(MyDataUiState())
+        private val _uiState =
+            MutableStateFlow(
+                MyDataUiState(lockEnabled = lockSettings.enabled.value, lockAvailable = authenticator.canAuthenticate()),
+            )
         val uiState: StateFlow<MyDataUiState> = _uiState.asStateFlow()
+
+        fun onLockChange(enabled: Boolean) {
+            // Un verrou sans moyen de l'ouvrir enfermerait l'utilisateur dehors : on refuse de l'activer.
+            if (enabled && !_uiState.value.lockAvailable) return
+            lockSettings.setEnabled(enabled)
+            _uiState.update { it.copy(lockEnabled = enabled) }
+        }
 
         /** Nom proposé dans le sélecteur de fichiers : daté, sans aucune donnée personnelle. */
         fun suggestedFileName(): String = "mes-donnees-${LocalDate.now(clock)}.json"

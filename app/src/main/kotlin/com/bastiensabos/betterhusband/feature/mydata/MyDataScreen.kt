@@ -4,11 +4,13 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -16,12 +18,15 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +38,7 @@ import com.bastiensabos.betterhusband.ui.theme.Spacing
 
 data class MyDataActions(
     val onBack: () -> Unit,
+    val onLockChange: (Boolean) -> Unit,
     val onExport: () -> Unit,
     val onDeleteRequest: () -> Unit,
     val onDeleteConfirm: () -> Unit,
@@ -56,6 +62,7 @@ fun MyDataRoute(
         actions =
             MyDataActions(
                 onBack = onBack,
+                onLockChange = viewModel::onLockChange,
                 onExport = { picker.launch(viewModel.suggestedFileName()) },
                 onDeleteRequest = viewModel::onDeleteRequest,
                 onDeleteConfirm = viewModel::onDeleteConfirm,
@@ -91,6 +98,8 @@ fun MyDataScreen(
                 modifier = Modifier.semantics { heading() },
             )
             Text(text = stringResource(R.string.my_data_intro), style = MaterialTheme.typography.bodyLarge)
+
+            LockSetting(uiState, actions.onLockChange)
 
             Text(
                 text = stringResource(R.string.my_data_export_title),
@@ -147,6 +156,36 @@ fun MyDataScreen(
 }
 
 @Composable
+private fun LockSetting(
+    uiState: MyDataUiState,
+    onLockChange: (Boolean) -> Unit,
+) {
+    val spacing = Spacing()
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = spacing.touchTarget)
+                .toggleable(
+                    value = uiState.lockEnabled,
+                    enabled = uiState.lockAvailable || uiState.lockEnabled,
+                    role = Role.Switch,
+                    onValueChange = onLockChange,
+                ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(spacing.md),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = stringResource(R.string.my_data_lock_title), style = MaterialTheme.typography.titleMedium)
+            val hint = if (uiState.lockAvailable) R.string.my_data_lock_body else R.string.my_data_lock_unavailable
+            Text(text = stringResource(hint), style = MaterialTheme.typography.bodyMedium)
+        }
+        // Le clic est porté par la ligne entière (toggleable) : le Switch seul ne doit pas être un second point d'accès.
+        Switch(checked = uiState.lockEnabled, onCheckedChange = null, enabled = uiState.lockAvailable || uiState.lockEnabled)
+    }
+}
+
+@Composable
 private fun ExportFeedback(status: ExportStatus) {
     val message =
         when (status) {
@@ -158,7 +197,7 @@ private fun ExportFeedback(status: ExportStatus) {
     Text(text = stringResource(message), style = MaterialTheme.typography.bodyMedium, color = color)
 }
 
-private val previewActions = MyDataActions({}, {}, {}, {}, {})
+private val previewActions = MyDataActions({}, {}, {}, {}, {}, {})
 
 @Preview(showBackground = true)
 @Composable
