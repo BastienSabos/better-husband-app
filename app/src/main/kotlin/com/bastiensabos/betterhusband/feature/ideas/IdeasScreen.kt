@@ -4,7 +4,9 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -98,49 +100,52 @@ fun IdeasScreen(
 ) {
     val spacing = Spacing()
     Scaffold(modifier = modifier) { padding ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(start = spacing.screen, end = spacing.screen, top = spacing.md),
+        // Une seule liste qui défile : en police agrandie, la saisie ne mange plus l'écran.
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(padding),
+            contentPadding = PaddingValues(start = spacing.screen, end = spacing.screen, top = spacing.md, bottom = spacing.lg),
             verticalArrangement = Arrangement.spacedBy(spacing.sm),
         ) {
-            Heading(text = stringResource(R.string.ideas_title), style = MaterialTheme.typography.headlineMedium)
-
-            // Capture rapide : une idée = un champ, une catégorie, un bouton.
-            OutlinedTextField(
-                value = uiState.draft,
-                onValueChange = actions.onDraftChange,
-                label = { Text(stringResource(R.string.ideas_input_label)) },
-                singleLine = true,
-                keyboardOptions =
-                    KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { actions.onAdd() }),
-                modifier = Modifier.fillMaxWidth(),
-            )
-            CategoryChips(selected = uiState.draftCategory, onSelect = { it?.let(actions.onDraftCategoryChange) }, withAll = false)
-            Button(
-                onClick = actions.onAdd,
-                enabled = uiState.canAdd,
-                modifier = Modifier.fillMaxWidth().heightIn(min = spacing.touchTarget),
-            ) {
-                Text(stringResource(R.string.ideas_add))
+            item { Heading(text = stringResource(R.string.ideas_title), style = MaterialTheme.typography.headlineMedium) }
+            item {
+                // Capture rapide : une idée = un champ, une catégorie, un bouton.
+                Column(verticalArrangement = Arrangement.spacedBy(spacing.sm)) {
+                    OutlinedTextField(
+                        value = uiState.draft,
+                        onValueChange = actions.onDraftChange,
+                        label = { Text(stringResource(R.string.ideas_input_label)) },
+                        singleLine = true,
+                        keyboardOptions =
+                            KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = { actions.onAdd() }),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    CategoryChips(selected = uiState.draftCategory, onSelect = { it?.let(actions.onDraftCategoryChange) }, withAll = false)
+                    Button(
+                        onClick = actions.onAdd,
+                        enabled = uiState.canAdd,
+                        modifier = Modifier.fillMaxWidth().heightIn(min = spacing.touchTarget),
+                    ) {
+                        Text(stringResource(R.string.ideas_add))
+                    }
+                }
             }
 
             when (val list = uiState.list) {
                 IdeasListState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                    item { Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { CircularProgressIndicator() } }
                 }
 
                 IdeasListState.Empty -> {
-                    Text(text = stringResource(R.string.ideas_empty), style = MaterialTheme.typography.bodyLarge)
+                    item { Text(text = stringResource(R.string.ideas_empty), style = MaterialTheme.typography.bodyLarge) }
                 }
 
                 is IdeasListState.Ready -> {
-                    CategoryChips(selected = uiState.filter, onSelect = actions.onFilterChange, withAll = true)
+                    item { CategoryChips(selected = uiState.filter, onSelect = actions.onFilterChange, withAll = true) }
                     if (list.items.isEmpty()) {
-                        Text(text = stringResource(R.string.ideas_empty_filtered), style = MaterialTheme.typography.bodyLarge)
+                        item { Text(text = stringResource(R.string.ideas_empty_filtered), style = MaterialTheme.typography.bodyLarge) }
                     }
-                    LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(list.items, key = { it.id }) { idea -> IdeaRow(idea, actions) }
-                    }
+                    items(list.items, key = { it.id }) { idea -> IdeaRow(idea, actions) }
                 }
             }
         }
@@ -183,7 +188,8 @@ private fun IdeaRow(
     idea: Idea,
     actions: IdeasActions,
 ) {
-    val doneDescription = stringResource(R.string.ideas_done_description)
+    // La case dit de quelle idée il s'agit : TalkBack ne lit plus « fait » sans contexte.
+    val doneDescription = stringResource(R.string.ideas_done_description, idea.text)
     ListItem(
         modifier = Modifier.heightIn(min = Spacing().touchTarget).clickable { actions.onEdit(idea) },
         leadingContent = {

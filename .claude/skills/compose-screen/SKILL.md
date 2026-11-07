@@ -35,4 +35,5 @@ Référence vivante : `app/src/main/kotlin/com/bastiensabos/betterhusband/featur
 - Si `viewModelScope` est utilisé, ajoute une `MainDispatcherRule` (`Dispatchers.setMain(StandardTestDispatcher())`).
 - UI critique : test Compose dans `androidTest` sur `<Name>Screen` avec un état fixe.
 
-Termine par `./gradlew spotlessApply testDebugUnitTest lintDebug` et demande une relecture `ux-copy-reviewer`.
+Ajoute l'écran à `ScreensCaptureTest` (`captureScreen`), lance `./gradlew recordRoborazziDebug`, **regarde les PNG** de
+`app/src/test/screenshots/` (surtout `_police_200`) et commite-les. Termine par `./gradlew spotlessApply verifyRoborazziDebug lintDebug` et demande une relecture `ux-copy-reviewer`.

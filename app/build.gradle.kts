@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.room)
+    // Captures d'écran des tests Robolectric (app/src/test/screenshots/), comme le budget planner.
+    alias(libs.plugins.roborazzi)
 }
 
 // Schémas Room exportés puis committés : ils servent aux tests de migration et ne se modifient jamais à la main.
@@ -42,6 +44,8 @@ android {
 
     testOptions {
         unitTests.isReturnDefaultValues = true
+        // Robolectric lit les ressources (textes, thème, polices) comme sur un téléphone.
+        unitTests.isIncludeAndroidResources = true
         animationsDisabled = true
     }
 
@@ -96,6 +100,12 @@ dependencies {
     testImplementation(libs.truth)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.accessibility.check)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
