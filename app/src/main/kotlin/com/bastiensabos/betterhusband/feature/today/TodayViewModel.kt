@@ -1,31 +1,112 @@
 package com.bastiensabos.betterhusband.feature.today
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.bastiensabos.betterhusband.data.repository.AttentionBank
+import com.bastiensabos.betterhusband.data.repository.AttentionLogRepository
+import com.bastiensabos.betterhusband.data.repository.HouseholdTaskRepository
+import com.bastiensabos.betterhusband.domain.AttentionPicker
+import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
+import com.bastiensabos.betterhusband.domain.StreakMath
+import com.bastiensabos.betterhusband.domain.TaskMath
+import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import java.time.Clock
+import java.time.LocalDate
 import javax.inject.Inject
 
 /**
- * Squelette du flux du jour. Les cartes viendront d'un repository (Room) dans la brique MVP n°4.
+ * Flux du jour : une attention suggérée, les tâches du foyer à faire, la prochaine date à préparer, et la série.
+ * L'attention du jour est choisie une fois (au premier affichage de la journée) puis conservée dans l'historique.
  */
 @HiltViewModel
 class TodayViewModel
     @Inject
-    constructor() : ViewModel() {
-        private val _uiState = MutableStateFlow<TodayUiState>(TodayUiState.Empty)
-        val uiState: StateFlow<TodayUiState> = _uiState.asStateFlow()
+    constructor(
+        private val attentionLog: AttentionLogRepository,
+        private val taskRepository: HouseholdTaskRepository,
+        observeUpcomingDates: ObserveUpcomingDatesUseCase,
+        private val bank: AttentionBank,
+        private val clock: Clock,
+    ) : ViewModel() {
+        /** Attentions déjà écartées aujourd'hui avec « Autre idée » : on ne les reproposera pas. */
+        private val swapped = MutableStateFlow<Set<Int>>(emptySet())
 
-        fun onCardComplete(cardId: String) {
-            _uiState.update { state ->
-                if (state !is TodayUiState.Ready) return@update state
-                state.copy(cards = state.cards.map { if (it.id == cardId) it.copy(done = true) else it })
+        init {
+            viewModelScope.launch {
+                val today = LocalDate.now(clock)
+                val log = attentionLog.observeAll().first()
+                if (log.none { it.date == today }) {
+                    attentionLog.save(AttentionLogEntry(today, pickFor(today, log, emptySet())))
+                }
             }
         }
 
-        internal fun setCards(cards: List<TodayCard>) {
-            _uiState.value = if (cards.isEmpty()) TodayUiState.Empty else TodayUiState.Ready(cards)
+        val uiState: StateFlow<TodayUiState> =
+            combine(
+                attentionLog.observeAll(),
+                taskRepository.observeAll(),
+                observeUpcomingDates(),
+            ) { log, tasks, dates ->
+                val today = LocalDate.now(clock)
+                val entry = log.lastOrNull { it.date == today }
+                if (entry == null) {
+                    TodayUiState.Loading
+                } else {
+                    val due = TaskMath.sorted(tasks.filter { TaskMath.isDue(it, today) }, today)
+                    TodayUiState.Ready(
+                        attention = AttentionCard(bank.text(entry.attentionId), entry.done),
+                        tasks = due.take(MAX_TASKS).map { TodayTask(it.id, it.title, TaskMath.daysOverdue(it, today)) },
+                        moreTasks = (due.size - MAX_TASKS).coerceAtLeast(0),
+                        nextDate = dates.firstOrNull { it.daysUntil <= NEXT_DATE_WINDOW_DAYS },
+                        streak = StreakMath.current(log.filter { it.done }.map { it.date }.toSet(), today),
+                    )
+                }
+            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), TodayUiState.Loading)
+
+        fun onAttentionDone(done: Boolean) {
+            viewModelScope.launch { attentionLog.setDone(LocalDate.now(clock), done) }
+        }
+
+        /** « Autre idée » : remplace l'attention du jour par une autre, tant qu'elle n'est pas faite. */
+        fun onOtherAttention() {
+            viewModelScope.launch {
+                val today = LocalDate.now(clock)
+                val log = attentionLog.observeAll().first()
+                val current = log.lastOrNull { it.date == today } ?: return@launch
+                if (current.done) return@launch
+                val skipped = swapped.value + current.attentionId
+                swapped.value = skipped
+                attentionLog.save(AttentionLogEntry(today, pickFor(today, log, skipped)))
+            }
+        }
+
+        fun onTaskDone(id: Long) {
+            viewModelScope.launch { taskRepository.setLastDone(id, LocalDate.now(clock)) }
+        }
+
+        private fun pickFor(
+            today: LocalDate,
+            log: List<AttentionLogEntry>,
+            skipped: Set<Int>,
+        ): Int {
+            val recent =
+                log
+                    .filter { it.date < today && it.date >= today.minusDays(AttentionPicker.NO_REPEAT_DAYS.toLong()) }
+                    .map { it.attentionId }
+            return AttentionPicker.pick(today, bank.size, recent, skipped)
+        }
+
+        private companion object {
+            const val STOP_TIMEOUT_MS = 5_000L
+            const val MAX_TASKS = 3
+            const val NEXT_DATE_WINDOW_DAYS = 30L
         }
     }

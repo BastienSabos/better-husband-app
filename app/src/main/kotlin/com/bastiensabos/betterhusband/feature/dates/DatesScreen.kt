@@ -154,7 +154,7 @@ private fun UpcomingDateRow(
 }
 
 @Composable
-private fun DateLabel.text(): String =
+internal fun DateLabel.text(): String =
     when (this) {
         is DateLabel.PartnerBirthday -> stringResource(R.string.dates_label_birthday_of, name)
         DateLabel.RelationshipStart -> stringResource(R.string.dates_label_relationship_start)
@@ -163,7 +163,7 @@ private fun DateLabel.text(): String =
     }
 
 @Composable
-private fun daysUntilText(days: Long): String =
+internal fun daysUntilText(days: Long): String =
     when (days) {
         0L -> stringResource(R.string.dates_today)
         1L -> stringResource(R.string.dates_tomorrow)
