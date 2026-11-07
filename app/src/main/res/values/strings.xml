@@ -2,19 +2,40 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="fr">
     <!-- Nom de travail : l'app est une appli de couple, la marque définitive reste à choisir. -->
     <string name="app_name">Better husband</string>
-    <string name="today_title">Aujourd\'hui</string>
+    <string name="today_greeting">Bonjour</string>
     <string name="today_attention_title">L\'attention du jour</string>
     <string name="today_attention_done">C\'est fait</string>
-    <string name="today_attention_done_state">Fait aujourd\'hui</string>
     <string name="today_attention_other">Autre idée</string>
-    <string name="today_tasks_title">À faire à la maison</string>
+    <string name="today_attention_done_title">C\'est noté. Belle attention.</string>
+    <plurals name="today_attention_done_body">
+        <item quantity="one">Ta série passe à %d jour. Demain, une nouvelle idée t\'attend.</item>
+        <item quantity="many">Ta série passe à %d jours. Demain, une nouvelle idée t\'attend.</item>
+        <item quantity="other">Ta série passe à %d jours. Demain, une nouvelle idée t\'attend.</item>
+    </plurals>
+    <string name="today_attention_undo">Annuler</string>
+    <string name="today_streak_none">Pas encore de série</string>
+    <string name="today_streak_hint">Une attention par jour suffit</string>
+    <plurals name="today_week_description">
+        <item quantity="one">Cette semaine : %d jour sur 7</item>
+        <item quantity="many">Cette semaine : %d jours sur 7</item>
+        <item quantity="other">Cette semaine : %d jours sur 7</item>
+    </plurals>
+    <string name="today_tasks_title">Au foyer aujourd\'hui</string>
     <string name="today_tasks_none">Rien à faire à la maison aujourd\'hui.</string>
+    <string name="today_tasks_see_all">Tout voir</string>
     <plurals name="today_tasks_more">
         <item quantity="one">Voir %d autre tâche</item>
         <item quantity="many">Voir %d autres tâches</item>
         <item quantity="other">Voir %d autres tâches</item>
     </plurals>
     <string name="today_next_date_title">À préparer</string>
+    <!-- « Dans 15 jours · samedi 21 novembre » -->
+    <string name="today_prepare_when">%1$s · %2$s</string>
+    <string name="today_prepare_ideas">Dans ton carnet : %1$s.</string>
+    <string name="today_prepare_no_idea">Rien dans ton carnet pour cette date. Note une idée dès qu\'elle te vient.</string>
+    <string name="today_prepare_choose_gift">Choisir un cadeau</string>
+    <string name="today_prepare_open_ideas">Ouvrir le carnet</string>
+    <string name="today_prepare_add_idea">Noter une idée</string>
     <plurals name="today_streak">
         <item quantity="one">%d jour d\'affilée</item>
         <item quantity="many">%d jours d\'affilée</item>

@@ -1,6 +1,8 @@
 package com.bastiensabos.betterhusband.domain
 
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 
 /** Série de jours consécutifs où l'utilisateur a fait son attention du jour. Valorise sans points ni classement. */
 object StreakMath {
@@ -33,4 +35,15 @@ object StreakMath {
         }
         return best
     }
+
+    /** Semaine en cours, du lundi au dimanche : `true` pour chaque jour où l'attention a été faite. */
+    fun week(
+        doneDays: Set<LocalDate>,
+        today: LocalDate,
+    ): List<Boolean> {
+        val monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        return (0L until DAYS_IN_WEEK).map { monday.plusDays(it) in doneDays }
+    }
+
+    private const val DAYS_IN_WEEK = 7L
 }

@@ -4,6 +4,7 @@ import com.bastiensabos.betterhusband.data.repository.FakeAttentionBank
 import com.bastiensabos.betterhusband.data.repository.FakeAttentionLogRepository
 import com.bastiensabos.betterhusband.data.repository.FakeCoupleProfileRepository
 import com.bastiensabos.betterhusband.data.repository.FakeHouseholdTaskRepository
+import com.bastiensabos.betterhusband.data.repository.FakeIdeaRepository
 import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepository
 import com.bastiensabos.betterhusband.data.repository.FakePartnerRepository
 import com.bastiensabos.betterhusband.domain.AttentionGroup
@@ -12,6 +13,7 @@ import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
 import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
+import com.bastiensabos.betterhusband.domain.model.IdeaCategory
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
 import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LivingArrangement
@@ -39,6 +41,7 @@ class TodayViewModelTest {
     private val tasks = FakeHouseholdTaskRepository()
     private val dates = FakeImportantDateRepository()
     private val coupleProfile = FakeCoupleProfileRepository()
+    private val ideas = FakeIdeaRepository()
 
     private fun viewModel(
         bank: FakeAttentionBank = FakeAttentionBank(),
@@ -47,6 +50,7 @@ class TodayViewModelTest {
         attentionLog = log,
         taskRepository = tasks,
         partnerRepository = FakePartnerRepository(),
+        ideaRepository = ideas,
         coupleProfile = coupleProfile,
         observeUpcomingDates = ObserveUpcomingDatesUseCase(FakePartnerRepository(), dates, clock),
         bank = bank,
@@ -211,6 +215,32 @@ class TodayViewModelTest {
             advanceUntilIdle()
 
             assertThat(viewModel.ready().nextDate?.daysUntil).isEqualTo(10)
+        }
+
+    @Test
+    fun `the date to prepare comes with gift ideas from the notebook`() =
+        runTest {
+            dates.save(ImportantDate(title = "Fête", kind = DateKind.BIRTHDAY, date = today.plusDays(12), recurring = true))
+            ideas.add("Balade en forêt", IdeaCategory.OUTING)
+            ideas.add("Coffret de thés", IdeaCategory.GIFT)
+            val viewModel = viewModel()
+            collectState(viewModel)
+
+            assertThat(viewModel.ready().nextDateIdeas).containsExactly("Coffret de thés", "Balade en forêt").inOrder()
+        }
+
+    @Test
+    fun `the header shows the day and the week marks the days done`() =
+        runTest {
+            // 2027-01-20 est un mercredi : lundi fait, mardi manqué.
+            log.save(AttentionLogEntry(today.minusDays(2), 0, done = true))
+            val viewModel = viewModel()
+            collectState(viewModel)
+            viewModel.onAttentionDone(true)
+            advanceUntilIdle()
+
+            assertThat(viewModel.ready().date).isEqualTo(today)
+            assertThat(viewModel.ready().week).containsExactly(true, false, true, false, false, false, false).inOrder()
         }
 
     @Test

@@ -6,11 +6,13 @@ import com.bastiensabos.betterhusband.data.repository.AttentionBank
 import com.bastiensabos.betterhusband.data.repository.AttentionLogRepository
 import com.bastiensabos.betterhusband.data.repository.CoupleProfileRepository
 import com.bastiensabos.betterhusband.data.repository.HouseholdTaskRepository
+import com.bastiensabos.betterhusband.data.repository.IdeaRepository
 import com.bastiensabos.betterhusband.data.repository.PartnerRepository
 import com.bastiensabos.betterhusband.domain.AttentionCatalog
 import com.bastiensabos.betterhusband.domain.AttentionContext
 import com.bastiensabos.betterhusband.domain.AttentionGroup
 import com.bastiensabos.betterhusband.domain.AttentionPicker
+import com.bastiensabos.betterhusband.domain.IdeaSuggestions
 import com.bastiensabos.betterhusband.domain.MomentCalendar
 import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
 import com.bastiensabos.betterhusband.domain.StreakMath
@@ -36,7 +38,8 @@ import java.time.ZonedDateTime
 import javax.inject.Inject
 
 /**
- * Flux du jour : une attention suggérée, les tâches du foyer à faire, la prochaine date à préparer, et la série.
+ * Flux du jour : une attention suggérée, les tâches du foyer à faire, la prochaine date à préparer (avec les idées
+ * du carnet qui peuvent servir), et la série.
  * L'attention du jour est choisie une fois (au premier affichage de la journée) puis conservée dans l'historique.
  * Autour d'un temps fort (anniversaire, Saint-Valentin, Noël…), elle vient des idées de ce temps fort.
  */
@@ -47,6 +50,7 @@ class TodayViewModel
         private val attentionLog: AttentionLogRepository,
         private val taskRepository: HouseholdTaskRepository,
         private val partnerRepository: PartnerRepository,
+        private val ideaRepository: IdeaRepository,
         private val coupleProfile: CoupleProfileRepository,
         private val observeUpcomingDates: ObserveUpcomingDatesUseCase,
         private val bank: AttentionBank,
@@ -81,19 +85,24 @@ class TodayViewModel
                 taskRepository.observeAll(),
                 // Les « dans N jours » se recalculent quand le jour change.
                 day.flatMapLatest { observeUpcomingDates() },
-                combine(coupleProfile.observe(), partnerRepository.observePartner(), ::Pair),
-            ) { today, log, tasks, dates, (profile, partner) ->
+                combine(coupleProfile.observe(), partnerRepository.observePartner(), ideaRepository.observeAll(), ::Triple),
+            ) { today, log, tasks, dates, (profile, partner, ideas) ->
                 val entry = log.lastOrNull { it.date == today }
                 if (entry == null) {
                     TodayUiState.Loading
                 } else {
+                    val doneDays = log.filter { it.done }.map { it.date }.toSet()
+                    val nextDate = dates.firstOrNull { it.daysUntil <= NEXT_DATE_WINDOW_DAYS }
                     val due = TaskMath.sorted(tasks.filter { TaskMath.isDue(it, today) }, today)
                     TodayUiState.Ready(
+                        date = today,
                         attention = AttentionCard(bank.text(entry.attentionId), entry.done),
                         tasks = due.take(MAX_TASKS).map { TodayTask(it.id, it.title, TaskMath.daysOverdue(it, today)) },
                         moreTasks = (due.size - MAX_TASKS).coerceAtLeast(0),
-                        nextDate = dates.firstOrNull { it.daysUntil <= NEXT_DATE_WINDOW_DAYS },
-                        streak = StreakMath.current(log.filter { it.done }.map { it.date }.toSet(), today),
+                        nextDate = nextDate,
+                        nextDateIdeas = nextDate?.let { IdeaSuggestions.forDate(ideas, it.kind).map { idea -> idea.text } }.orEmpty(),
+                        streak = StreakMath.current(doneDays, today),
+                        week = StreakMath.week(doneDays, today),
                         suggestCoupleProfile = profile == CoupleProfile(),
                         partnerName = partner?.firstName,
                     )
