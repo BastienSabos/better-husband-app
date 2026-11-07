@@ -28,3 +28,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "better-husband"
 include(":app")
+include(":core:domain")
