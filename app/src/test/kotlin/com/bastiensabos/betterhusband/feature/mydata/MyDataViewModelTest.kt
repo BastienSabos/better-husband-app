@@ -6,6 +6,8 @@ import com.bastiensabos.betterhusband.data.repository.FakeHouseholdTaskRepositor
 import com.bastiensabos.betterhusband.data.repository.FakeIdeaRepository
 import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepository
 import com.bastiensabos.betterhusband.data.repository.FakePartnerRepository
+import com.bastiensabos.betterhusband.data.security.FakeBiometricAuthenticator
+import com.bastiensabos.betterhusband.data.security.FakeLockSettings
 import com.bastiensabos.betterhusband.data.work.FakeReminderScheduler
 import com.bastiensabos.betterhusband.domain.DeleteAllUserDataUseCase
 import com.bastiensabos.betterhusband.domain.ExportUserDataUseCase
@@ -31,13 +33,20 @@ class MyDataViewModelTest {
     private val tasks = FakeHouseholdTaskRepository()
     private val attentions = FakeAttentionLogRepository()
     private val writer = FakeDocumentWriter()
-    private val viewModel =
+    private val lockSettings = FakeLockSettings()
+    private val authenticator = FakeBiometricAuthenticator()
+
+    private fun newViewModel() =
         MyDataViewModel(
             ExportUserDataUseCase(partners, dates, ideas, tasks, attentions, clock),
             DeleteAllUserDataUseCase(partners, dates, ideas, tasks, attentions, FakeReminderScheduler()),
             writer,
+            lockSettings,
+            authenticator,
             clock,
         )
+
+    private val viewModel = newViewModel()
 
     @Test
     fun `suggested file name is dated and holds no personal data`() {
@@ -103,4 +112,39 @@ class MyDataViewModelTest {
             assertThat(partners.state.value).isNull()
             assertThat(viewModel.uiState.value).isEqualTo(MyDataUiState())
         }
+
+    @Test
+    fun `lock can be turned on and off`() {
+        viewModel.onLockChange(true)
+
+        assertThat(lockSettings.enabled.value).isTrue()
+        assertThat(viewModel.uiState.value.lockEnabled).isTrue()
+
+        viewModel.onLockChange(false)
+
+        assertThat(lockSettings.enabled.value).isFalse()
+        assertThat(viewModel.uiState.value.lockEnabled).isFalse()
+    }
+
+    @Test
+    fun `lock cannot be turned on when the phone has no screen lock`() {
+        authenticator.available = false
+        val vm = newViewModel()
+
+        vm.onLockChange(true)
+
+        assertThat(vm.uiState.value.lockAvailable).isFalse()
+        assertThat(lockSettings.enabled.value).isFalse()
+    }
+
+    @Test
+    fun `an already enabled lock can still be turned off when unavailable`() {
+        lockSettings.setEnabled(true)
+        authenticator.available = false
+        val vm = newViewModel()
+
+        vm.onLockChange(false)
+
+        assertThat(lockSettings.enabled.value).isFalse()
+    }
 }

@@ -137,4 +137,11 @@
     <string name="my_data_delete_confirm_body">Cette action est définitive : rien ne pourra être récupéré. Pense à exporter d\'abord si tu veux garder une copie.</string>
     <string name="my_data_delete_confirm_action">Tout supprimer</string>
     <string name="my_data_delete_cancel">Annuler</string>
+    <string name="lock_title">Appli verrouillée</string>
+    <string name="lock_unlock">Déverrouiller</string>
+    <string name="lock_failed">Impossible de te reconnaître. Réessaie.</string>
+    <string name="lock_prompt_title">Déverrouiller l\'appli</string>
+    <string name="my_data_lock_title">Verrouiller l\'appli</string>
+    <string name="my_data_lock_body">Empreinte, visage ou code de ton téléphone à l\'ouverture, et après une minute en arrière-plan. Les captures d\'écran sont alors bloquées.</string>
+    <string name="my_data_lock_unavailable">Ton téléphone n\'a ni empreinte, ni visage, ni code d\'écran enregistré. Ajoute-en un dans les réglages Android pour activer le verrouillage.</string>
 </resources>

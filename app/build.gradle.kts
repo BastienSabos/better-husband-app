@@ -58,6 +58,8 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
+    // Verrouillage par empreinte, visage ou code de l'appareil (BiometricPrompt, tire FragmentActivity).
+    implementation(libs.androidx.biometric)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.coroutines.android)
