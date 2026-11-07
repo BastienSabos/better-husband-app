@@ -144,6 +144,24 @@
     <string name="my_data_lock_title">Verrouiller l\'appli</string>
     <string name="my_data_lock_body">Empreinte, visage ou code de ton téléphone à l\'ouverture, et après une minute en arrière-plan. Les captures d\'écran sont alors bloquées.</string>
     <string name="my_data_lock_unavailable">Ton téléphone n\'a ni empreinte, ni visage, ni code d\'écran enregistré. Ajoute-en un dans les réglages Android pour activer le verrouillage.</string>
+    <!-- Politique de confidentialité : même contenu que docs/politique-de-confidentialite.md, au tutoiement. À mettre à jour
+         avec le document, date comprise, dès que l'appli change ce qu'elle fait des données. -->
+    <string name="my_data_privacy_action">Politique de confidentialité</string>
+    <string name="privacy_title">Politique de confidentialité</string>
+    <string name="privacy_updated">Dernière mise à jour : 7 novembre 2026.</string>
+    <string name="privacy_intro">L\'appli ne collecte aucune donnée. Voici ce qu\'elle fait de tes informations, et ce qu\'elle ne fait pas.</string>
+    <string name="privacy_collect_title">Rien n\'est collecté</string>
+    <string name="privacy_collect_body">Pas de compte, pas de pub, pas de mesure d\'audience, pas de rapport de plantage tiers. L\'appli n\'envoie rien à personne : ni la fiche de ton ou ta partenaire, ni tes idées, ni tes tâches, ni ton usage. Si tu as autorisé Android à envoyer des diagnostics à Google, le système peut lui transmettre des rapports de plantage ; l\'appli n\'y ajoute rien.</string>
+    <string name="privacy_local_title">Tes données restent sur ton téléphone</string>
+    <string name="privacy_local_body">La fiche de ton ou ta partenaire, tes dates, tes idées, tes tâches et l\'historique des attentions sont rangés dans une base chiffrée. Sa clé est protégée par le magasin de clés d\'Android et n\'est ni sauvegardée ni transférée : rien ne part dans Google Drive ni vers un autre téléphone. Les rappels sont des notifications locales, avec un texte neutre.</string>
+    <string name="privacy_export_title">Ce qui sort, seulement si tu le décides</string>
+    <string name="privacy_export_body">L\'export de tes données (Mes données › Exporter) écrit un fichier JSON à l\'endroit que tu choisis. Ce fichier n\'est pas chiffré. Il ne quitte l\'appli que par ton geste ; ce qu\'en fait ensuite le dossier ou l\'appli choisi relève de leurs propres règles.</string>
+    <string name="privacy_lock_title">Le verrouillage</string>
+    <string name="privacy_lock_body">Si tu l\'actives, l\'appli s\'ouvre avec l\'empreinte, le visage ou le code de ton téléphone, au lancement puis après une minute en arrière-plan. L\'aperçu des applis récentes et les captures d\'écran sont alors bloqués. Quelqu\'un qui connaît le code de ton téléphone peut ouvrir l\'appli.</string>
+    <string name="privacy_erase_title">Effacer tes données</string>
+    <string name="privacy_erase_body">Mes données › Supprimer toutes mes données efface la fiche, les dates, les idées, les tâches, l\'historique et les rappels, puis ramène l\'appli à son premier lancement. Désinstaller l\'appli a le même effet. Les fichiers que tu as exportés restent où tu les as enregistrés : c\'est à toi de les supprimer.</string>
+    <string name="privacy_third_title">Une donnée sur un tiers</string>
+    <string name="privacy_third_body">La fiche de ton ou ta partenaire concerne une autre personne. Elle reste chez toi, dans ton téléphone, et n\'est montrée à personne. Ne note que ce que tu serais à l\'aise de lui montrer.</string>
     <string name="today_open_couple">Notre couple</string>
     <string name="today_couple_prompt_title">Des idées qui vous ressemblent</string>
     <string name="today_couple_prompt_body">Quelques réponses rapides, et les attentions du jour tiendront compte de ta situation.</string>

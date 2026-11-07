@@ -22,6 +22,7 @@ import com.bastiensabos.betterhusband.feature.dates.DatesRoute
 import com.bastiensabos.betterhusband.feature.ideas.IdeasRoute
 import com.bastiensabos.betterhusband.feature.lock.LockRoute
 import com.bastiensabos.betterhusband.feature.mydata.MyDataRoute
+import com.bastiensabos.betterhusband.feature.mydata.PrivacyPolicyScreen
 import com.bastiensabos.betterhusband.feature.onboarding.OnboardingRoute
 import com.bastiensabos.betterhusband.feature.partner.PartnerProfileRoute
 import com.bastiensabos.betterhusband.feature.tasks.TasksRoute
@@ -31,7 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /** Navigation à plat tant qu'il n'y a que quelques écrans ; Navigation Compose viendra avec les onglets. */
-private enum class Destination { TODAY, PARTNER, DATES, IDEAS, TASKS, MY_DATA, COUPLE }
+private enum class Destination { TODAY, PARTNER, DATES, IDEAS, TASKS, MY_DATA, PRIVACY, COUPLE }
 
 // FragmentActivity (et non ComponentActivity) : BiometricPrompt l'exige.
 @AndroidEntryPoint
@@ -95,7 +96,9 @@ private fun AppContent(state: AppUiState) {
 
         AppUiState.Ready -> {
             var destination by rememberSaveable { mutableStateOf(Destination.TODAY) }
-            BackHandler(enabled = destination != Destination.TODAY) { destination = Destination.TODAY }
+            BackHandler(enabled = destination != Destination.TODAY) {
+                destination = if (destination == Destination.PRIVACY) Destination.MY_DATA else Destination.TODAY
+            }
             when (destination) {
                 Destination.TODAY -> {
                     TodayRoute(
@@ -125,7 +128,14 @@ private fun AppContent(state: AppUiState) {
                 }
 
                 Destination.MY_DATA -> {
-                    MyDataRoute(onBack = { destination = Destination.TODAY })
+                    MyDataRoute(
+                        onBack = { destination = Destination.TODAY },
+                        onOpenPrivacy = { destination = Destination.PRIVACY },
+                    )
+                }
+
+                Destination.PRIVACY -> {
+                    PrivacyPolicyScreen(onBack = { destination = Destination.MY_DATA })
                 }
 
                 Destination.COUPLE -> {

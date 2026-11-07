@@ -187,6 +187,19 @@ class ConventionsTest {
         assertTrue("listes de la banque jamais lues : $unread", unread.isEmpty())
     }
 
+    @Test
+    fun `la politique de confidentialite de l'appli porte la meme date que le document publie`() {
+        val doc = File(root, "docs/politique-de-confidentialite.md").readText()
+        val strings = File(root, "app/src/main/res/values/strings.xml").readText()
+        val published = Regex("""Dernière mise à jour : ([^.\n]+)\.""").find(doc)?.groupValues?.get(1)
+        val inApp =
+            Regex(
+                """<string name="privacy_updated">Dernière mise à jour : ([^.<]+)\.</string>""",
+            ).find(strings)?.groupValues?.get(1)
+        assertTrue("date introuvable (document : $published, appli : $inApp)", published != null && inApp != null)
+        assertTrue("date différente : document $published, appli $inApp", published == inApp)
+    }
+
     /** Sans les commentaires ni la documentation, qui peuvent citer ces mots sans les employer. */
     private fun codeWithoutComments(text: String) =
         text
