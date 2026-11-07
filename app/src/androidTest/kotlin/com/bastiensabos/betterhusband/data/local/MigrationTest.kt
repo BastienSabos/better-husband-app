@@ -79,6 +79,19 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun migrate5To6AddsAttentionLog() {
+        helper.createDatabase(DB_NAME, 5).close()
+
+        val db = helper.runMigrationsAndValidate(DB_NAME, 6, true, MIGRATION_5_6)
+
+        db.execSQL("INSERT INTO attention_log (date, attention_id, done) VALUES ('2027-01-20', 12, 0)")
+        db.query("SELECT COUNT(*) FROM attention_log").use {
+            it.moveToFirst()
+            assertThat(it.getInt(0)).isEqualTo(1)
+        }
+    }
+
     private companion object {
         const val DB_NAME = "migration-test"
     }
