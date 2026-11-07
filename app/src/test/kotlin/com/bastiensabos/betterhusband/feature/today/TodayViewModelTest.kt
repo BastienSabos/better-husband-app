@@ -342,4 +342,28 @@ class TodayViewModelTest {
 
         assertThat(viewModel(clock = clock).millisUntilNextDay()).isEqualTo(60_000L)
     }
+
+    @Test
+    fun `a task checked by mistake comes back with undo`() =
+        runTest {
+            val id = tasks.save(HouseholdTask(title = "Linge", repeat = TaskRepeat.WEEKLY, createdOn = today.minusDays(3)))
+            val viewModel = viewModel()
+            collectState(viewModel)
+
+            viewModel.onTaskDone(id)
+            advanceUntilIdle()
+            assertThat(viewModel.ready().tasks).isEmpty()
+            assertThat(viewModel.ready().undo).isNotNull()
+
+            viewModel.onUndo()
+            advanceUntilIdle()
+
+            assertThat(
+                tasks.state.value
+                    .single()
+                    .lastDoneOn,
+            ).isNull()
+            assertThat(viewModel.ready().tasks.map { it.id }).containsExactly(id)
+            assertThat(viewModel.ready().undo).isNull()
+        }
 }

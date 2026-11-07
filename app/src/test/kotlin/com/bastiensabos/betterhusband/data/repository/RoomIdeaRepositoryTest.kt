@@ -7,6 +7,7 @@ import com.bastiensabos.betterhusband.domain.model.IdeaCategory
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import java.time.Clock
@@ -69,7 +70,8 @@ class RoomIdeaRepositoryTest {
         override fun observeAll(): Flow<List<IdeaEntity>> = state
 
         override suspend fun insert(entity: IdeaEntity): Long {
-            val id = nextId++
+            // Comme Room : un identifiant fourni est gardé (restauration), sinon le suivant.
+            val id = if (entity.id != 0L) entity.id else nextId++
             state.value = state.value + entity.copy(id = id)
             return id
         }
@@ -97,4 +99,17 @@ class RoomIdeaRepositoryTest {
             state.value = emptyList()
         }
     }
+
+    @Test
+    fun `restore puts back the idea with its id, date and state`() =
+        runTest {
+            val id = repository.add("Pivoines", IdeaCategory.GIFT)
+            repository.setDone(id, true)
+            val idea = repository.observeAll().first().single()
+
+            repository.delete(id)
+            repository.restore(idea)
+
+            assertThat(repository.observeAll().first()).containsExactly(idea)
+        }
 }

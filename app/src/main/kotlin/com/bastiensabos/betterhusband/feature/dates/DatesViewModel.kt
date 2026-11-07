@@ -2,10 +2,12 @@ package com.bastiensabos.betterhusband.feature.dates
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.data.repository.ImportantDateRepository
 import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
 import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
+import com.bastiensabos.betterhusband.ui.component.UndoNotice
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,12 +33,17 @@ class DatesViewModel
         private val importantDateRepository: ImportantDateRepository,
     ) : ViewModel() {
         private val editor = MutableStateFlow<DateEditorState?>(null)
+        private val undo = MutableStateFlow<UndoNotice?>(null)
+
+        /** La dernière date supprimée, tant que « Annuler » est proposé. */
+        private var deleted: ImportantDate? = null
 
         val uiState: StateFlow<DatesUiState> =
             combine(
                 observeUpcomingDates().map { if (it.isEmpty()) DatesListState.Empty else DatesListState.Ready(it) },
                 editor,
-            ) { list, editorState -> DatesUiState(list, editorState) }
+                undo,
+            ) { list, editorState, undoNotice -> DatesUiState(list, editorState, undoNotice) }
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), DatesUiState())
 
         fun onAddClick() {
@@ -80,12 +87,27 @@ class DatesViewModel
             }
         }
 
+        /** Supprime tout de suite (rappels compris), et garde la date le temps du bandeau « Annuler ». */
         fun onDelete() {
             val id = editor.value?.editingId ?: return
             viewModelScope.launch {
+                deleted = importantDateRepository.observeAll().first().firstOrNull { it.id == id }
                 importantDateRepository.delete(id)
                 editor.value = null
+                undo.value = UndoNotice(R.string.dates_deleted, id)
             }
+        }
+
+        fun onUndo() {
+            val date = deleted ?: return
+            deleted = null
+            undo.value = null
+            viewModelScope.launch { importantDateRepository.save(date) }
+        }
+
+        fun onUndoDismissed() {
+            deleted = null
+            undo.value = null
         }
 
         private companion object {

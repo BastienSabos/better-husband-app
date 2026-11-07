@@ -2,6 +2,7 @@ package com.bastiensabos.betterhusband.feature.tasks
 
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
+import com.bastiensabos.betterhusband.ui.component.UndoNotice
 
 /**
  * Une tâche prête à afficher. [daysUntilDue] est négatif quand la tâche est en retard, 0 le jour même ;
@@ -38,6 +39,8 @@ data class TasksUiState(
     /** Rythme de la prochaine tâche ; il reste celui de la dernière saisie pour enchaîner vite. */
     val draftRepeat: TaskRepeat = TaskRepeat.WEEKLY,
     val editor: TaskEditorState? = null,
+    /** Tâche qui vient d'être supprimée, encore récupérable. */
+    val undo: UndoNotice? = null,
 ) {
     val canAdd: Boolean get() = draft.isNotBlank()
 }

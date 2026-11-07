@@ -31,10 +31,13 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -52,6 +55,7 @@ import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
 import com.bastiensabos.betterhusband.ui.component.Heading
+import com.bastiensabos.betterhusband.ui.component.UndoSnackbarEffect
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
 import java.time.LocalDate
@@ -67,6 +71,8 @@ data class TasksActions(
     val onSaveEditor: () -> Unit,
     val onDeleteEditor: () -> Unit,
     val onDismissEditor: () -> Unit,
+    val onUndo: () -> Unit = {},
+    val onUndoDismissed: () -> Unit = {},
 )
 
 @Composable
@@ -89,6 +95,8 @@ fun TasksRoute(
                 onSaveEditor = viewModel::onSaveEditor,
                 onDeleteEditor = viewModel::onDeleteEditor,
                 onDismissEditor = viewModel::onDismissEditor,
+                onUndo = viewModel::onUndo,
+                onUndoDismissed = viewModel::onUndoDismissed,
             ),
         modifier = modifier,
     )
@@ -101,7 +109,9 @@ fun TasksScreen(
     modifier: Modifier = Modifier,
 ) {
     val spacing = Spacing()
-    Scaffold(modifier = modifier) { padding ->
+    val snackbar = remember { SnackbarHostState() }
+    UndoSnackbarEffect(uiState.undo, snackbar, onUndo = actions.onUndo, onDismiss = actions.onUndoDismissed)
+    Scaffold(modifier = modifier, snackbarHost = { SnackbarHost(snackbar) }) { padding ->
         // Une seule liste qui défile : en police agrandie, l'ajout et les tâches restent tous accessibles.
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),

@@ -2,10 +2,12 @@ package com.bastiensabos.betterhusband.feature.tasks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.data.repository.HouseholdTaskRepository
 import com.bastiensabos.betterhusband.domain.TaskMath
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
+import com.bastiensabos.betterhusband.ui.component.UndoNotice
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,6 +29,9 @@ class TasksViewModel
         private val clock: Clock,
     ) : ViewModel() {
         private val local = MutableStateFlow(TasksUiState())
+
+        /** La dernière tâche supprimée, tant que « Annuler » est proposé. */
+        private var deleted: HouseholdTask? = null
 
         val uiState: StateFlow<TasksUiState> =
             combine(repository.observeAll(), local) { tasks, state ->
@@ -86,12 +91,26 @@ class TasksViewModel
             }
         }
 
+        /** Supprime tout de suite, et garde la tâche (rythme, dernière fois faite) le temps du bandeau « Annuler ». */
         fun onDeleteEditor() {
             val editor = local.value.editor ?: return
+            deleted = editor.task
             viewModelScope.launch {
                 repository.delete(editor.task.id)
-                local.update { it.copy(editor = null) }
+                local.update { it.copy(editor = null, undo = UndoNotice(R.string.tasks_deleted, editor.task.id)) }
             }
+        }
+
+        fun onUndo() {
+            val task = deleted ?: return
+            deleted = null
+            local.update { it.copy(undo = null) }
+            viewModelScope.launch { repository.save(task) }
+        }
+
+        fun onUndoDismissed() {
+            deleted = null
+            local.update { it.copy(undo = null) }
         }
 
         private companion object {

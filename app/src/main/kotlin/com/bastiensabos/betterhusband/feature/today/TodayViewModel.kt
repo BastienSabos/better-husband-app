@@ -2,6 +2,7 @@ package com.bastiensabos.betterhusband.feature.today
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.data.repository.AttentionBank
 import com.bastiensabos.betterhusband.data.repository.AttentionLogRepository
 import com.bastiensabos.betterhusband.data.repository.CoupleProfileRepository
@@ -19,6 +20,10 @@ import com.bastiensabos.betterhusband.domain.StreakMath
 import com.bastiensabos.betterhusband.domain.TaskMath
 import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
+import com.bastiensabos.betterhusband.domain.model.HouseholdTask
+import com.bastiensabos.betterhusband.domain.model.Idea
+import com.bastiensabos.betterhusband.domain.model.Partner
+import com.bastiensabos.betterhusband.ui.component.UndoNotice
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,6 +70,11 @@ class TodayViewModel
          */
         private val day = MutableStateFlow(LocalDate.now(clock))
 
+        private val undo = MutableStateFlow<UndoNotice?>(null)
+
+        /** La tâche telle qu'elle était avant d'être cochée, tant que « Annuler » est proposé. */
+        private var checkedTask: HouseholdTask? = null
+
         init {
             viewModelScope.launch {
                 day.collectLatest { today ->
@@ -85,8 +95,13 @@ class TodayViewModel
                 taskRepository.observeAll(),
                 // Les « dans N jours » se recalculent quand le jour change.
                 day.flatMapLatest { observeUpcomingDates() },
-                combine(coupleProfile.observe(), partnerRepository.observePartner(), ideaRepository.observeAll(), ::Triple),
-            ) { today, log, tasks, dates, (profile, partner, ideas) ->
+                combine(
+                    coupleProfile.observe(),
+                    partnerRepository.observePartner(),
+                    ideaRepository.observeAll(),
+                    undo,
+                ) { profile, partner, ideas, undoNotice -> Extras(profile, partner, ideas, undoNotice) },
+            ) { today, log, tasks, dates, (profile, partner, ideas, undoNotice) ->
                 val entry = log.lastOrNull { it.date == today }
                 if (entry == null) {
                     TodayUiState.Loading
@@ -105,6 +120,7 @@ class TodayViewModel
                         week = StreakMath.week(doneDays, today),
                         suggestCoupleProfile = profile == CoupleProfile(),
                         partnerName = partner?.firstName,
+                        undo = undoNotice,
                     )
                 }
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), TodayUiState.Loading)
@@ -142,7 +158,24 @@ class TodayViewModel
 
         fun onTaskDone(id: Long) {
             refreshDay()
-            viewModelScope.launch { taskRepository.setLastDone(id, day.value) }
+            viewModelScope.launch {
+                checkedTask = taskRepository.observeAll().first().firstOrNull { it.id == id }
+                taskRepository.setLastDone(id, day.value)
+                undo.value = UndoNotice(R.string.today_task_done, id)
+            }
+        }
+
+        /** Décoche la tâche : elle retrouve sa dernière date faite, donc revient dans la liste. */
+        fun onUndo() {
+            val task = checkedTask ?: return
+            checkedTask = null
+            undo.value = null
+            viewModelScope.launch { taskRepository.save(task) }
+        }
+
+        fun onUndoDismissed() {
+            checkedTask = null
+            undo.value = null
         }
 
         private suspend fun pickFor(
@@ -176,6 +209,13 @@ class TodayViewModel
             val eligible = AttentionCatalog.eligibleIds(bank.groupSizes, context)
             return eligible.ifEmpty { (0 until (bank.groupSizes[AttentionGroup.EVERYONE] ?: 0)).toList() }
         }
+
+        private data class Extras(
+            val profile: CoupleProfile,
+            val partner: Partner?,
+            val ideas: List<Idea>,
+            val undo: UndoNotice?,
+        )
 
         private companion object {
             const val STOP_TIMEOUT_MS = 5_000L

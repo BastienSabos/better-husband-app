@@ -146,4 +146,42 @@ class IdeasViewModelTest {
             assertThat(repository.state.value.none { it.id == id }).isTrue()
             assertThat(viewModel.uiState.value.editor).isNull()
         }
+
+    @Test
+    fun `a deleted idea comes back as it was with undo`() =
+        runTest {
+            val id = repository.add("Pivoines", IdeaCategory.GIFT)
+            repository.setDone(id, true)
+            val before = repository.state.value.single()
+            collectState()
+
+            viewModel.onEdit(before)
+            viewModel.onDeleteEditor()
+            advanceUntilIdle()
+            assertThat(repository.state.value).isEmpty()
+            assertThat(viewModel.uiState.value.undo).isNotNull()
+
+            viewModel.onUndo()
+            advanceUntilIdle()
+
+            assertThat(repository.state.value).containsExactly(before)
+            assertThat(viewModel.uiState.value.undo).isNull()
+        }
+
+    @Test
+    fun `once the undo banner is gone the deletion stays`() =
+        runTest {
+            repository.add("Resto", IdeaCategory.OUTING)
+            collectState()
+            viewModel.onEdit(repository.state.value.single())
+            viewModel.onDeleteEditor()
+            advanceUntilIdle()
+
+            viewModel.onUndoDismissed()
+            viewModel.onUndo()
+            advanceUntilIdle()
+
+            assertThat(repository.state.value).isEmpty()
+            assertThat(viewModel.uiState.value.undo).isNull()
+        }
 }

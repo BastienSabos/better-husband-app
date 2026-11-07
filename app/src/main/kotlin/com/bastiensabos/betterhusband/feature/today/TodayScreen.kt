@@ -40,6 +40,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -69,6 +71,7 @@ import com.bastiensabos.betterhusband.domain.model.UpcomingDate
 import com.bastiensabos.betterhusband.feature.dates.daysUntilText
 import com.bastiensabos.betterhusband.feature.dates.text
 import com.bastiensabos.betterhusband.ui.component.Heading
+import com.bastiensabos.betterhusband.ui.component.UndoSnackbarEffect
 import com.bastiensabos.betterhusband.ui.theme.AppTheme
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
@@ -87,6 +90,8 @@ data class TodayActions(
     val onOpenTasks: () -> Unit,
     val onOpenSettings: () -> Unit,
     val onOpenCoupleProfile: () -> Unit,
+    val onUndo: () -> Unit = {},
+    val onUndoDismissed: () -> Unit = {},
 )
 
 /** Point d'entrée « stateful » : branche le ViewModel. */
@@ -124,6 +129,8 @@ fun TodayRoute(
                 onOpenTasks = onOpenTasks,
                 onOpenSettings = onOpenSettings,
                 onOpenCoupleProfile = onOpenCoupleProfile,
+                onUndo = viewModel::onUndo,
+                onUndoDismissed = viewModel::onUndoDismissed,
             ),
         modifier = modifier,
     )
@@ -137,7 +144,9 @@ fun TodayScreen(
     modifier: Modifier = Modifier,
 ) {
     val spacing = Spacing()
-    Scaffold(modifier = modifier) { padding ->
+    val snackbar = remember { SnackbarHostState() }
+    UndoSnackbarEffect((uiState as? TodayUiState.Ready)?.undo, snackbar, onUndo = actions.onUndo, onDismiss = actions.onUndoDismissed)
+    Scaffold(modifier = modifier, snackbarHost = { SnackbarHost(snackbar) }) { padding ->
         Column(
             modifier =
                 Modifier

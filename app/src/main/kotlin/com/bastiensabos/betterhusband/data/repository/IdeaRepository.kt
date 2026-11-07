@@ -38,6 +38,9 @@ interface IdeaRepository {
 
     suspend fun delete(id: Long)
 
+    /** Remet une idée supprimée telle qu'elle était (même identifiant, même date, même état) : « Annuler ». */
+    suspend fun restore(idea: Idea)
+
     suspend fun deleteAll()
 }
 
@@ -70,6 +73,18 @@ class RoomIdeaRepository
         ) = dao.setDone(id, done)
 
         override suspend fun delete(id: Long) = dao.delete(id)
+
+        override suspend fun restore(idea: Idea) {
+            dao.insert(
+                IdeaEntity(
+                    id = idea.id,
+                    text = idea.text,
+                    category = idea.category.name,
+                    createdAt = idea.createdAt.toEpochMilli(),
+                    done = idea.done,
+                ),
+            )
+        }
 
         override suspend fun deleteAll() = dao.deleteAll()
     }

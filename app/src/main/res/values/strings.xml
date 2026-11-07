@@ -228,4 +228,9 @@
     <string name="settings_title">Réglages</string>
     <string name="settings_couple_body">Enfants, vie commune, budget, envies : pour des idées qui vous ressemblent.</string>
     <string name="settings_my_data_body">Verrouillage, export et suppression de tes données.</string>
+    <string name="undo">Annuler</string>
+    <string name="ideas_deleted">Idée supprimée</string>
+    <string name="dates_deleted">Date supprimée</string>
+    <string name="tasks_deleted">Tâche supprimée</string>
+    <string name="today_task_done">Tâche faite</string>
 </resources>
