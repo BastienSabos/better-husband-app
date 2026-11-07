@@ -42,7 +42,20 @@ class ResourceAttentionBank
 
         private companion object {
             /** Les groupes déjà écrits ; les autres arrivent avec leurs textes. */
-            val ARRAYS = mapOf(AttentionGroup.EVERYONE to R.array.attention_bank)
+            val ARRAYS =
+                mapOf(
+                    AttentionGroup.EVERYONE to R.array.attention_bank,
+                    AttentionGroup.IN_PERSON to R.array.attention_bank_in_person,
+                    AttentionGroup.TOGETHER to R.array.attention_bank_together,
+                    AttentionGroup.APART to R.array.attention_bank_apart,
+                    AttentionGroup.LONG_DISTANCE to R.array.attention_bank_long_distance,
+                    AttentionGroup.NO_KIDS to R.array.attention_bank_no_kids,
+                    AttentionGroup.KIDS to R.array.attention_bank_kids,
+                    AttentionGroup.YOUNG_KIDS to R.array.attention_bank_young_kids,
+                    AttentionGroup.TEENS to R.array.attention_bank_teens,
+                    AttentionGroup.NEW_COUPLE to R.array.attention_bank_new_couple,
+                    AttentionGroup.LONG_COUPLE to R.array.attention_bank_long_couple,
+                )
         }
     }
 
