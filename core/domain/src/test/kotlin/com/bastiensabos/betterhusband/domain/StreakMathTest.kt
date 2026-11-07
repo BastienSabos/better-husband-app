@@ -40,4 +40,21 @@ class StreakMathTest {
         assertThat(StreakMath.best(days(0, 1, 5, 6, 7, 8, 12))).isEqualTo(4)
         assertThat(StreakMath.best(days(3))).isEqualTo(1)
     }
+
+    @Test
+    fun `week runs from monday to sunday and marks the days done`() {
+        // 2027-01-20 est un mercredi : lundi 18 et mercredi 20 faits, mardi manqué, le reste à venir.
+        val week = StreakMath.week(days(0, 2, 9), today)
+
+        assertThat(week).containsExactly(true, false, true, false, false, false, false).inOrder()
+    }
+
+    @Test
+    fun `week of a sunday still starts on the monday before`() {
+        val sunday = LocalDate.of(2027, 1, 24)
+
+        assertThat(StreakMath.week(setOf(sunday, LocalDate.of(2027, 1, 18)), sunday))
+            .containsExactly(true, false, false, false, false, false, true)
+            .inOrder()
+    }
 }

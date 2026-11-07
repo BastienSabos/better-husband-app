@@ -153,7 +153,7 @@ private fun AppNavHost(nav: NavHostController) {
         composable(Routes.TODAY) {
             TodayRoute(
                 onOpenPartner = { nav.navigate(Routes.PARTNER) },
-                onOpenDates = { nav.openTopLevel(Routes.DATES) },
+                onOpenIdeas = { nav.openTopLevel(Routes.IDEAS) },
                 onOpenTasks = { nav.openTopLevel(Routes.TASKS) },
                 onOpenSettings = { nav.navigate(Routes.SETTINGS) },
                 onOpenCoupleProfile = { nav.navigate(Routes.COUPLE) },

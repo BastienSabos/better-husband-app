@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.data.security.BiometricAuthenticator
@@ -42,6 +43,8 @@ class MainActivity : FragmentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Avant super.onCreate : l'écran de démarrage reste tant que l'on ne sait pas quoi afficher (base chiffrée).
+        installSplashScreen().setKeepOnScreenCondition { appViewModel.uiState.value == AppUiState.Loading }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -71,7 +74,7 @@ class MainActivity : FragmentActivity() {
 @Composable
 private fun AppContent(state: AppUiState) {
     when (state) {
-        // Rien tant que la base n'est pas lue : évite de faire clignoter l'onboarding.
+        // Rien tant que la base n'est pas lue : l'écran de démarrage reste affiché, sans clignotement d'onboarding.
         AppUiState.Loading -> {
             Unit
         }
