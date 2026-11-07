@@ -171,10 +171,25 @@ class ConventionsTest {
         assertTrue("doublons dans la banque", items.toSet().size == items.size)
         val tooLong = items.filter { it.split(" ").size > 16 }
         assertTrue("plus de 16 mots : $tooLong", tooLong.isEmpty())
-        val gendered = items.filter { forbidden.containsMatchIn(it) || masculineLui.containsMatchIn(it) }
+        val neutral = itemsOutside(resource, GENDERED_ARRAYS.keys)
+        val gendered = neutral.filter { forbidden.containsMatchIn(it) || masculineLui.containsMatchIn(it) }
         assertTrue("genre présupposé : $gendered", gendered.isEmpty())
         val unfinished = items.filterNot { it.endsWith(".") }
         assertTrue("sans point final : $unfinished", unfinished.isEmpty())
+    }
+
+    // Seules exceptions au neutre : les listes écrites pour « mon partenaire » ou « ma partenaire » (AddressForm). Elles
+    // s'accordent au genre choisi, jamais à l'autre, et ne présupposent pas plus qu'ailleurs le statut du couple.
+    @Test
+    fun `les attentions accordees au genre du partenaire ne glissent pas vers l'autre genre`() {
+        val resource = File(root, "app/src/main/res/values/attentions.xml").readText()
+        val status = wordOf("mari|femme|époux|épouse|mariage")
+        GENDERED_ARRAYS.forEach { (array, otherGender) ->
+            val items = arrayItems(resource, array)
+            val wrong = items.filter { wordOf(otherGender).containsMatchIn(it) || status.containsMatchIn(it) }
+            assertTrue("$array : liste vide", items.isNotEmpty())
+            assertTrue("$array : autre genre ou statut présupposé : $wrong", wrong.isEmpty())
+        }
     }
 
     @Test
@@ -206,4 +221,38 @@ class ConventionsTest {
             .replace(Regex("""/\*.*?\*/""", RegexOption.DOT_MATCHES_ALL), "")
             .lines()
             .joinToString("\n") { it.substringBefore("//") }
+
+    private companion object {
+        /** Liste accordée au genre du ou de la partenaire → mots de l'autre genre, interdits dedans. */
+        val GENDERED_ARRAYS =
+            mapOf(
+                "attention_bank_partner_masculine" to "elle|elles|fière|heureuse|seule|prête|aimée|choisie",
+                "attention_bank_partner_feminine" to "il|ils|fier|heureux|seul|prêt|aimé|choisi",
+            )
+
+        fun wordOf(alternatives: String) = Regex("""(?<![\p{L}])($alternatives)(?![\p{L}])""", RegexOption.IGNORE_CASE)
+
+        val ARRAY = Regex("""<string-array name="(\w+)">(.*?)</string-array>""", RegexOption.DOT_MATCHES_ALL)
+        val ITEM = Regex("""<item>(.*?)</item>""")
+
+        fun arrayItems(
+            resource: String,
+            array: String,
+        ): List<String> =
+            ARRAY
+                .findAll(resource)
+                .filter { it.groupValues[1] == array }
+                .flatMap { ITEM.findAll(it.groupValues[2]).map { item -> item.groupValues[1] } }
+                .toList()
+
+        fun itemsOutside(
+            resource: String,
+            excluded: Set<String>,
+        ): List<String> =
+            ARRAY
+                .findAll(resource)
+                .filter { it.groupValues[1] !in excluded }
+                .flatMap { ITEM.findAll(it.groupValues[2]).map { item -> item.groupValues[1] } }
+                .toList()
+    }
 }

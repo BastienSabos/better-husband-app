@@ -4,6 +4,7 @@ import com.bastiensabos.betterhusband.data.local.dao.CoupleProfileDao
 import com.bastiensabos.betterhusband.data.local.entity.CoupleProfileEntity
 import com.bastiensabos.betterhusband.domain.model.Budget
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
+import com.bastiensabos.betterhusband.domain.model.FamilySituation
 import com.bastiensabos.betterhusband.domain.model.Interest
 import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LifeRhythm
@@ -49,6 +50,7 @@ internal fun CoupleProfileEntity.toDomain() =
         budget = budget.toEnumOrNull<Budget>(),
         rhythm = rhythm.toEnumOrNull<LifeRhythm>(),
         interests = interests.split(',').mapNotNull { it.toEnumOrNull<Interest>() }.toSet(),
+        family = family.split(',').mapNotNull { it.toEnumOrNull<FamilySituation>() }.toSet(),
     )
 
 internal fun CoupleProfile.toEntity() =
@@ -58,6 +60,7 @@ internal fun CoupleProfile.toEntity() =
         budget = budget?.name,
         rhythm = rhythm?.name,
         interests = interests.map { it.name }.sorted().joinToString(","),
+        family = family.map { it.name }.sorted().joinToString(","),
     )
 
 @Module

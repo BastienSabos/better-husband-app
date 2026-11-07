@@ -40,6 +40,7 @@ object DataExport {
                     "budget" to coupleProfile.budget?.name,
                     "rhythm" to coupleProfile.rhythm?.name,
                     "interests" to coupleProfile.interests.map { it.name }.sorted(),
+                    "family" to coupleProfile.family.map { it.name }.sorted(),
                 ),
             "importantDates" to
                 dates.map {

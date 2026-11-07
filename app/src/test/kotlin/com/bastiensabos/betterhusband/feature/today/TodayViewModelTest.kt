@@ -9,6 +9,7 @@ import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepositor
 import com.bastiensabos.betterhusband.data.repository.FakePartnerRepository
 import com.bastiensabos.betterhusband.domain.AttentionGroup
 import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
+import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
 import com.bastiensabos.betterhusband.domain.model.DateKind
@@ -17,6 +18,7 @@ import com.bastiensabos.betterhusband.domain.model.IdeaCategory
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
 import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LivingArrangement
+import com.bastiensabos.betterhusband.domain.model.Partner
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
 import com.bastiensabos.betterhusband.testutil.MainDispatcherRule
 import com.bastiensabos.betterhusband.testutil.MutableClock
@@ -46,10 +48,11 @@ class TodayViewModelTest {
     private fun viewModel(
         bank: FakeAttentionBank = FakeAttentionBank(),
         clock: Clock = this.clock,
+        partner: Partner? = null,
     ) = TodayViewModel(
         attentionLog = log,
         taskRepository = tasks,
-        partnerRepository = FakePartnerRepository(),
+        partnerRepository = FakePartnerRepository(partner),
         ideaRepository = ideas,
         coupleProfile = coupleProfile,
         observeUpcomingDates = ObserveUpcomingDatesUseCase(FakePartnerRepository(), dates, clock),
@@ -275,6 +278,25 @@ class TodayViewModelTest {
                         .attentionId,
                 ),
             ).isEqualTo(AttentionGroup.LONG_DISTANCE)
+        }
+
+    @Test
+    fun `a partner spoken of in the feminine gets attentions written for her`() =
+        runTest {
+            val bank =
+                FakeAttentionBank(
+                    mapOf(AttentionGroup.EVERYONE to 0, AttentionGroup.PARTNER_FEMININE to 3, AttentionGroup.PARTNER_MASCULINE to 3),
+                )
+            val viewModel = viewModel(bank, partner = Partner(firstName = "Camille", addressForm = AddressForm.FEMININE))
+            collectState(viewModel)
+
+            assertThat(
+                AttentionGroup.of(
+                    log.state.value
+                        .single()
+                        .attentionId,
+                ),
+            ).isEqualTo(AttentionGroup.PARTNER_FEMININE)
         }
 
     @Test

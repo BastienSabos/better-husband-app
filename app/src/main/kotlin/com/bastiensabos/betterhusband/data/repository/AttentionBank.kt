@@ -46,6 +46,10 @@ class ResourceAttentionBank
                 mapOf(
                     AttentionGroup.EVERYONE to R.array.attention_bank,
                     AttentionGroup.IN_PERSON to R.array.attention_bank_in_person,
+                    AttentionGroup.PARTNER_MASCULINE to R.array.attention_bank_partner_masculine,
+                    AttentionGroup.PARTNER_FEMININE to R.array.attention_bank_partner_feminine,
+                    AttentionGroup.STEPFAMILY to R.array.attention_bank_stepfamily,
+                    AttentionGroup.SHARED_CUSTODY to R.array.attention_bank_shared_custody,
                     AttentionGroup.TOGETHER to R.array.attention_bank_together,
                     AttentionGroup.APART to R.array.attention_bank_apart,
                     AttentionGroup.LONG_DISTANCE to R.array.attention_bank_long_distance,

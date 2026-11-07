@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.domain.model.Budget
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
+import com.bastiensabos.betterhusband.domain.model.FamilySituation
 import com.bastiensabos.betterhusband.domain.model.Interest
 import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LifeRhythm
@@ -42,6 +43,7 @@ import com.bastiensabos.betterhusband.ui.theme.Spacing
 data class CoupleProfileActions(
     val onBack: () -> Unit,
     val onKidsChange: (KidsAtHome) -> Unit,
+    val onFamilyToggle: (FamilySituation) -> Unit,
     val onLivingChange: (LivingArrangement) -> Unit,
     val onBudgetChange: (Budget) -> Unit,
     val onRhythmChange: (LifeRhythm) -> Unit,
@@ -64,6 +66,7 @@ fun CoupleProfileRoute(
             CoupleProfileActions(
                 onBack = onFinish,
                 onKidsChange = viewModel::onKidsChange,
+                onFamilyToggle = viewModel::onFamilyToggle,
                 onLivingChange = viewModel::onLivingChange,
                 onBudgetChange = viewModel::onBudgetChange,
                 onRhythmChange = viewModel::onRhythmChange,
@@ -117,6 +120,9 @@ private fun ProfileQuestions(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(Spacing().md)) {
         Question(R.string.couple_kids_title, KidsAtHome.entries, { it == profile.kids }, actions.onKidsChange) { it.labelRes() }
+        Question(R.string.couple_family_title, FamilySituation.entries, { it in profile.family }, actions.onFamilyToggle) {
+            it.labelRes()
+        }
         Question(R.string.couple_living_title, LivingArrangement.entries, { it == profile.living }, actions.onLivingChange) {
             it.labelRes()
         }
@@ -166,6 +172,13 @@ private fun KidsAtHome.labelRes(): Int =
     }
 
 @StringRes
+private fun FamilySituation.labelRes(): Int =
+    when (this) {
+        FamilySituation.STEPFAMILY -> R.string.couple_family_stepfamily
+        FamilySituation.SHARED_CUSTODY -> R.string.couple_family_shared_custody
+    }
+
+@StringRes
 private fun LivingArrangement.labelRes(): Int =
     when (this) {
         LivingArrangement.TOGETHER -> R.string.couple_living_together
@@ -204,7 +217,7 @@ private fun Interest.labelRes(): Int =
         Interest.WELLBEING -> R.string.couple_interest_wellbeing
     }
 
-private val previewActions = CoupleProfileActions({}, {}, {}, {}, {}, {}, {})
+private val previewActions = CoupleProfileActions({}, {}, {}, {}, {}, {}, {}, {})
 
 @Preview(showBackground = true)
 @Composable
@@ -221,6 +234,7 @@ private fun CoupleProfileFilledPreview() {
         val profile =
             CoupleProfile(
                 kids = KidsAtHome.YOUNG,
+                family = setOf(FamilySituation.STEPFAMILY),
                 living = LivingArrangement.TOGETHER,
                 budget = Budget.MODERATE,
                 interests = setOf(Interest.NATURE, Interest.COOKING),

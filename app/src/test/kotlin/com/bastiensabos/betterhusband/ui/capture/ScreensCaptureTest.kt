@@ -184,7 +184,7 @@ class ScreensCaptureTest {
     @Test
     fun couple() =
         compose.captureScreen("couple") {
-            CoupleProfileScreen(CoupleProfileUiState(loading = false), CoupleProfileActions({}, {}, {}, {}, {}, {}, {}))
+            CoupleProfileScreen(CoupleProfileUiState(loading = false), CoupleProfileActions({}, {}, {}, {}, {}, {}, {}, {}))
         }
 
     @Test

@@ -205,7 +205,13 @@ class TodayViewModel
         ): List<Int> {
             val partner = partnerRepository.observePartner().first()
             val years = partner?.relationshipStart?.let { Period.between(it, today).years }
-            val context = AttentionContext(profile = profile, relationshipYears = years, month = today.month)
+            val context =
+                AttentionContext(
+                    profile = profile,
+                    relationshipYears = years,
+                    month = today.month,
+                    addressForm = partner?.addressForm,
+                )
             val eligible = AttentionCatalog.eligibleIds(bank.groupSizes, context)
             return eligible.ifEmpty { (0 until (bank.groupSizes[AttentionGroup.EVERYONE] ?: 0)).toList() }
         }

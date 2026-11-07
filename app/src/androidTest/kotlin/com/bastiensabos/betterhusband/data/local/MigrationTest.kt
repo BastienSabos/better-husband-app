@@ -106,6 +106,21 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun migrate7To8AddsFamilyToCoupleProfile() {
+        helper.createDatabase(DB_NAME, 7).use {
+            it.execSQL("INSERT INTO couple_profile (id, kids, interests) VALUES (1, 'YOUNG', 'SPORT')")
+        }
+
+        val db = helper.runMigrationsAndValidate(DB_NAME, 8, true, MIGRATION_7_8)
+
+        db.query("SELECT kids, family FROM couple_profile").use {
+            it.moveToFirst()
+            assertThat(it.getString(0)).isEqualTo("YOUNG")
+            assertThat(it.getString(1)).isEmpty()
+        }
+    }
+
     private companion object {
         const val DB_NAME = "migration-test"
     }
