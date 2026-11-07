@@ -1,6 +1,7 @@
 package com.bastiensabos.betterhusband.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -13,6 +14,7 @@ import com.bastiensabos.betterhusband.R
 // Polices embarquées (aucun téléchargement) : variables, réduites au latin. Licence SIL OFL 1.1,
 // textes dans assets/licenses/.
 
+@OptIn(ExperimentalTextApi::class)
 private fun variableFont(
     resId: Int,
     weight: FontWeight,

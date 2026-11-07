@@ -8,6 +8,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -22,11 +23,15 @@ class TasksViewModelTest {
     private val today = LocalDate.of(2027, 1, 20)
     private val clock = Clock.fixed(Instant.parse("2027-01-20T09:00:00Z"), ZoneOffset.UTC)
     private val repository = FakeHouseholdTaskRepository()
-    private val viewModel = TasksViewModel(repository, clock)
+
+    // Créé au premier usage, donc après MainDispatcherRule : sinon viewModelScope part sur un autre Main.
+    private val viewModel by lazy { TasksViewModel(repository, clock) }
 
     /** Garde le flux actif (WhileSubscribed) pendant le test. */
     private fun TestScope.collectState() {
         backgroundScope.launch { viewModel.uiState.collect {} }
+        // advanceUntilIdle() ne lance pas le travail de fond quand rien d'autre n'attend : runCurrent() si.
+        runCurrent()
         advanceUntilIdle()
     }
 

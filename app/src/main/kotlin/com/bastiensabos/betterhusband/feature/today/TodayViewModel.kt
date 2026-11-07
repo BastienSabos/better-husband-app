@@ -105,7 +105,7 @@ class TodayViewModel
             viewModelScope.launch { taskRepository.setLastDone(id, LocalDate.now(clock)) }
         }
 
-        private fun pickFor(
+        private suspend fun pickFor(
             today: LocalDate,
             log: List<AttentionLogEntry>,
             skipped: Set<Int>,

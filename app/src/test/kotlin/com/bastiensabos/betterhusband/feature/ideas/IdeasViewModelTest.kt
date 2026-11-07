@@ -7,6 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -15,11 +16,15 @@ class IdeasViewModelTest {
     @get:Rule val mainRule = MainDispatcherRule()
 
     private val repository = FakeIdeaRepository()
-    private val viewModel = IdeasViewModel(repository)
+
+    // Créé au premier usage, donc après MainDispatcherRule : sinon viewModelScope part sur un autre Main.
+    private val viewModel by lazy { IdeasViewModel(repository) }
 
     /** Garde le flux actif (WhileSubscribed) pendant le test. */
     private fun TestScope.collectState() {
         backgroundScope.launch { viewModel.uiState.collect {} }
+        // advanceUntilIdle() ne lance pas le travail de fond quand rien d'autre n'attend : runCurrent() si.
+        runCurrent()
         advanceUntilIdle()
     }
 
