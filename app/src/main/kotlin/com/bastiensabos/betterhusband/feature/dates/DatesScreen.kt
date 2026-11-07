@@ -195,7 +195,7 @@ private fun DateEditorDialog(
                 )
                 Column(modifier = Modifier.selectableGroup()) {
                     DateKind.entries.forEach { kind ->
-                        KindRow(kind = kind, selected = state.kind == kind, onSelected = { actions.onKindChange(kind) })
+                        KindRow(kind = kind, selected = state.kind == kind, onSelect = { actions.onKindChange(kind) })
                     }
                 }
                 DateField(
@@ -235,14 +235,14 @@ private fun DateEditorDialog(
 private fun KindRow(
     kind: DateKind,
     selected: Boolean,
-    onSelected: () -> Unit,
+    onSelect: () -> Unit,
 ) {
     Row(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .heightIn(min = Spacing().touchTarget)
-                .selectable(selected = selected, onClick = onSelected, role = Role.RadioButton),
+                .selectable(selected = selected, onClick = onSelect, role = Role.RadioButton),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(selected = selected, onClick = null)

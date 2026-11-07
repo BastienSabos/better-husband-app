@@ -39,7 +39,7 @@ fun OnboardingRoute(
     OnboardingScreen(
         uiState = uiState,
         onFirstNameChange = viewModel::onFirstNameChange,
-        onAddressFormSelected = viewModel::onAddressFormSelected,
+        onAddressFormSelect = viewModel::onAddressFormSelect,
         onSubmit = viewModel::onSubmit,
         modifier = modifier,
     )
@@ -49,7 +49,7 @@ fun OnboardingRoute(
 fun OnboardingScreen(
     uiState: OnboardingUiState,
     onFirstNameChange: (String) -> Unit,
-    onAddressFormSelected: (AddressForm) -> Unit,
+    onAddressFormSelect: (AddressForm) -> Unit,
     onSubmit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -78,7 +78,7 @@ fun OnboardingScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            AddressFormPicker(selected = uiState.addressForm, onSelected = onAddressFormSelected)
+            AddressFormPicker(selected = uiState.addressForm, onSelect = onAddressFormSelect)
 
             Text(text = stringResource(R.string.onboarding_privacy_note), style = MaterialTheme.typography.bodyMedium)
 
@@ -97,7 +97,7 @@ fun OnboardingScreen(
 @Composable
 private fun OnboardingScreenEmptyPreview() {
     BetterHusbandTheme(dynamicColor = false) {
-        OnboardingScreen(OnboardingUiState(), onFirstNameChange = {}, onAddressFormSelected = {}, onSubmit = {})
+        OnboardingScreen(OnboardingUiState(), onFirstNameChange = {}, onAddressFormSelect = {}, onSubmit = {})
     }
 }
 
@@ -108,7 +108,7 @@ private fun OnboardingScreenFilledPreview() {
         OnboardingScreen(
             OnboardingUiState(firstName = "Alex", addressForm = AddressForm.FEMININE),
             onFirstNameChange = {},
-            onAddressFormSelected = {},
+            onAddressFormSelect = {},
             onSubmit = {},
         )
     }

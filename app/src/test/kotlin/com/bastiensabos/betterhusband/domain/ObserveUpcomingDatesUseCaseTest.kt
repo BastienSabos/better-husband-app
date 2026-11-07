@@ -26,46 +26,49 @@ class ObserveUpcomingDatesUseCaseTest {
     ) = ObserveUpcomingDatesUseCase(FakePartnerRepository(partner), FakeImportantDateRepository(dates), clock)
 
     @Test
-    fun `no partner and no dates gives an empty list`() = runTest {
-        useCase()().test {
-            assertThat(awaitItem()).isEmpty()
+    fun `no partner and no dates gives an empty list`() =
+        runTest {
+            useCase()().test {
+                assertThat(awaitItem()).isEmpty()
+            }
         }
-    }
 
     @Test
-    fun `partner dates and custom dates are merged and sorted by next occurrence`() = runTest {
-        val partner =
-            Partner(
-                firstName = "Camille",
-                addressForm = AddressForm.NEUTRAL,
-                birthday = LocalDate.of(1992, 4, 12),
-                relationshipStart = LocalDate.of(2018, 3, 12),
-                relatives = listOf(Relative("Léa", "Sœur", LocalDate.of(1989, 3, 11)), Relative("Sam", "Ami")),
-            )
-        val custom = ImportantDate(7, "Mariage", DateKind.ANNIVERSARY, LocalDate.of(2015, 6, 20), recurring = true)
+    fun `partner dates and custom dates are merged and sorted by next occurrence`() =
+        runTest {
+            val partner =
+                Partner(
+                    firstName = "Camille",
+                    addressForm = AddressForm.NEUTRAL,
+                    birthday = LocalDate.of(1992, 4, 12),
+                    relationshipStart = LocalDate.of(2018, 3, 12),
+                    relatives = listOf(Relative("Léa", "Sœur", LocalDate.of(1989, 3, 11)), Relative("Sam", "Ami")),
+                )
+            val custom = ImportantDate(7, "Mariage", DateKind.ANNIVERSARY, LocalDate.of(2015, 6, 20), recurring = true)
 
-        useCase(partner, listOf(custom))().test {
-            val items = awaitItem()
-            assertThat(items.map { it.key })
-                .containsExactly("relative-0", "relationship-start", "partner-birthday", "date-7")
-                .inOrder()
-            assertThat(items.first().label).isEqualTo(DateLabel.RelativeBirthday("Léa"))
-            assertThat(items[2].label).isEqualTo(DateLabel.PartnerBirthday("Camille"))
-            assertThat(items.first().daysUntil).isEqualTo(1)
-            assertThat(items.first().yearsSince).isEqualTo(38)
-            assertThat(items.last().editableId).isEqualTo(7)
+            useCase(partner, listOf(custom))().test {
+                val items = awaitItem()
+                assertThat(items.map { it.key })
+                    .containsExactly("relative-0", "relationship-start", "partner-birthday", "date-7")
+                    .inOrder()
+                assertThat(items.first().label).isEqualTo(DateLabel.RelativeBirthday("Léa"))
+                assertThat(items[2].label).isEqualTo(DateLabel.PartnerBirthday("Camille"))
+                assertThat(items.first().daysUntil).isEqualTo(1)
+                assertThat(items.first().yearsSince).isEqualTo(38)
+                assertThat(items.last().editableId).isEqualTo(7)
+            }
         }
-    }
 
     @Test
-    fun `past one-off events are dropped`() = runTest {
-        val past = ImportantDate(1, "Médecin", DateKind.OTHER, LocalDate.of(2027, 1, 5), recurring = false)
-        val future = ImportantDate(2, "Voyage", DateKind.OTHER, LocalDate.of(2027, 7, 1), recurring = false)
+    fun `past one-off events are dropped`() =
+        runTest {
+            val past = ImportantDate(1, "Médecin", DateKind.OTHER, LocalDate.of(2027, 1, 5), recurring = false)
+            val future = ImportantDate(2, "Voyage", DateKind.OTHER, LocalDate.of(2027, 7, 1), recurring = false)
 
-        useCase(dates = listOf(past, future))().test {
-            val items = awaitItem()
-            assertThat(items.map { it.key }).containsExactly("date-2")
-            assertThat(items.single().yearsSince).isNull()
+            useCase(dates = listOf(past, future))().test {
+                val items = awaitItem()
+                assertThat(items.map { it.key }).containsExactly("date-2")
+                assertThat(items.single().yearsSince).isNull()
+            }
         }
-    }
 }

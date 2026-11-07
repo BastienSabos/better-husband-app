@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -39,19 +40,20 @@ import java.time.LocalDate
 
 @Composable
 fun PartnerProfileRoute(
-    onDone: () -> Unit,
+    onFinish: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PartnerProfileViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val currentOnFinish by rememberUpdatedState(onFinish)
     LaunchedEffect(uiState.saved) {
-        if (uiState.saved) onDone()
+        if (uiState.saved) currentOnFinish()
     }
     PartnerProfileScreen(
         uiState = uiState,
-        onBack = onDone,
+        onBack = onFinish,
         onFirstNameChange = viewModel::onFirstNameChange,
-        onAddressFormSelected = viewModel::onAddressFormSelected,
+        onAddressFormSelect = viewModel::onAddressFormSelect,
         onBirthdayChange = viewModel::onBirthdayChange,
         onRelationshipStartChange = viewModel::onRelationshipStartChange,
         onTastesChange = viewModel::onTastesChange,
@@ -69,7 +71,7 @@ fun PartnerProfileScreen(
     uiState: PartnerProfileUiState,
     onBack: () -> Unit,
     onFirstNameChange: (String) -> Unit,
-    onAddressFormSelected: (AddressForm) -> Unit,
+    onAddressFormSelect: (AddressForm) -> Unit,
     onBirthdayChange: (LocalDate?) -> Unit,
     onRelationshipStartChange: (LocalDate?) -> Unit,
     onTastesChange: (TasteCategory, String) -> Unit,
@@ -106,7 +108,7 @@ fun PartnerProfileScreen(
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                 modifier = Modifier.fillMaxWidth(),
             )
-            AddressFormPicker(selected = uiState.addressForm, onSelected = onAddressFormSelected)
+            AddressFormPicker(selected = uiState.addressForm, onSelect = onAddressFormSelect)
 
             Section(R.string.partner_profile_section_dates) {
                 DateField(
@@ -242,7 +244,7 @@ private fun PartnerProfileScreenEmptyPreview() {
             uiState = PartnerProfileUiState(loaded = true, firstName = "Camille"),
             onBack = {},
             onFirstNameChange = {},
-            onAddressFormSelected = {},
+            onAddressFormSelect = {},
             onBirthdayChange = {},
             onRelationshipStartChange = {},
             onTastesChange = { _, _ -> },
@@ -272,7 +274,7 @@ private fun PartnerProfileScreenFilledPreview() {
                 ),
             onBack = {},
             onFirstNameChange = {},
-            onAddressFormSelected = {},
+            onAddressFormSelect = {},
             onBirthdayChange = {},
             onRelationshipStartChange = {},
             onTastesChange = { _, _ -> },

@@ -32,70 +32,80 @@ class DatesViewModelTest {
     }
 
     @Test
-    fun `shows the empty state when there is no date`() = runTest {
-        collectState()
+    fun `shows the empty state when there is no date`() =
+        runTest {
+            collectState()
 
-        assertThat(viewModel.uiState.value.list).isEqualTo(DatesListState.Empty)
-    }
-
-    @Test
-    fun `adding a date saves it, closes the editor and lists it`() = runTest {
-        collectState()
-
-        viewModel.onAddClick()
-        viewModel.onTitleChange("Mariage")
-        viewModel.onDateChange(LocalDate.of(2015, 6, 20))
-        viewModel.onKindChange(DateKind.ANNIVERSARY)
-        viewModel.onSave()
-        advanceUntilIdle()
-
-        assertThat(repository.state.value.single().title).isEqualTo("Mariage")
-        assertThat(viewModel.uiState.value.editor).isNull()
-        val ready = viewModel.uiState.value.list as DatesListState.Ready
-        assertThat(ready.items.single().yearsSince).isEqualTo(12)
-    }
+            assertThat(viewModel.uiState.value.list).isEqualTo(DatesListState.Empty)
+        }
 
     @Test
-    fun `cannot save without a title or a date`() = runTest {
-        collectState()
+    fun `adding a date saves it, closes the editor and lists it`() =
+        runTest {
+            collectState()
 
-        viewModel.onAddClick()
-        viewModel.onTitleChange("Mariage")
-        viewModel.onSave()
-        advanceUntilIdle()
+            viewModel.onAddClick()
+            viewModel.onTitleChange("Mariage")
+            viewModel.onDateChange(LocalDate.of(2015, 6, 20))
+            viewModel.onKindChange(DateKind.ANNIVERSARY)
+            viewModel.onSave()
+            advanceUntilIdle()
 
-        assertThat(repository.state.value).isEmpty()
-        assertThat(viewModel.uiState.value.editor).isNotNull()
-    }
-
-    @Test
-    fun `editing loads the date and delete removes it`() = runTest {
-        val id = repository.save(ImportantDate(title = "Voyage", kind = DateKind.OTHER, date = LocalDate.of(2027, 7, 1), recurring = false))
-        collectState()
-
-        viewModel.onEdit(id)
-        advanceUntilIdle()
-        val editor = viewModel.uiState.value.editor!!
-        assertThat(editor.title).isEqualTo("Voyage")
-        assertThat(editor.recurring).isFalse()
-
-        viewModel.onDelete()
-        advanceUntilIdle()
-
-        assertThat(repository.state.value).isEmpty()
-        assertThat(viewModel.uiState.value.editor).isNull()
-    }
+            assertThat(
+                repository.state.value
+                    .single()
+                    .title,
+            ).isEqualTo("Mariage")
+            assertThat(viewModel.uiState.value.editor).isNull()
+            val ready = viewModel.uiState.value.list as DatesListState.Ready
+            assertThat(ready.items.single().yearsSince).isEqualTo(12)
+        }
 
     @Test
-    fun `dismissing the editor discards the draft`() = runTest {
-        collectState()
+    fun `cannot save without a title or a date`() =
+        runTest {
+            collectState()
 
-        viewModel.onAddClick()
-        viewModel.onTitleChange("Brouillon")
-        viewModel.onDismissEditor()
-        advanceUntilIdle()
+            viewModel.onAddClick()
+            viewModel.onTitleChange("Mariage")
+            viewModel.onSave()
+            advanceUntilIdle()
 
-        assertThat(viewModel.uiState.value.editor).isNull()
-        assertThat(repository.state.value).isEmpty()
-    }
+            assertThat(repository.state.value).isEmpty()
+            assertThat(viewModel.uiState.value.editor).isNotNull()
+        }
+
+    @Test
+    fun `editing loads the date and delete removes it`() =
+        runTest {
+            val trip = ImportantDate(title = "Voyage", kind = DateKind.OTHER, date = LocalDate.of(2027, 7, 1), recurring = false)
+            val id = repository.save(trip)
+            collectState()
+
+            viewModel.onEdit(id)
+            advanceUntilIdle()
+            val editor = viewModel.uiState.value.editor!!
+            assertThat(editor.title).isEqualTo("Voyage")
+            assertThat(editor.recurring).isFalse()
+
+            viewModel.onDelete()
+            advanceUntilIdle()
+
+            assertThat(repository.state.value).isEmpty()
+            assertThat(viewModel.uiState.value.editor).isNull()
+        }
+
+    @Test
+    fun `dismissing the editor discards the draft`() =
+        runTest {
+            collectState()
+
+            viewModel.onAddClick()
+            viewModel.onTitleChange("Brouillon")
+            viewModel.onDismissEditor()
+            advanceUntilIdle()
+
+            assertThat(viewModel.uiState.value.editor).isNull()
+            assertThat(repository.state.value).isEmpty()
+        }
 }

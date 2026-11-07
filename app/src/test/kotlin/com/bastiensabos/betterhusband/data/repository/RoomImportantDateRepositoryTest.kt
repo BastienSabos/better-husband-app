@@ -17,38 +17,44 @@ class RoomImportantDateRepositoryTest {
     private val repository = RoomImportantDateRepository(dao)
 
     @Test
-    fun `saved date is observed with its generated id and trimmed title`() = runTest {
-        val id = repository.save(ImportantDate(title = "  Mariage ", kind = DateKind.ANNIVERSARY, date = LocalDate.of(2015, 6, 20), recurring = true))
+    fun `saved date is observed with its generated id and trimmed title`() =
+        runTest {
+            val id =
+                repository.save(
+                    ImportantDate(title = "  Mariage ", kind = DateKind.ANNIVERSARY, date = LocalDate.of(2015, 6, 20), recurring = true),
+                )
 
-        repository.observeAll().test {
-            assertThat(awaitItem()).containsExactly(
-                ImportantDate(id, "Mariage", DateKind.ANNIVERSARY, LocalDate.of(2015, 6, 20), recurring = true),
-            )
+            repository.observeAll().test {
+                assertThat(awaitItem()).containsExactly(
+                    ImportantDate(id, "Mariage", DateKind.ANNIVERSARY, LocalDate.of(2015, 6, 20), recurring = true),
+                )
+            }
         }
-    }
 
     @Test
-    fun `saving with an existing id updates the date`() = runTest {
-        val id = repository.save(ImportantDate(title = "A", kind = DateKind.OTHER, date = LocalDate.of(2027, 1, 1), recurring = false))
+    fun `saving with an existing id updates the date`() =
+        runTest {
+            val id = repository.save(ImportantDate(title = "A", kind = DateKind.OTHER, date = LocalDate.of(2027, 1, 1), recurring = false))
 
-        repository.save(ImportantDate(id, "B", DateKind.OTHER, LocalDate.of(2027, 1, 1), recurring = false))
+            repository.save(ImportantDate(id, "B", DateKind.OTHER, LocalDate.of(2027, 1, 1), recurring = false))
 
-        repository.observeAll().test {
-            assertThat(awaitItem().map { it.title }).containsExactly("B")
+            repository.observeAll().test {
+                assertThat(awaitItem().map { it.title }).containsExactly("B")
+            }
         }
-    }
 
     @Test
-    fun `unknown kind falls back to other and delete removes`() = runTest {
-        dao.upsert(ImportantDateEntity(title = "X", kind = "FROM_THE_FUTURE", date = LocalDate.of(2027, 1, 1), recurring = false))
+    fun `unknown kind falls back to other and delete removes`() =
+        runTest {
+            dao.upsert(ImportantDateEntity(title = "X", kind = "FROM_THE_FUTURE", date = LocalDate.of(2027, 1, 1), recurring = false))
 
-        repository.observeAll().test {
-            val item = awaitItem().single()
-            assertThat(item.kind).isEqualTo(DateKind.OTHER)
-            repository.delete(item.id)
-            assertThat(awaitItem()).isEmpty()
+            repository.observeAll().test {
+                val item = awaitItem().single()
+                assertThat(item.kind).isEqualTo(DateKind.OTHER)
+                repository.delete(item.id)
+                assertThat(awaitItem()).isEmpty()
+            }
         }
-    }
 
     private class FakeImportantDateDao : ImportantDateDao {
         private val state = MutableStateFlow<List<ImportantDateEntity>>(emptyList())

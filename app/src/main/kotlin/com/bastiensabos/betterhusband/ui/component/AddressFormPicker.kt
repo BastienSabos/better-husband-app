@@ -25,7 +25,7 @@ import com.bastiensabos.betterhusband.ui.theme.Spacing
 @Composable
 fun AddressFormPicker(
     selected: AddressForm,
-    onSelected: (AddressForm) -> Unit,
+    onSelect: (AddressForm) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val spacing = Spacing()
@@ -42,7 +42,7 @@ fun AddressFormPicker(
                         .heightIn(min = spacing.touchTarget)
                         .selectable(
                             selected = selected == form,
-                            onClick = { onSelected(form) },
+                            onClick = { onSelect(form) },
                             role = Role.RadioButton,
                         ),
                 verticalAlignment = Alignment.CenterVertically,

@@ -25,7 +25,7 @@ class OnboardingViewModel
 
         fun onFirstNameChange(value: String) = _uiState.update { it.copy(firstName = value.take(MAX_NAME_LENGTH)) }
 
-        fun onAddressFormSelected(value: AddressForm) = _uiState.update { it.copy(addressForm = value) }
+        fun onAddressFormSelect(value: AddressForm) = _uiState.update { it.copy(addressForm = value) }
 
         fun onSubmit() {
             val state = _uiState.value

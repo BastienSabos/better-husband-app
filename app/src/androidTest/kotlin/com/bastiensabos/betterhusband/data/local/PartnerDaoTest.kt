@@ -34,41 +34,50 @@ class PartnerDaoTest {
         PartnerEntity(firstName = name, addressForm = "NEUTRAL", birthday = LocalDate.of(1990, 5, 17), relationshipStart = null)
 
     @Test
-    fun replaceProfileRoundTripsEverything() = runBlocking {
-        val dao = database.partnerDao()
+    fun replaceProfileRoundTripsEverything() =
+        runBlocking {
+            val dao = database.partnerDao()
 
-        dao.replaceProfile(
-            partner = partner("Alex"),
-            tastes = listOf(TasteEntity(category = "FLOWERS", label = "Pivoines")),
-            sizes = listOf(SizeEntity(kind = "SHOES", value = "39")),
-            relatives = listOf(RelativeEntity(relation = "Sœur", name = "Camille", birthday = LocalDate.of(1988, 3, 2))),
-        )
+            dao.replaceProfile(
+                partner = partner("Alex"),
+                tastes = listOf(TasteEntity(category = "FLOWERS", label = "Pivoines")),
+                sizes = listOf(SizeEntity(kind = "SHOES", value = "39")),
+                relatives = listOf(RelativeEntity(relation = "Sœur", name = "Camille", birthday = LocalDate.of(1988, 3, 2))),
+            )
 
-        assertThat(dao.observePartner().first()).isEqualTo(partner("Alex"))
-        assertThat(dao.observeTastes().first().map { it.label }).containsExactly("Pivoines")
-        assertThat(dao.observeSizes().first().map { it.value }).containsExactly("39")
-        assertThat(dao.observeRelatives().first().single().birthday).isEqualTo(LocalDate.of(1988, 3, 2))
-    }
-
-    @Test
-    fun replaceProfileDropsPreviousDetails() = runBlocking {
-        val dao = database.partnerDao()
-        dao.replaceProfile(partner("Alex"), listOf(TasteEntity(category = "FOOD", label = "Sushis")), emptyList(), emptyList())
-
-        dao.replaceProfile(partner("Camille"), emptyList(), emptyList(), emptyList())
-
-        assertThat(dao.observePartner().first()?.firstName).isEqualTo("Camille")
-        assertThat(dao.observeTastes().first()).isEmpty()
-    }
+            assertThat(dao.observePartner().first()).isEqualTo(partner("Alex"))
+            assertThat(dao.observeTastes().first().map { it.label }).containsExactly("Pivoines")
+            assertThat(dao.observeSizes().first().map { it.value }).containsExactly("39")
+            assertThat(
+                dao
+                    .observeRelatives()
+                    .first()
+                    .single()
+                    .birthday,
+            ).isEqualTo(LocalDate.of(1988, 3, 2))
+        }
 
     @Test
-    fun deleteAllEmptiesEveryTable() = runBlocking {
-        val dao = database.partnerDao()
-        dao.replaceProfile(partner("Alex"), listOf(TasteEntity(category = "FOOD", label = "Sushis")), emptyList(), emptyList())
+    fun replaceProfileDropsPreviousDetails() =
+        runBlocking {
+            val dao = database.partnerDao()
+            dao.replaceProfile(partner("Alex"), listOf(TasteEntity(category = "FOOD", label = "Sushis")), emptyList(), emptyList())
 
-        dao.deleteAll()
+            dao.replaceProfile(partner("Camille"), emptyList(), emptyList(), emptyList())
 
-        assertThat(dao.observePartner().first()).isNull()
-        assertThat(dao.observeTastes().first()).isEmpty()
-    }
+            assertThat(dao.observePartner().first()?.firstName).isEqualTo("Camille")
+            assertThat(dao.observeTastes().first()).isEmpty()
+        }
+
+    @Test
+    fun deleteAllEmptiesEveryTable() =
+        runBlocking {
+            val dao = database.partnerDao()
+            dao.replaceProfile(partner("Alex"), listOf(TasteEntity(category = "FOOD", label = "Sushis")), emptyList(), emptyList())
+
+            dao.deleteAll()
+
+            assertThat(dao.observePartner().first()).isNull()
+            assertThat(dao.observeTastes().first()).isEmpty()
+        }
 }

@@ -120,7 +120,7 @@ fun IdeasScreen(
                 keyboardActions = KeyboardActions(onDone = { actions.onAdd() }),
                 modifier = Modifier.fillMaxWidth(),
             )
-            CategoryChips(selected = uiState.draftCategory, onSelected = { it?.let(actions.onDraftCategoryChange) }, withAll = false)
+            CategoryChips(selected = uiState.draftCategory, onSelect = { it?.let(actions.onDraftCategoryChange) }, withAll = false)
             Button(
                 onClick = actions.onAdd,
                 enabled = uiState.canAdd,
@@ -139,7 +139,7 @@ fun IdeasScreen(
                 }
 
                 is IdeasListState.Ready -> {
-                    CategoryChips(selected = uiState.filter, onSelected = actions.onFilterChange, withAll = true)
+                    CategoryChips(selected = uiState.filter, onSelect = actions.onFilterChange, withAll = true)
                     if (list.items.isEmpty()) {
                         Text(text = stringResource(R.string.ideas_empty_filtered), style = MaterialTheme.typography.bodyLarge)
                     }
@@ -157,7 +157,7 @@ fun IdeasScreen(
 @Composable
 internal fun CategoryChips(
     selected: IdeaCategory?,
-    onSelected: (IdeaCategory?) -> Unit,
+    onSelect: (IdeaCategory?) -> Unit,
     withAll: Boolean,
 ) {
     Row(
@@ -167,7 +167,7 @@ internal fun CategoryChips(
         if (withAll) {
             FilterChip(
                 selected = selected == null,
-                onClick = { onSelected(null) },
+                onClick = { onSelect(null) },
                 label = { Text(stringResource(R.string.ideas_filter_all)) },
                 modifier = Modifier.heightIn(min = Spacing().touchTarget),
             )
@@ -175,7 +175,7 @@ internal fun CategoryChips(
         IdeaCategory.entries.forEach { category ->
             FilterChip(
                 selected = selected == category,
-                onClick = { onSelected(category) },
+                onClick = { onSelect(category) },
                 label = { Text(stringResource(category.labelRes())) },
                 modifier = Modifier.heightIn(min = Spacing().touchTarget),
             )
@@ -223,7 +223,7 @@ private fun IdeaEditorDialog(
                 )
                 CategoryChips(
                     selected = state.category,
-                    onSelected = { it?.let(actions.onEditorCategoryChange) },
+                    onSelect = { it?.let(actions.onEditorCategoryChange) },
                     withAll = false,
                 )
             }

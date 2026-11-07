@@ -53,7 +53,7 @@ fun ShareIdeaScreen(
             )
             CategoryChips(
                 selected = uiState.category,
-                onSelected = { it?.let(onCategoryChange) },
+                onSelect = { it?.let(onCategoryChange) },
                 withAll = false,
             )
             Button(

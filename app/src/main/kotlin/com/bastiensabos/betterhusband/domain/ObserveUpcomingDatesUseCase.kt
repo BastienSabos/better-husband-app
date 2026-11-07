@@ -37,7 +37,17 @@ class ObserveUpcomingDatesUseCase
         private fun Partner?.derivedDates(today: LocalDate): List<UpcomingDate?> {
             if (this == null) return emptyList()
             return listOf(
-                birthday?.let { upcoming("partner-birthday", DateLabel.PartnerBirthday(firstName), DateKind.BIRTHDAY, it, true, today, null) },
+                birthday?.let {
+                    upcoming(
+                        "partner-birthday",
+                        DateLabel.PartnerBirthday(firstName),
+                        DateKind.BIRTHDAY,
+                        it,
+                        true,
+                        today,
+                        null,
+                    )
+                },
                 relationshipStart?.let {
                     upcoming("relationship-start", DateLabel.RelationshipStart, DateKind.ANNIVERSARY, it, true, today, null)
                 },

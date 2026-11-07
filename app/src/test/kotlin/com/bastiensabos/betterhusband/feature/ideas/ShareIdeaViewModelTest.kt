@@ -41,34 +41,37 @@ class ShareIdeaViewModelTest {
     }
 
     @Test
-    fun `save adds the idea with the chosen category and flags it saved`() = runTest {
-        viewModel.onSharedText("Billets de concert")
-        viewModel.onCategoryChange(IdeaCategory.OUTING)
+    fun `save adds the idea with the chosen category and flags it saved`() =
+        runTest {
+            viewModel.onSharedText("Billets de concert")
+            viewModel.onCategoryChange(IdeaCategory.OUTING)
 
-        viewModel.onSave()
-        advanceUntilIdle()
+            viewModel.onSave()
+            advanceUntilIdle()
 
-        val idea = repository.state.value.single()
-        assertThat(idea.text).isEqualTo("Billets de concert")
-        assertThat(idea.category).isEqualTo(IdeaCategory.OUTING)
-        assertThat(viewModel.uiState.value.saved).isTrue()
-        assertThat(viewModel.uiState.value.saving).isFalse()
-    }
-
-    @Test
-    fun `nothing is saved without an explicit save`() = runTest {
-        viewModel.onSharedText("Brouillon")
-        advanceUntilIdle()
-
-        assertThat(repository.state.value).isEmpty()
-    }
+            val idea = repository.state.value.single()
+            assertThat(idea.text).isEqualTo("Billets de concert")
+            assertThat(idea.category).isEqualTo(IdeaCategory.OUTING)
+            assertThat(viewModel.uiState.value.saved).isTrue()
+            assertThat(viewModel.uiState.value.saving).isFalse()
+        }
 
     @Test
-    fun `an empty field cannot be saved`() = runTest {
-        viewModel.onSave()
-        advanceUntilIdle()
+    fun `nothing is saved without an explicit save`() =
+        runTest {
+            viewModel.onSharedText("Brouillon")
+            advanceUntilIdle()
 
-        assertThat(repository.state.value).isEmpty()
-        assertThat(viewModel.uiState.value.saved).isFalse()
-    }
+            assertThat(repository.state.value).isEmpty()
+        }
+
+    @Test
+    fun `an empty field cannot be saved`() =
+        runTest {
+            viewModel.onSave()
+            advanceUntilIdle()
+
+            assertThat(repository.state.value).isEmpty()
+            assertThat(viewModel.uiState.value.saved).isFalse()
+        }
 }

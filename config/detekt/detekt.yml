@@ -1,0 +1,10 @@
+# Règles detekt du projet, par-dessus la configuration par défaut. Le formatage et la longueur des lignes
+# sont l'affaire de ktlint (spotless) : on ne les vérifie pas deux fois.
+style:
+  MaxLineLength:
+    active: false
+  MagicNumber:
+    excludes: ['**/test/**']
+naming:
+  FunctionNaming:
+    excludes: ['**/test/**']

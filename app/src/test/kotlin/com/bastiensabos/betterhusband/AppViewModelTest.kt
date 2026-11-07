@@ -14,25 +14,27 @@ class AppViewModelTest {
     @get:Rule val mainRule = MainDispatcherRule()
 
     @Test
-    fun `starts loading then asks for onboarding when there is no partner`() = runTest {
-        val viewModel = AppViewModel(FakePartnerRepository())
+    fun `starts loading then asks for onboarding when there is no partner`() =
+        runTest {
+            val viewModel = AppViewModel(FakePartnerRepository())
 
-        viewModel.uiState.test {
-            assertThat(awaitItem()).isEqualTo(AppUiState.Loading)
-            assertThat(awaitItem()).isEqualTo(AppUiState.NeedsOnboarding)
+            viewModel.uiState.test {
+                assertThat(awaitItem()).isEqualTo(AppUiState.Loading)
+                assertThat(awaitItem()).isEqualTo(AppUiState.NeedsOnboarding)
+            }
         }
-    }
 
     @Test
-    fun `goes to the app once the partner exists`() = runTest {
-        val repository = FakePartnerRepository()
-        val viewModel = AppViewModel(repository)
+    fun `goes to the app once the partner exists`() =
+        runTest {
+            val repository = FakePartnerRepository()
+            val viewModel = AppViewModel(repository)
 
-        viewModel.uiState.test {
-            assertThat(awaitItem()).isEqualTo(AppUiState.Loading)
-            assertThat(awaitItem()).isEqualTo(AppUiState.NeedsOnboarding)
-            repository.savePartner(Partner("Alex", AddressForm.NEUTRAL))
-            assertThat(awaitItem()).isEqualTo(AppUiState.Ready)
+            viewModel.uiState.test {
+                assertThat(awaitItem()).isEqualTo(AppUiState.Loading)
+                assertThat(awaitItem()).isEqualTo(AppUiState.NeedsOnboarding)
+                repository.savePartner(Partner("Alex", AddressForm.NEUTRAL))
+                assertThat(awaitItem()).isEqualTo(AppUiState.Ready)
+            }
         }
-    }
 }

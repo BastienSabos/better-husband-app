@@ -57,8 +57,7 @@ class IdeasViewModel
 
         fun onEdit(idea: Idea) = local.update { it.copy(editor = IdeaEditorState(idea.id, idea.text, idea.category)) }
 
-        fun onEditorTextChange(value: String) =
-            local.update { it.copy(editor = it.editor?.copy(text = value.take(MAX_TEXT_LENGTH))) }
+        fun onEditorTextChange(value: String) = local.update { it.copy(editor = it.editor?.copy(text = value.take(MAX_TEXT_LENGTH))) }
 
         fun onEditorCategoryChange(value: IdeaCategory) = local.update { it.copy(editor = it.editor?.copy(category = value)) }
 

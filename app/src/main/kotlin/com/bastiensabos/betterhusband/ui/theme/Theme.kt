@@ -30,9 +30,13 @@ fun BetterHusbandTheme(
                 if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
             }
 
-            darkTheme -> DarkColors
+            darkTheme -> {
+                DarkColors
+            }
 
-            else -> LightColors
+            else -> {
+                LightColors
+            }
         }
     val categoryColors = if (darkTheme) DarkCategoryColors else LightCategoryColors
     CompositionLocalProvider(
