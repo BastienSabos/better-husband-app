@@ -19,45 +19,48 @@ class RoomIdeaRepositoryTest {
     private val repository = RoomIdeaRepository(dao, clock)
 
     @Test
-    fun `added idea is dated now, trimmed and not done`() = runTest {
-        val id = repository.add("  Pivoines  ", IdeaCategory.GIFT)
+    fun `added idea is dated now, trimmed and not done`() =
+        runTest {
+            val id = repository.add("  Pivoines  ", IdeaCategory.GIFT)
 
-        repository.observeAll().test {
-            val idea = awaitItem().single()
-            assertThat(idea.id).isEqualTo(id)
-            assertThat(idea.text).isEqualTo("Pivoines")
-            assertThat(idea.category).isEqualTo(IdeaCategory.GIFT)
-            assertThat(idea.createdAt).isEqualTo(Instant.parse("2027-03-10T09:00:00Z"))
-            assertThat(idea.done).isFalse()
+            repository.observeAll().test {
+                val idea = awaitItem().single()
+                assertThat(idea.id).isEqualTo(id)
+                assertThat(idea.text).isEqualTo("Pivoines")
+                assertThat(idea.category).isEqualTo(IdeaCategory.GIFT)
+                assertThat(idea.createdAt).isEqualTo(Instant.parse("2027-03-10T09:00:00Z"))
+                assertThat(idea.done).isFalse()
+            }
         }
-    }
 
     @Test
-    fun `update changes content and done flag`() = runTest {
-        val id = repository.add("Resto", IdeaCategory.OUTING)
+    fun `update changes content and done flag`() =
+        runTest {
+            val id = repository.add("Resto", IdeaCategory.OUTING)
 
-        repository.updateContent(id, " Resto italien ", IdeaCategory.ATTENTION)
-        repository.setDone(id, true)
+            repository.updateContent(id, " Resto italien ", IdeaCategory.ATTENTION)
+            repository.setDone(id, true)
 
-        repository.observeAll().test {
-            val idea = awaitItem().single()
-            assertThat(idea.text).isEqualTo("Resto italien")
-            assertThat(idea.category).isEqualTo(IdeaCategory.ATTENTION)
-            assertThat(idea.done).isTrue()
+            repository.observeAll().test {
+                val idea = awaitItem().single()
+                assertThat(idea.text).isEqualTo("Resto italien")
+                assertThat(idea.category).isEqualTo(IdeaCategory.ATTENTION)
+                assertThat(idea.done).isTrue()
+            }
         }
-    }
 
     @Test
-    fun `unknown category falls back to attention and delete removes`() = runTest {
-        dao.insert(IdeaEntity(text = "X", category = "FROM_THE_FUTURE", createdAt = 0, done = false))
+    fun `unknown category falls back to attention and delete removes`() =
+        runTest {
+            dao.insert(IdeaEntity(text = "X", category = "FROM_THE_FUTURE", createdAt = 0, done = false))
 
-        repository.observeAll().test {
-            val idea = awaitItem().single()
-            assertThat(idea.category).isEqualTo(IdeaCategory.ATTENTION)
-            repository.delete(idea.id)
-            assertThat(awaitItem()).isEmpty()
+            repository.observeAll().test {
+                val idea = awaitItem().single()
+                assertThat(idea.category).isEqualTo(IdeaCategory.ATTENTION)
+                repository.delete(idea.id)
+                assertThat(awaitItem()).isEmpty()
+            }
         }
-    }
 
     private class FakeIdeaDao : IdeaDao {
         private val state = MutableStateFlow<List<IdeaEntity>>(emptyList())

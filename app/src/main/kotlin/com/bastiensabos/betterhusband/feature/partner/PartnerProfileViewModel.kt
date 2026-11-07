@@ -39,7 +39,7 @@ class PartnerProfileViewModel
 
         fun onFirstNameChange(value: String) = _uiState.update { it.copy(firstName = value.take(MAX_NAME_LENGTH)) }
 
-        fun onAddressFormSelected(value: AddressForm) = _uiState.update { it.copy(addressForm = value) }
+        fun onAddressFormSelect(value: AddressForm) = _uiState.update { it.copy(addressForm = value) }
 
         fun onBirthdayChange(value: LocalDate?) = _uiState.update { it.copy(birthday = value) }
 
@@ -60,8 +60,7 @@ class PartnerProfileViewModel
         fun onRelativeChange(draft: RelativeDraft) =
             _uiState.update { state -> state.copy(relatives = state.relatives.map { if (it.id == draft.id) draft else it }) }
 
-        fun onRemoveRelative(id: Long) =
-            _uiState.update { state -> state.copy(relatives = state.relatives.filterNot { it.id == id }) }
+        fun onRemoveRelative(id: Long) = _uiState.update { state -> state.copy(relatives = state.relatives.filterNot { it.id == id }) }
 
         fun onSave() {
             val state = _uiState.value

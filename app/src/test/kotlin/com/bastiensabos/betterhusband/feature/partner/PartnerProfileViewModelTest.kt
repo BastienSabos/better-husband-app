@@ -29,75 +29,89 @@ class PartnerProfileViewModelTest {
         )
 
     @Test
-    fun `loads the existing partner into the draft`() = runTest {
-        val viewModel = PartnerProfileViewModel(FakePartnerRepository(existing))
-        advanceUntilIdle()
+    fun `loads the existing partner into the draft`() =
+        runTest {
+            val viewModel = PartnerProfileViewModel(FakePartnerRepository(existing))
+            advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertThat(state.loaded).isTrue()
-        assertThat(state.firstName).isEqualTo("Camille")
-        assertThat(state.tastes[TasteCategory.FLOWERS]).isEqualTo("Pivoines, Tulipes")
-        assertThat(state.relatives.single().name).isEqualTo("Léa")
-    }
-
-    @Test
-    fun `nothing is written until save`() = runTest {
-        val repository = FakePartnerRepository(existing)
-        val viewModel = PartnerProfileViewModel(repository)
-        advanceUntilIdle()
-
-        viewModel.onFirstNameChange("Autre")
-        advanceUntilIdle()
-
-        assertThat(repository.state.value).isEqualTo(existing)
-    }
+            val state = viewModel.uiState.value
+            assertThat(state.loaded).isTrue()
+            assertThat(state.firstName).isEqualTo("Camille")
+            assertThat(state.tastes[TasteCategory.FLOWERS]).isEqualTo("Pivoines, Tulipes")
+            assertThat(state.relatives.single().name).isEqualTo("Léa")
+        }
 
     @Test
-    fun `save parses tastes and sizes and drops blank entries`() = runTest {
-        val repository = FakePartnerRepository(existing)
-        val viewModel = PartnerProfileViewModel(repository)
-        advanceUntilIdle()
+    fun `nothing is written until save`() =
+        runTest {
+            val repository = FakePartnerRepository(existing)
+            val viewModel = PartnerProfileViewModel(repository)
+            advanceUntilIdle()
 
-        viewModel.onTastesChange(TasteCategory.FLOWERS, " Roses , ,Roses, Lys ")
-        viewModel.onTastesChange(TasteCategory.COLORS, "")
-        viewModel.onSizeChange(SizeKind.SHOES, "  ")
-        viewModel.onSizeChange(SizeKind.RING, " 52 ")
-        viewModel.onAddRelative()
-        viewModel.onSave()
-        advanceUntilIdle()
+            viewModel.onFirstNameChange("Autre")
+            advanceUntilIdle()
 
-        val saved = repository.state.value!!
-        assertThat(saved.tastes).containsExactly(Taste(TasteCategory.FLOWERS, "Roses"), Taste(TasteCategory.FLOWERS, "Lys"))
-        assertThat(saved.sizes).containsExactly(SizeKind.RING, "52")
-        assertThat(saved.relatives).containsExactly(Relative("Léa", "Sœur"))
-        assertThat(viewModel.uiState.value.saved).isTrue()
-    }
+            assertThat(repository.state.value).isEqualTo(existing)
+        }
 
     @Test
-    fun `cannot save without a first name`() = runTest {
-        val repository = FakePartnerRepository(existing)
-        val viewModel = PartnerProfileViewModel(repository)
-        advanceUntilIdle()
+    fun `save parses tastes and sizes and drops blank entries`() =
+        runTest {
+            val repository = FakePartnerRepository(existing)
+            val viewModel = PartnerProfileViewModel(repository)
+            advanceUntilIdle()
 
-        viewModel.onFirstNameChange("  ")
-        viewModel.onSave()
-        advanceUntilIdle()
+            viewModel.onTastesChange(TasteCategory.FLOWERS, " Roses , ,Roses, Lys ")
+            viewModel.onTastesChange(TasteCategory.COLORS, "")
+            viewModel.onSizeChange(SizeKind.SHOES, "  ")
+            viewModel.onSizeChange(SizeKind.RING, " 52 ")
+            viewModel.onAddRelative()
+            viewModel.onSave()
+            advanceUntilIdle()
 
-        assertThat(viewModel.uiState.value.canSave).isFalse()
-        assertThat(repository.state.value).isEqualTo(existing)
-    }
+            val saved = repository.state.value!!
+            assertThat(saved.tastes).containsExactly(Taste(TasteCategory.FLOWERS, "Roses"), Taste(TasteCategory.FLOWERS, "Lys"))
+            assertThat(saved.sizes).containsExactly(SizeKind.RING, "52")
+            assertThat(saved.relatives).containsExactly(Relative("Léa", "Sœur"))
+            assertThat(viewModel.uiState.value.saved).isTrue()
+        }
 
     @Test
-    fun `added relatives can be edited and removed`() = runTest {
-        val viewModel = PartnerProfileViewModel(FakePartnerRepository(existing))
-        advanceUntilIdle()
+    fun `cannot save without a first name`() =
+        runTest {
+            val repository = FakePartnerRepository(existing)
+            val viewModel = PartnerProfileViewModel(repository)
+            advanceUntilIdle()
 
-        viewModel.onAddRelative()
-        val added = viewModel.uiState.value.relatives.last()
-        viewModel.onRelativeChange(added.copy(name = "Sam", birthday = LocalDate.of(1990, 1, 1)))
-        assertThat(viewModel.uiState.value.relatives.last().name).isEqualTo("Sam")
+            viewModel.onFirstNameChange("  ")
+            viewModel.onSave()
+            advanceUntilIdle()
 
-        viewModel.onRemoveRelative(added.id)
-        assertThat(viewModel.uiState.value.relatives.map { it.name }).containsExactly("Léa")
-    }
+            assertThat(viewModel.uiState.value.canSave).isFalse()
+            assertThat(repository.state.value).isEqualTo(existing)
+        }
+
+    @Test
+    fun `added relatives can be edited and removed`() =
+        runTest {
+            val viewModel = PartnerProfileViewModel(FakePartnerRepository(existing))
+            advanceUntilIdle()
+
+            viewModel.onAddRelative()
+            val added =
+                viewModel.uiState.value.relatives
+                    .last()
+            viewModel.onRelativeChange(added.copy(name = "Sam", birthday = LocalDate.of(1990, 1, 1)))
+            assertThat(
+                viewModel.uiState.value.relatives
+                    .last()
+                    .name,
+            ).isEqualTo("Sam")
+
+            viewModel.onRemoveRelative(added.id)
+            assertThat(
+                viewModel.uiState.value.relatives
+                    .map { it.name },
+            ).containsExactly("Léa")
+        }
 }

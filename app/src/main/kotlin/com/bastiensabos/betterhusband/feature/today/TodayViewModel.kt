@@ -18,7 +18,7 @@ class TodayViewModel
         private val _uiState = MutableStateFlow<TodayUiState>(TodayUiState.Empty)
         val uiState: StateFlow<TodayUiState> = _uiState.asStateFlow()
 
-        fun onCardDone(cardId: String) {
+        fun onCardComplete(cardId: String) {
             _uiState.update { state ->
                 if (state !is TodayUiState.Ready) return@update state
                 state.copy(cards = state.cards.map { if (it.id == cardId) it.copy(done = true) else it })

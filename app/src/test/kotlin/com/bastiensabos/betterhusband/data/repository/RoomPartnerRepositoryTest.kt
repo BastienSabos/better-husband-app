@@ -24,67 +24,72 @@ class RoomPartnerRepositoryTest {
     private val repository = RoomPartnerRepository(dao)
 
     @Test
-    fun `no partner before onboarding`() = runTest {
-        repository.observePartner().test {
-            assertThat(awaitItem()).isNull()
+    fun `no partner before onboarding`() =
+        runTest {
+            repository.observePartner().test {
+                assertThat(awaitItem()).isNull()
+            }
         }
-    }
 
     @Test
-    fun `saved partner is observed with all fields`() = runTest {
-        val partner =
-            Partner(
-                firstName = "Alex",
-                addressForm = AddressForm.NEUTRAL,
-                birthday = LocalDate.of(1990, 5, 17),
-                relationshipStart = LocalDate.of(2018, 9, 1),
-                tastes = listOf(Taste(TasteCategory.FLOWERS, "Pivoines"), Taste(TasteCategory.COLORS, "Vert")),
-                sizes = mapOf(SizeKind.SHOES to "39", SizeKind.RING to "52"),
-                relatives = listOf(Relative("Camille", "Sœur", LocalDate.of(1988, 3, 2)), Relative("Sam", "Ami")),
+    fun `saved partner is observed with all fields`() =
+        runTest {
+            val partner =
+                Partner(
+                    firstName = "Alex",
+                    addressForm = AddressForm.NEUTRAL,
+                    birthday = LocalDate.of(1990, 5, 17),
+                    relationshipStart = LocalDate.of(2018, 9, 1),
+                    tastes = listOf(Taste(TasteCategory.FLOWERS, "Pivoines"), Taste(TasteCategory.COLORS, "Vert")),
+                    sizes = mapOf(SizeKind.SHOES to "39", SizeKind.RING to "52"),
+                    relatives = listOf(Relative("Camille", "Sœur", LocalDate.of(1988, 3, 2)), Relative("Sam", "Ami")),
+                )
+
+            repository.savePartner(partner)
+
+            repository.observePartner().test {
+                assertThat(awaitItem()).isEqualTo(partner)
+            }
+        }
+
+    @Test
+    fun `saving again replaces the whole profile and trims the name`() =
+        runTest {
+            repository.savePartner(
+                Partner("Alex", AddressForm.NEUTRAL, tastes = listOf(Taste(TasteCategory.FOOD, "Sushis"))),
             )
+            repository.savePartner(Partner("  Camille ", AddressForm.FEMININE))
 
-        repository.savePartner(partner)
-
-        repository.observePartner().test {
-            assertThat(awaitItem()).isEqualTo(partner)
+            repository.observePartner().test {
+                assertThat(awaitItem()).isEqualTo(Partner("Camille", AddressForm.FEMININE))
+            }
         }
-    }
 
     @Test
-    fun `saving again replaces the whole profile and trims the name`() = runTest {
-        repository.savePartner(
-            Partner("Alex", AddressForm.NEUTRAL, tastes = listOf(Taste(TasteCategory.FOOD, "Sushis"))),
-        )
-        repository.savePartner(Partner("  Camille ", AddressForm.FEMININE))
+    fun `unknown stored values fall back or are ignored`() =
+        runTest {
+            dao.upsertPartner(PartnerEntity(firstName = "Sam", addressForm = "FROM_THE_FUTURE", birthday = null, relationshipStart = null))
+            dao.insertTastes(listOf(TasteEntity(category = "SPACE", label = "Étoiles"), TasteEntity(category = "COLORS", label = "Bleu")))
 
-        repository.observePartner().test {
-            assertThat(awaitItem()).isEqualTo(Partner("Camille", AddressForm.FEMININE))
+            repository.observePartner().test {
+                val partner = awaitItem()
+                assertThat(partner?.addressForm).isEqualTo(AddressForm.NEUTRAL)
+                assertThat(partner?.tastes).containsExactly(Taste(TasteCategory.COLORS, "Bleu"))
+            }
         }
-    }
 
     @Test
-    fun `unknown stored values fall back or are ignored`() = runTest {
-        dao.upsertPartner(PartnerEntity(firstName = "Sam", addressForm = "FROM_THE_FUTURE", birthday = null, relationshipStart = null))
-        dao.insertTastes(listOf(TasteEntity(category = "SPACE", label = "Étoiles"), TasteEntity(category = "COLORS", label = "Bleu")))
+    fun `delete removes the partner and every detail`() =
+        runTest {
+            repository.savePartner(Partner("Alex", AddressForm.NEUTRAL, relatives = listOf(Relative("Camille", "Sœur"))))
 
-        repository.observePartner().test {
-            val partner = awaitItem()
-            assertThat(partner?.addressForm).isEqualTo(AddressForm.NEUTRAL)
-            assertThat(partner?.tastes).containsExactly(Taste(TasteCategory.COLORS, "Bleu"))
+            repository.deletePartner()
+
+            repository.observePartner().test {
+                assertThat(awaitItem()).isNull()
+            }
+            assertThat(dao.relatives.value).isEmpty()
         }
-    }
-
-    @Test
-    fun `delete removes the partner and every detail`() = runTest {
-        repository.savePartner(Partner("Alex", AddressForm.NEUTRAL, relatives = listOf(Relative("Camille", "Sœur"))))
-
-        repository.deletePartner()
-
-        repository.observePartner().test {
-            assertThat(awaitItem()).isNull()
-        }
-        assertThat(dao.relatives.value).isEmpty()
-    }
 
     private class FakePartnerDao : PartnerDao() {
         val partner = MutableStateFlow<PartnerEntity?>(null)

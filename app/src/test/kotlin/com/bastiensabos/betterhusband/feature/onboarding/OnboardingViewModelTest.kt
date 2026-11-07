@@ -17,32 +17,35 @@ class OnboardingViewModelTest {
     private val viewModel = OnboardingViewModel(repository)
 
     @Test
-    fun `cannot submit without a first name`() = runTest {
-        viewModel.onFirstNameChange("   ")
+    fun `cannot submit without a first name`() =
+        runTest {
+            viewModel.onFirstNameChange("   ")
 
-        viewModel.onSubmit()
-        advanceUntilIdle()
+            viewModel.onSubmit()
+            advanceUntilIdle()
 
-        assertThat(viewModel.uiState.value.canSubmit).isFalse()
-        assertThat(repository.state.value).isNull()
-    }
-
-    @Test
-    fun `submit saves the partner with the chosen address form`() = runTest {
-        viewModel.onFirstNameChange("Alex")
-        viewModel.onAddressFormSelected(AddressForm.FEMININE)
-
-        viewModel.onSubmit()
-        advanceUntilIdle()
-
-        assertThat(repository.state.value).isEqualTo(Partner("Alex", AddressForm.FEMININE))
-        assertThat(viewModel.uiState.value.saving).isFalse()
-    }
+            assertThat(viewModel.uiState.value.canSubmit).isFalse()
+            assertThat(repository.state.value).isNull()
+        }
 
     @Test
-    fun `first name is capped at 40 characters`() = runTest {
-        viewModel.onFirstNameChange("a".repeat(100))
+    fun `submit saves the partner with the chosen address form`() =
+        runTest {
+            viewModel.onFirstNameChange("Alex")
+            viewModel.onAddressFormSelect(AddressForm.FEMININE)
 
-        assertThat(viewModel.uiState.value.firstName).hasLength(40)
-    }
+            viewModel.onSubmit()
+            advanceUntilIdle()
+
+            assertThat(repository.state.value).isEqualTo(Partner("Alex", AddressForm.FEMININE))
+            assertThat(viewModel.uiState.value.saving).isFalse()
+        }
+
+    @Test
+    fun `first name is capped at 40 characters`() =
+        runTest {
+            viewModel.onFirstNameChange("a".repeat(100))
+
+            assertThat(viewModel.uiState.value.firstName).hasLength(40)
+        }
 }

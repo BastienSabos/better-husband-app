@@ -32,7 +32,11 @@ class ReminderPlanner
                         PlannedReminder(
                             dateKey = item.key,
                             offsetDays = offset,
-                            triggerAt = item.date.minusDays(offset.toLong()).atTime(REMINDER_HOUR, 0).atZone(clock.zone),
+                            triggerAt =
+                                item.date
+                                    .minusDays(offset.toLong())
+                                    .atTime(REMINDER_HOUR, 0)
+                                    .atZone(clock.zone),
                         )
                     }
                 }.filter { it.triggerAt.isAfter(now) && it.triggerAt.isBefore(horizon) }

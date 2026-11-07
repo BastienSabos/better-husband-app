@@ -34,21 +34,37 @@ class MainActivity : ComponentActivity() {
                 val state by appViewModel.uiState.collectAsStateWithLifecycle()
                 when (state) {
                     // Rien tant que la base n'est pas lue : évite de faire clignoter l'onboarding.
-                    AppUiState.Loading -> Unit
-                    AppUiState.NeedsOnboarding -> OnboardingRoute()
+                    AppUiState.Loading -> {
+                        Unit
+                    }
+
+                    AppUiState.NeedsOnboarding -> {
+                        OnboardingRoute()
+                    }
+
                     AppUiState.Ready -> {
                         var destination by rememberSaveable { mutableStateOf(Destination.TODAY) }
                         BackHandler(enabled = destination != Destination.TODAY) { destination = Destination.TODAY }
                         when (destination) {
-                            Destination.TODAY ->
+                            Destination.TODAY -> {
                                 TodayRoute(
                                     onOpenPartner = { destination = Destination.PARTNER },
                                     onOpenDates = { destination = Destination.DATES },
                                     onOpenIdeas = { destination = Destination.IDEAS },
                                 )
-                            Destination.PARTNER -> PartnerProfileRoute(onDone = { destination = Destination.TODAY })
-                            Destination.DATES -> DatesRoute(onBack = { destination = Destination.TODAY })
-                            Destination.IDEAS -> IdeasRoute(onBack = { destination = Destination.TODAY })
+                            }
+
+                            Destination.PARTNER -> {
+                                PartnerProfileRoute(onFinish = { destination = Destination.TODAY })
+                            }
+
+                            Destination.DATES -> {
+                                DatesRoute(onBack = { destination = Destination.TODAY })
+                            }
+
+                            Destination.IDEAS -> {
+                                IdeasRoute(onBack = { destination = Destination.TODAY })
+                            }
                         }
                     }
                 }

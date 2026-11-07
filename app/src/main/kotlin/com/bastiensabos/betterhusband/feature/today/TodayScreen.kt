@@ -41,7 +41,7 @@ fun TodayRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     TodayScreen(
         uiState = uiState,
-        onCardDone = viewModel::onCardDone,
+        onCardComplete = viewModel::onCardComplete,
         onOpenPartner = onOpenPartner,
         onOpenDates = onOpenDates,
         onOpenIdeas = onOpenIdeas,
@@ -53,7 +53,7 @@ fun TodayRoute(
 @Composable
 fun TodayScreen(
     uiState: TodayUiState,
-    onCardDone: (String) -> Unit,
+    onCardComplete: (String) -> Unit,
     onOpenPartner: () -> Unit,
     onOpenDates: () -> Unit,
     onOpenIdeas: () -> Unit,
@@ -94,7 +94,7 @@ fun TodayScreen(
                             ListItem(
                                 headlineContent = { Text(card.title) },
                                 trailingContent = {
-                                    Checkbox(checked = card.done, onCheckedChange = { onCardDone(card.id) })
+                                    Checkbox(checked = card.done, onCheckedChange = { onCardComplete(card.id) })
                                 },
                             )
                         }
@@ -110,13 +110,14 @@ fun TodayScreen(
 private fun TodayScreenReadyPreview() {
     BetterHusbandTheme(dynamicColor = false) {
         TodayScreen(
-            uiState = TodayUiState.Ready(
-                listOf(
-                    TodayCard("1", "Lui écrire un mot doux"),
-                    TodayCard("2", "Sortir les poubelles", done = true),
+            uiState =
+                TodayUiState.Ready(
+                    listOf(
+                        TodayCard("1", "Lui écrire un mot doux"),
+                        TodayCard("2", "Sortir les poubelles", done = true),
+                    ),
                 ),
-            ),
-            onCardDone = {},
+            onCardComplete = {},
             onOpenPartner = {},
             onOpenDates = {},
             onOpenIdeas = {},
@@ -128,6 +129,6 @@ private fun TodayScreenReadyPreview() {
 @Composable
 private fun TodayScreenEmptyPreview() {
     BetterHusbandTheme(dynamicColor = false) {
-        TodayScreen(uiState = TodayUiState.Empty, onCardDone = {}, onOpenPartner = {}, onOpenDates = {}, onOpenIdeas = {})
+        TodayScreen(uiState = TodayUiState.Empty, onCardComplete = {}, onOpenPartner = {}, onOpenDates = {}, onOpenIdeas = {})
     }
 }

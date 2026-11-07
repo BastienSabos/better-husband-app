@@ -1,6 +1,7 @@
 package com.bastiensabos.betterhusband.domain
 
 import java.time.LocalDate
+import java.time.Month
 import java.time.Year
 
 /** Calculs de dates purs et testables. */
@@ -23,9 +24,11 @@ object DateMath {
         date: LocalDate,
         year: Int,
     ): LocalDate =
-        if (date.monthValue == 2 && date.dayOfMonth == 29 && !Year.isLeap(year.toLong())) {
-            LocalDate.of(year, 2, 28)
+        if (date.month == Month.FEBRUARY && date.dayOfMonth == FEBRUARY_LEAP_DAY && !Year.isLeap(year.toLong())) {
+            LocalDate.of(year, Month.FEBRUARY, FEBRUARY_LEAP_DAY - 1)
         } else {
             date.withYear(year)
         }
+
+    private const val FEBRUARY_LEAP_DAY = 29
 }

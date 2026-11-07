@@ -25,41 +25,44 @@ class ReminderSyncTest {
         ReminderSync(ObserveUpcomingDatesUseCase(FakePartnerRepository(), dates, clock), ReminderPlanner(clock), scheduler, scope)
 
     @Test
-    fun `syncOnce plans reminders for current dates`() = runTest {
-        dates.save(ImportantDate(title = "Mariage", kind = DateKind.ANNIVERSARY, date = LocalDate.of(2015, 4, 12), recurring = true))
+    fun `syncOnce plans reminders for current dates`() =
+        runTest {
+            dates.save(ImportantDate(title = "Mariage", kind = DateKind.ANNIVERSARY, date = LocalDate.of(2015, 4, 12), recurring = true))
 
-        sync(this).syncOnce()
+            sync(this).syncOnce()
 
-        assertThat(scheduler.calls.single().map { it.offsetDays }).containsExactly(14, 3, 0).inOrder()
-    }
-
-    @Test
-    fun `start ensures the daily sync and reschedules when dates change`() = runTest {
-        sync(backgroundScope).start()
-        advanceUntilIdle()
-        assertThat(scheduler.dailySyncEnsured).isTrue()
-        assertThat(scheduler.calls.last()).isEmpty()
-
-        dates.save(ImportantDate(title = "Mariage", kind = DateKind.ANNIVERSARY, date = LocalDate.of(2015, 4, 12), recurring = true))
-        advanceUntilIdle()
-
-        assertThat(scheduler.calls.last()).hasSize(3)
-    }
+            assertThat(scheduler.calls.single().map { it.offsetDays }).containsExactly(14, 3, 0).inOrder()
+        }
 
     @Test
-    fun `an unchanged plan is not rescheduled again`() = runTest {
-        sync(backgroundScope).start()
-        advanceUntilIdle()
-        val before = scheduler.calls.size
+    fun `start ensures the daily sync and reschedules when dates change`() =
+        runTest {
+            sync(backgroundScope).start()
+            advanceUntilIdle()
+            assertThat(scheduler.dailySyncEnsured).isTrue()
+            assertThat(scheduler.calls.last()).isEmpty()
 
-        // Modifier un titre ne change aucun rappel : pas de nouvelle planification.
-        val id = dates.save(ImportantDate(title = "A", kind = DateKind.OTHER, date = LocalDate.of(2027, 9, 1), recurring = false))
-        advanceUntilIdle()
-        dates.save(ImportantDate(id, "B", DateKind.OTHER, LocalDate.of(2027, 9, 1), recurring = false))
-        advanceUntilIdle()
+            dates.save(ImportantDate(title = "Mariage", kind = DateKind.ANNIVERSARY, date = LocalDate.of(2015, 4, 12), recurring = true))
+            advanceUntilIdle()
 
-        assertThat(scheduler.calls.size).isEqualTo(before)
-    }
+            assertThat(scheduler.calls.last()).hasSize(3)
+        }
+
+    @Test
+    fun `an unchanged plan is not rescheduled again`() =
+        runTest {
+            sync(backgroundScope).start()
+            advanceUntilIdle()
+            val before = scheduler.calls.size
+
+            // Modifier un titre ne change aucun rappel : pas de nouvelle planification.
+            val id = dates.save(ImportantDate(title = "A", kind = DateKind.OTHER, date = LocalDate.of(2027, 9, 1), recurring = false))
+            advanceUntilIdle()
+            dates.save(ImportantDate(id, "B", DateKind.OTHER, LocalDate.of(2027, 9, 1), recurring = false))
+            advanceUntilIdle()
+
+            assertThat(scheduler.calls.size).isEqualTo(before)
+        }
 
     private class RecordingScheduler : ReminderScheduler {
         val calls = mutableListOf<List<PlannedReminder>>()

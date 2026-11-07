@@ -22,6 +22,8 @@ junit4 = "4.13.2"
 truth = "1.4.4"
 turbine = "1.2.0"
 spotless = "8.3.0"
+kover = "0.9.11"
+detekt = "1.23.8"
 ktlint = "1.8.0"
 composeRules = "0.6.8"
 
@@ -67,3 +69,5 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "androidxRoom" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

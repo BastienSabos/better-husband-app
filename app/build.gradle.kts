@@ -1,4 +1,5 @@
 plugins {
+    // AGP 9 compile le Kotlin lui-même : pas de plugin org.jetbrains.kotlin.android.
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose)
     alias(libs.plugins.ksp)
