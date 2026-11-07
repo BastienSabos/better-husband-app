@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.feature.dates.DatesRoute
 import com.bastiensabos.betterhusband.feature.ideas.IdeasRoute
+import com.bastiensabos.betterhusband.feature.mydata.MyDataRoute
 import com.bastiensabos.betterhusband.feature.onboarding.OnboardingRoute
 import com.bastiensabos.betterhusband.feature.partner.PartnerProfileRoute
 import com.bastiensabos.betterhusband.feature.tasks.TasksRoute
@@ -21,7 +22,7 @@ import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Navigation à plat tant qu'il n'y a que quelques écrans ; Navigation Compose viendra avec les onglets. */
-private enum class Destination { TODAY, PARTNER, DATES, IDEAS, TASKS }
+private enum class Destination { TODAY, PARTNER, DATES, IDEAS, TASKS, MY_DATA }
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -53,6 +54,7 @@ class MainActivity : ComponentActivity() {
                                     onOpenDates = { destination = Destination.DATES },
                                     onOpenIdeas = { destination = Destination.IDEAS },
                                     onOpenTasks = { destination = Destination.TASKS },
+                                    onOpenMyData = { destination = Destination.MY_DATA },
                                 )
                             }
 
@@ -70,6 +72,10 @@ class MainActivity : ComponentActivity() {
 
                             Destination.TASKS -> {
                                 TasksRoute(onBack = { destination = Destination.TODAY })
+                            }
+
+                            Destination.MY_DATA -> {
+                                MyDataRoute(onBack = { destination = Destination.TODAY })
                             }
                         }
                     }

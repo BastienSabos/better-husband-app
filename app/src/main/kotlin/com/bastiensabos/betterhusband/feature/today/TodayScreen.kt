@@ -50,6 +50,7 @@ data class TodayActions(
     val onOpenDates: () -> Unit,
     val onOpenIdeas: () -> Unit,
     val onOpenTasks: () -> Unit,
+    val onOpenMyData: () -> Unit,
 )
 
 /** Point d'entrée « stateful » : branche le ViewModel. */
@@ -59,6 +60,7 @@ fun TodayRoute(
     onOpenDates: () -> Unit,
     onOpenIdeas: () -> Unit,
     onOpenTasks: () -> Unit,
+    onOpenMyData: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
@@ -74,6 +76,7 @@ fun TodayRoute(
                 onOpenDates = onOpenDates,
                 onOpenIdeas = onOpenIdeas,
                 onOpenTasks = onOpenTasks,
+                onOpenMyData = onOpenMyData,
             ),
         modifier = modifier,
     )
@@ -113,6 +116,9 @@ fun TodayScreen(
                 }
                 TextButton(onClick = actions.onOpenTasks, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
                     Text(stringResource(R.string.today_open_tasks))
+                }
+                TextButton(onClick = actions.onOpenMyData, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
+                    Text(stringResource(R.string.today_open_my_data))
                 }
             }
             when (uiState) {
@@ -219,7 +225,7 @@ private fun NextDateSection(
     }
 }
 
-private val previewActions = TodayActions({}, {}, {}, {}, {}, {}, {})
+private val previewActions = TodayActions({}, {}, {}, {}, {}, {}, {}, {})
 
 private val previewDate =
     UpcomingDate("a", DateLabel.RelativeBirthday("Léa"), DateKind.BIRTHDAY, LocalDate.of(2027, 3, 11), 6, 8, null)

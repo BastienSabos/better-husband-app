@@ -122,4 +122,19 @@
     <string name="share_idea_title">Ajouter au carnet d\'idées</string>
     <string name="share_idea_save">Ajouter au carnet</string>
     <string name="share_idea_saved">Idée ajoutée au carnet.</string>
+    <string name="today_open_my_data">Mes données</string>
+    <string name="my_data_title">Mes données</string>
+    <string name="my_data_intro">Tout ce que tu notes reste chiffré sur ton téléphone. Ici, tu gardes la main : tu peux tout récupérer, ou tout effacer.</string>
+    <string name="my_data_export_title">Exporter</string>
+    <string name="my_data_export_body">Tu choisis où enregistrer un fichier lisible avec la fiche de ton ou ta partenaire, tes dates, tes idées et tes tâches. Il n\'est pas chiffré : range-le avec soin.</string>
+    <string name="my_data_export_action">Exporter mes données</string>
+    <string name="my_data_export_done">Export enregistré.</string>
+    <string name="my_data_export_failed">L\'export a échoué. Essaie un autre emplacement.</string>
+    <string name="my_data_delete_title">Tout supprimer</string>
+    <string name="my_data_delete_body">Efface la fiche, les dates, les idées, les tâches, l\'historique et les rappels. L\'appli repart de zéro.</string>
+    <string name="my_data_delete_action">Supprimer toutes mes données</string>
+    <string name="my_data_delete_confirm_title">Tout supprimer ?</string>
+    <string name="my_data_delete_confirm_body">Cette action est définitive : rien ne pourra être récupéré. Pense à exporter d\'abord si tu veux garder une copie.</string>
+    <string name="my_data_delete_confirm_action">Tout supprimer</string>
+    <string name="my_data_delete_cancel">Annuler</string>
 </resources>
