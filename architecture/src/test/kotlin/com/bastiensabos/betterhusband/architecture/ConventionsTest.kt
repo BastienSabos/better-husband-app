@@ -127,16 +127,6 @@ class ConventionsTest {
             .toList()
 
     @Test
-    fun `aucun manifeste ne demande la permission reseau`() {
-        val found = manifests()
-        assertTrue("aucun manifeste trouvé : la règle ne vérifierait rien", found.isNotEmpty())
-        val permission = Regex("""<uses-permission[^>]*android\.permission\.(INTERNET|ACCESS_NETWORK_STATE)""")
-        found.forEach { manifest ->
-            assertFalse("${manifest.path} demande une permission réseau", permission.containsMatchIn(manifest.readText()))
-        }
-    }
-
-    @Test
     fun `l'application desactive la sauvegarde Android`() {
         val manifest = manifests().first { "/app/" in it.path }.readText()
         assertTrue("allowBackup doit rester à false", """android:allowBackup="false"""" in manifest)

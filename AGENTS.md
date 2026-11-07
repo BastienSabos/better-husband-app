@@ -35,7 +35,7 @@ selon le genre choisi à l'onboarding. Voir `docs/ux-writing.md`.
 
 Les données sont intimes et concernent un tiers (le ou la partenaire), parfois de santé.
 
-- Stockage local chiffré uniquement (Room + SQLCipher, clé dans Android Keystore). Aucun appel réseau au MVP.
+- Stockage local chiffré uniquement (Room + SQLCipher, clé dans Android Keystore). Le réseau est autorisé (décision de Bastien, 2026-11-07) : aucune donnée personnelle n'en sort sans consentement explicite, et la permission `INTERNET` ne s'ajoute qu'avec la fonctionnalité qui la demande.
 - `allowBackup=false`, aucune sauvegarde cloud ni transfert d'appareil.
 - Aucun SDK d'analytics, de pub, de crash reporting tiers ou de tracking sans ADR validé.
 - Jamais de donnée personnelle dans les logs, les noms de notification visibles, les crash reports ou les tests
