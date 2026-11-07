@@ -34,6 +34,7 @@ import com.bastiensabos.betterhusband.domain.model.Interest
 import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LifeRhythm
 import com.bastiensabos.betterhusband.domain.model.LivingArrangement
+import com.bastiensabos.betterhusband.ui.component.BackTopBar
 import com.bastiensabos.betterhusband.ui.component.Heading
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
@@ -80,7 +81,10 @@ fun CoupleProfileScreen(
     modifier: Modifier = Modifier,
 ) {
     val spacing = Spacing()
-    Scaffold(modifier = modifier) { padding ->
+    Scaffold(
+        modifier = modifier,
+        topBar = { BackTopBar(title = stringResource(R.string.couple_title), onBack = actions.onBack) },
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -90,10 +94,6 @@ fun CoupleProfileScreen(
                     .padding(horizontal = spacing.screen),
             verticalArrangement = Arrangement.spacedBy(spacing.md),
         ) {
-            TextButton(onClick = actions.onBack, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                Text(stringResource(R.string.partner_profile_back))
-            }
-            Heading(text = stringResource(R.string.couple_title), style = MaterialTheme.typography.headlineMedium)
             Text(text = stringResource(R.string.couple_intro), style = MaterialTheme.typography.bodyLarge)
             if (uiState.loading) {
                 CircularProgressIndicator()

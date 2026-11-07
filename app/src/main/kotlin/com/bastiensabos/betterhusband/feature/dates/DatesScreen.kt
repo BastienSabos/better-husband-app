@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -49,18 +50,15 @@ import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
 fun DatesRoute(
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DatesViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     DatesScreen(
         uiState = uiState,
-        onBack = onBack,
         onAddClick = viewModel::onAddClick,
         onEdit = viewModel::onEdit,
         editor =
@@ -90,7 +88,6 @@ data class DateEditorActions(
 @Composable
 fun DatesScreen(
     uiState: DatesUiState,
-    onBack: () -> Unit,
     onAddClick: () -> Unit,
     onEdit: (Long) -> Unit,
     editor: DateEditorActions,
@@ -99,12 +96,9 @@ fun DatesScreen(
     val spacing = Spacing()
     Scaffold(modifier = modifier) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = spacing.screen),
+            modifier = Modifier.fillMaxSize().padding(padding).padding(start = spacing.screen, end = spacing.screen, top = spacing.md),
             verticalArrangement = Arrangement.spacedBy(spacing.md),
         ) {
-            TextButton(onClick = onBack, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                Text(stringResource(R.string.partner_profile_back))
-            }
             Heading(text = stringResource(R.string.dates_title), style = MaterialTheme.typography.headlineMedium)
             NotificationPermissionPrompt()
             when (val list = uiState.list) {
@@ -138,7 +132,7 @@ private fun UpcomingDateRow(
     item: UpcomingDate,
     onEdit: (Long) -> Unit,
 ) {
-    val locale = Locale.getDefault()
+    val locale = LocalConfiguration.current.locales[0]
     val dateText = remember(item.date, locale) { item.date.format(DateTimeFormatter.ofPattern("EEEE d MMMM", locale)) }
     val years = item.yearsSince?.takeIf { it > 0 }
     // Seules les dates saisies à la main se modifient ici ; les autres se changent dans la fiche.
@@ -275,7 +269,6 @@ private fun DatesScreenReadyPreview() {
                         ),
                     ),
                 ),
-            onBack = {},
             onAddClick = {},
             onEdit = {},
             editor = previewActions,
@@ -289,7 +282,6 @@ private fun DatesScreenEmptyPreview() {
     BetterHusbandTheme(dynamicColor = false) {
         DatesScreen(
             uiState = DatesUiState(DatesListState.Empty),
-            onBack = {},
             onAddClick = {},
             onEdit = {},
             editor = previewActions,
@@ -303,7 +295,6 @@ private fun DatesEditorPreview() {
     BetterHusbandTheme(dynamicColor = false) {
         DatesScreen(
             uiState = DatesUiState(DatesListState.Empty, DateEditorState(title = "Mariage", date = LocalDate.of(2015, 6, 20))),
-            onBack = {},
             onAddClick = {},
             onEdit = {},
             editor = previewActions,

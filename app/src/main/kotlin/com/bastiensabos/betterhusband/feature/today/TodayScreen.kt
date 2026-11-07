@@ -1,7 +1,6 @@
 package com.bastiensabos.betterhusband.feature.today
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,12 +8,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -23,15 +28,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.domain.model.DateKind
@@ -40,8 +48,10 @@ import com.bastiensabos.betterhusband.domain.model.UpcomingDate
 import com.bastiensabos.betterhusband.feature.dates.daysUntilText
 import com.bastiensabos.betterhusband.feature.dates.text
 import com.bastiensabos.betterhusband.ui.component.Heading
+import com.bastiensabos.betterhusband.ui.theme.AppTheme
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
+import kotlinx.coroutines.delay
 import java.time.LocalDate
 
 data class TodayActions(
@@ -50,9 +60,8 @@ data class TodayActions(
     val onTaskDone: (Long) -> Unit,
     val onOpenPartner: () -> Unit,
     val onOpenDates: () -> Unit,
-    val onOpenIdeas: () -> Unit,
     val onOpenTasks: () -> Unit,
-    val onOpenMyData: () -> Unit,
+    val onOpenSettings: () -> Unit,
     val onOpenCoupleProfile: () -> Unit,
 )
 
@@ -61,14 +70,24 @@ data class TodayActions(
 fun TodayRoute(
     onOpenPartner: () -> Unit,
     onOpenDates: () -> Unit,
-    onOpenIdeas: () -> Unit,
     onOpenTasks: () -> Unit,
-    onOpenMyData: () -> Unit,
+    onOpenSettings: () -> Unit,
     onOpenCoupleProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    // Retour au premier plan ou minuit passé écran ouvert : l'accueil passe au nouveau jour.
+    LifecycleResumeEffect(viewModel) {
+        viewModel.refreshDay()
+        onPauseOrDispose {}
+    }
+    LaunchedEffect(viewModel) {
+        while (true) {
+            delay(viewModel.millisUntilNextDay())
+            viewModel.refreshDay()
+        }
+    }
     TodayScreen(
         uiState = uiState,
         actions =
@@ -78,9 +97,8 @@ fun TodayRoute(
                 onTaskDone = viewModel::onTaskDone,
                 onOpenPartner = onOpenPartner,
                 onOpenDates = onOpenDates,
-                onOpenIdeas = onOpenIdeas,
                 onOpenTasks = onOpenTasks,
-                onOpenMyData = onOpenMyData,
+                onOpenSettings = onOpenSettings,
                 onOpenCoupleProfile = onOpenCoupleProfile,
             ),
         modifier = modifier,
@@ -105,30 +123,11 @@ fun TodayScreen(
                     .padding(spacing.screen),
             verticalArrangement = Arrangement.spacedBy(spacing.md),
         ) {
-            Heading(text = stringResource(R.string.today_title), style = MaterialTheme.typography.headlineMedium)
-            Row(
-                modifier = Modifier.horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(spacing.xs),
-            ) {
-                TextButton(onClick = actions.onOpenPartner, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                    Text(stringResource(R.string.today_open_partner))
-                }
-                TextButton(onClick = actions.onOpenDates, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                    Text(stringResource(R.string.today_open_dates))
-                }
-                TextButton(onClick = actions.onOpenIdeas, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                    Text(stringResource(R.string.today_open_ideas))
-                }
-                TextButton(onClick = actions.onOpenTasks, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                    Text(stringResource(R.string.today_open_tasks))
-                }
-                TextButton(onClick = actions.onOpenCoupleProfile, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                    Text(stringResource(R.string.today_open_couple))
-                }
-                TextButton(onClick = actions.onOpenMyData, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                    Text(stringResource(R.string.today_open_my_data))
-                }
-            }
+            TodayHeader(
+                partnerName = (uiState as? TodayUiState.Ready)?.partnerName,
+                onOpenPartner = actions.onOpenPartner,
+                onOpenSettings = actions.onOpenSettings,
+            )
             when (uiState) {
                 TodayUiState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -146,6 +145,38 @@ fun TodayScreen(
                     TasksSection(uiState, actions)
                     uiState.nextDate?.let { NextDateSection(it, actions.onOpenDates) }
                 }
+            }
+        }
+    }
+}
+
+/** Titre du jour, avatar du ou de la partenaire (vers sa fiche) et réglages. */
+@Composable
+private fun TodayHeader(
+    partnerName: String?,
+    onOpenPartner: () -> Unit,
+    onOpenSettings: () -> Unit,
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Heading(
+            text = stringResource(R.string.today_title),
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.weight(1f),
+        )
+        IconButton(onClick = onOpenSettings) {
+            Icon(Icons.Outlined.Settings, contentDescription = stringResource(R.string.settings_title))
+        }
+        if (partnerName != null) {
+            val description = stringResource(R.string.today_open_partner_of, partnerName)
+            FilledTonalIconButton(
+                onClick = onOpenPartner,
+                modifier = Modifier.size(AppTheme.spacing.touchTarget).semantics { contentDescription = description },
+            ) {
+                Text(
+                    text = partnerName.take(1).uppercase(),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.clearAndSetSemantics {},
+                )
             }
         }
     }
@@ -248,7 +279,7 @@ private fun NextDateSection(
     }
 }
 
-private val previewActions = TodayActions({}, {}, {}, {}, {}, {}, {}, {}, {})
+private val previewActions = TodayActions({}, {}, {}, {}, {}, {}, {}, {})
 
 private val previewDate =
     UpcomingDate("a", DateLabel.RelativeBirthday("Léa"), DateKind.BIRTHDAY, LocalDate.of(2027, 3, 11), 6, 8, null)
@@ -265,6 +296,7 @@ private fun TodayScreenReadyPreview() {
                     moreTasks = 2,
                     nextDate = previewDate,
                     streak = 4,
+                    partnerName = "Camille",
                 ),
             actions = previewActions,
         )

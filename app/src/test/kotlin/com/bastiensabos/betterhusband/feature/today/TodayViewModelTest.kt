@@ -17,6 +17,7 @@ import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.LivingArrangement
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
 import com.bastiensabos.betterhusband.testutil.MainDispatcherRule
+import com.bastiensabos.betterhusband.testutil.MutableClock
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
@@ -39,16 +40,18 @@ class TodayViewModelTest {
     private val dates = FakeImportantDateRepository()
     private val coupleProfile = FakeCoupleProfileRepository()
 
-    private fun viewModel(bank: FakeAttentionBank = FakeAttentionBank()) =
-        TodayViewModel(
-            attentionLog = log,
-            taskRepository = tasks,
-            partnerRepository = FakePartnerRepository(),
-            coupleProfile = coupleProfile,
-            observeUpcomingDates = ObserveUpcomingDatesUseCase(FakePartnerRepository(), dates, clock),
-            bank = bank,
-            clock = clock,
-        )
+    private fun viewModel(
+        bank: FakeAttentionBank = FakeAttentionBank(),
+        clock: Clock = this.clock,
+    ) = TodayViewModel(
+        attentionLog = log,
+        taskRepository = tasks,
+        partnerRepository = FakePartnerRepository(),
+        coupleProfile = coupleProfile,
+        observeUpcomingDates = ObserveUpcomingDatesUseCase(FakePartnerRepository(), dates, clock),
+        bank = bank,
+        clock = clock,
+    )
 
     /** Garde le flux actif (WhileSubscribed) pendant le test. */
     private fun TestScope.collectState(viewModel: TodayViewModel) {
@@ -271,4 +274,42 @@ class TodayViewModelTest {
                 ),
             ).isEqualTo(AttentionGroup.EVERYONE)
         }
+
+    @Test
+    fun `after midnight the screen moves to the new day instead of spinning`() =
+        runTest {
+            val clock = MutableClock(Instant.parse("2027-01-20T23:30:00Z"))
+            tasks.save(
+                HouseholdTask(
+                    title = "Sortir les poubelles",
+                    repeat = TaskRepeat.DAILY,
+                    createdOn = today.minusDays(3),
+                    lastDoneOn = today.minusDays(1),
+                ),
+            )
+            val viewModel = viewModel(clock = clock)
+            collectState(viewModel)
+            assertThat(viewModel.ready().tasks).hasSize(1)
+
+            clock.instant = Instant.parse("2027-01-21T00:05:00Z")
+            // Une action après minuit, sans retour au premier plan : l'accueil doit suivre.
+            viewModel.onTaskDone(
+                viewModel
+                    .ready()
+                    .tasks
+                    .single()
+                    .id,
+            )
+            advanceUntilIdle()
+
+            assertThat(log.state.value.map { it.date }).containsExactly(today, today.plusDays(1))
+            assertThat(viewModel.uiState.value).isInstanceOf(TodayUiState.Ready::class.java)
+        }
+
+    @Test
+    fun `millis until next day counts down to midnight`() {
+        val clock = MutableClock(Instant.parse("2027-01-20T23:59:00Z"))
+
+        assertThat(viewModel(clock = clock).millisUntilNextDay()).isEqualTo(60_000L)
+    }
 }
