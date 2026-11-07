@@ -1,5 +1,7 @@
 package com.bastiensabos.betterhusband.feature.dates
 
+import com.bastiensabos.betterhusband.domain.DateGroups
+import com.bastiensabos.betterhusband.domain.MonthGroup
 import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.UpcomingDate
 import com.bastiensabos.betterhusband.ui.component.UndoNotice
@@ -10,9 +12,15 @@ sealed interface DatesListState {
 
     data object Empty : DatesListState
 
+    /** [items] triées par échéance, jamais vide : la première est mise en avant, les autres sont rangées par mois. */
     data class Ready(
         val items: List<UpcomingDate>,
-    ) : DatesListState
+        /** Idées du carnet qui peuvent servir pour la prochaine date. */
+        val nextIdeas: Int = 0,
+    ) : DatesListState {
+        val next: UpcomingDate get() = items.first()
+        val months: List<MonthGroup> get() = DateGroups.byMonth(items.drop(1))
+    }
 }
 
 /** Formulaire d'ajout (editingId = null) ou de modification d'une date saisie à la main. */

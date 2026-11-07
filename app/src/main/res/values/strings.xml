@@ -75,7 +75,16 @@
     <string name="partner_profile_remove_relative">Retirer ce proche</string>
     <string name="partner_profile_save">Enregistrer</string>
     <string name="dates_title">Dates qui comptent</string>
-    <string name="dates_empty">Rien à venir. Ajoute une date qui compte pour être prévenu à temps.</string>
+    <string name="dates_empty">Rien à venir. Ajoute une date qui compte pour recevoir un rappel à temps.</string>
+    <string name="dates_subtitle">Rappel à J-14, J-3 et le jour J.</string>
+    <!-- « Prochaine · dans 15 jours » -->
+    <string name="dates_next_overline">Prochaine · %1$s</string>
+    <plurals name="dates_next_ideas">
+        <item quantity="one">%d idée dans ton carnet pour la préparer</item>
+        <item quantity="many">%d idées dans ton carnet pour la préparer</item>
+        <item quantity="other">%d idées dans ton carnet pour la préparer</item>
+    </plurals>
+    <string name="dates_next_no_idea">Note une idée pour la préparer</string>
     <string name="dates_add">Ajouter une date</string>
     <string name="dates_today">Aujourd\'hui</string>
     <string name="dates_tomorrow">Demain</string>
@@ -105,7 +114,7 @@
     <string name="notif_public_title">Tu as un rappel</string>
     <string name="notif_public_text">Déverrouille ton téléphone pour voir lequel.</string>
     <string name="notif_today">C\'est aujourd\'hui</string>
-    <string name="notif_permission_prompt">Pour être prévenu 14 jours, 3 jours et le jour même, active les notifications. Elles restent discrètes sur l\'écran verrouillé.</string>
+    <string name="notif_permission_prompt">Pour recevoir ces rappels, active les notifications. Elles restent discrètes sur l\'écran verrouillé.</string>
     <string name="notif_permission_action">Activer les rappels</string>
     <string name="ideas_title">Carnet d\'idées</string>
     <string name="ideas_input_label">Une idée à garder</string>

@@ -104,8 +104,10 @@ class ScreensCaptureTest {
                             listOf(
                                 UpcomingDate("a", DateLabel.PartnerBirthday("Camille"), DateKind.BIRTHDAY, day.plusDays(14), 14, 34, null),
                                 UpcomingDate("b", DateLabel.RelativeBirthday("Léa"), DateKind.BIRTHDAY, day.plusDays(40), 40, 37, null),
+                                UpcomingDate("d", DateLabel.Custom("Réveillon à la maison"), DateKind.OTHER, day.plusDays(47), 47, null, 3),
                                 UpcomingDate("c", DateLabel.Custom("Mariage"), DateKind.ANNIVERSARY, day.plusDays(102), 102, 7, 7),
                             ),
+                            nextIdeas = 2,
                         ),
                     ),
                 onAddClick = {},

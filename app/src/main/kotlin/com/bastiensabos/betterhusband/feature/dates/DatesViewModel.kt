@@ -3,7 +3,9 @@ package com.bastiensabos.betterhusband.feature.dates
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bastiensabos.betterhusband.R
+import com.bastiensabos.betterhusband.data.repository.IdeaRepository
 import com.bastiensabos.betterhusband.data.repository.ImportantDateRepository
+import com.bastiensabos.betterhusband.domain.IdeaSuggestions
 import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
 import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
@@ -31,6 +33,7 @@ class DatesViewModel
     constructor(
         observeUpcomingDates: ObserveUpcomingDatesUseCase,
         private val importantDateRepository: ImportantDateRepository,
+        ideaRepository: IdeaRepository,
     ) : ViewModel() {
         private val editor = MutableStateFlow<DateEditorState?>(null)
         private val undo = MutableStateFlow<UndoNotice?>(null)
@@ -40,7 +43,13 @@ class DatesViewModel
 
         val uiState: StateFlow<DatesUiState> =
             combine(
-                observeUpcomingDates().map { if (it.isEmpty()) DatesListState.Empty else DatesListState.Ready(it) },
+                combine(observeUpcomingDates(), ideaRepository.observeAll()) { dates, ideas ->
+                    if (dates.isEmpty()) {
+                        DatesListState.Empty
+                    } else {
+                        DatesListState.Ready(dates, nextIdeas = IdeaSuggestions.forDate(ideas, dates.first().kind, Int.MAX_VALUE).size)
+                    }
+                },
                 editor,
                 undo,
             ) { list, editorState, undoNotice -> DatesUiState(list, editorState, undoNotice) }
