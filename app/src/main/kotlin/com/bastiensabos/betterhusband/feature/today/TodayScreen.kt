@@ -1,5 +1,6 @@
 package com.bastiensabos.betterhusband.feature.today
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ListItem
@@ -32,6 +34,7 @@ import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 fun TodayRoute(
     onOpenPartner: () -> Unit,
     onOpenDates: () -> Unit,
+    onOpenIdeas: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
@@ -41,6 +44,7 @@ fun TodayRoute(
         onCardDone = viewModel::onCardDone,
         onOpenPartner = onOpenPartner,
         onOpenDates = onOpenDates,
+        onOpenIdeas = onOpenIdeas,
         modifier = modifier,
     )
 }
@@ -52,6 +56,7 @@ fun TodayScreen(
     onCardDone: (String) -> Unit,
     onOpenPartner: () -> Unit,
     onOpenDates: () -> Unit,
+    onOpenIdeas: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(modifier = modifier) { padding ->
@@ -60,12 +65,18 @@ fun TodayScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(text = stringResource(R.string.today_title), style = MaterialTheme.typography.headlineMedium)
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                modifier = Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 TextButton(onClick = onOpenPartner, modifier = Modifier.heightIn(min = 48.dp)) {
                     Text(stringResource(R.string.today_open_partner))
                 }
                 TextButton(onClick = onOpenDates, modifier = Modifier.heightIn(min = 48.dp)) {
                     Text(stringResource(R.string.today_open_dates))
+                }
+                TextButton(onClick = onOpenIdeas, modifier = Modifier.heightIn(min = 48.dp)) {
+                    Text(stringResource(R.string.today_open_ideas))
                 }
             }
             when (uiState) {
@@ -108,6 +119,7 @@ private fun TodayScreenReadyPreview() {
             onCardDone = {},
             onOpenPartner = {},
             onOpenDates = {},
+            onOpenIdeas = {},
         )
     }
 }
@@ -116,6 +128,6 @@ private fun TodayScreenReadyPreview() {
 @Composable
 private fun TodayScreenEmptyPreview() {
     BetterHusbandTheme(dynamicColor = false) {
-        TodayScreen(uiState = TodayUiState.Empty, onCardDone = {}, onOpenPartner = {}, onOpenDates = {})
+        TodayScreen(uiState = TodayUiState.Empty, onCardDone = {}, onOpenPartner = {}, onOpenDates = {}, onOpenIdeas = {})
     }
 }

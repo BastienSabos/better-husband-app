@@ -71,4 +71,16 @@
     <string name="notif_today">C\'est aujourd\'hui</string>
     <string name="notif_permission_prompt">Pour être prévenu 14 jours, 3 jours et le jour même, active les notifications. Elles restent discrètes sur l\'écran verrouillé.</string>
     <string name="notif_permission_action">Activer les rappels</string>
+    <string name="today_open_ideas">Idées</string>
+    <string name="ideas_title">Carnet d\'idées</string>
+    <string name="ideas_input_label">Une idée à garder</string>
+    <string name="ideas_add">Ajouter</string>
+    <string name="ideas_category_gift">Cadeau</string>
+    <string name="ideas_category_outing">Sortie</string>
+    <string name="ideas_category_attention">Attention</string>
+    <string name="ideas_filter_all">Toutes</string>
+    <string name="ideas_empty">Note ici ce que ton ou ta partenaire dit aimer, pour y repenser au bon moment.</string>
+    <string name="ideas_empty_filtered">Rien dans cette catégorie pour l\'instant.</string>
+    <string name="ideas_done_description">Marquer comme fait</string>
+    <string name="ideas_editor_title">Modifier l\'idée</string>
 </resources>
