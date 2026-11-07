@@ -55,7 +55,6 @@
     <string name="date_field_confirm">Valider</string>
     <string name="date_field_cancel">Annuler</string>
     <string name="partner_profile_title">Fiche partenaire</string>
-    <string name="partner_profile_section_dates">Dates clés</string>
     <string name="partner_profile_birthday">Anniversaire</string>
     <string name="partner_profile_relationship_start">Début de la relation</string>
     <string name="partner_profile_section_tastes">Goûts</string>
@@ -74,6 +73,20 @@
     <string name="partner_profile_add_relative">Ajouter un proche</string>
     <string name="partner_profile_remove_relative">Retirer ce proche</string>
     <string name="partner_profile_save">Enregistrer</string>
+    <string name="partner_profile_cancel">Annuler</string>
+    <string name="partner_profile_edit">Modifier</string>
+    <string name="partner_profile_edit_description">Modifier : %1$s</string>
+    <string name="partner_profile_section_identity">Prénom et dates</string>
+    <plurals name="partner_profile_years_together">
+        <item quantity="one">Ensemble depuis %d an</item>
+        <item quantity="many">Ensemble depuis %d ans</item>
+        <item quantity="other">Ensemble depuis %d ans</item>
+    </plurals>
+    <string name="partner_profile_together_new">Ensemble depuis moins d\'un an</string>
+    <string name="partner_profile_birthday_on">Anniversaire le %1$s</string>
+    <string name="partner_profile_tastes_empty">Rien de noté pour l\'instant. Fleurs, plats, couleurs : de quoi trouver une idée le jour venu.</string>
+    <string name="partner_profile_sizes_empty">Aucune taille notée. Pratique au moment d\'offrir un vêtement ou une bague.</string>
+    <string name="partner_profile_relatives_empty">Aucun proche noté. Leurs anniversaires rejoindront tes dates.</string>
     <string name="dates_title">Dates qui comptent</string>
     <string name="dates_empty">Rien à venir. Ajoute une date qui compte pour recevoir un rappel à temps.</string>
     <string name="dates_subtitle">Rappel à J-14, J-3 et le jour J.</string>

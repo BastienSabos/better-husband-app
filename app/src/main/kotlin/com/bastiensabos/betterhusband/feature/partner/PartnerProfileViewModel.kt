@@ -16,26 +16,39 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Clock
 import java.time.LocalDate
 import javax.inject.Inject
 
-/** Édite un brouillon de la fiche ; rien n'est écrit tant que l'utilisateur n'enregistre pas. */
+/**
+ * Fiche en lecture, éditée une section à la fois. Le brouillon d'une section n'est écrit qu'à l'enregistrement ;
+ * l'annuler rend la fiche telle qu'elle est enregistrée.
+ */
 @HiltViewModel
 class PartnerProfileViewModel
     @Inject
     constructor(
         private val partnerRepository: PartnerRepository,
+        private val clock: Clock,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(PartnerProfileUiState())
         val uiState: StateFlow<PartnerProfileUiState> = _uiState.asStateFlow()
         private var nextRelativeId = 0L
 
+        /** La fiche telle qu'elle est enregistrée, rendue quand une édition est annulée. */
+        private var persisted = PartnerProfileUiState()
+
         init {
             viewModelScope.launch {
                 val partner = partnerRepository.observePartner().first()
-                _uiState.value = partner.toDraft()
+                persisted = partner.toDraft()
+                _uiState.value = persisted.copy(editing = if (partner == null) PartnerSection.IDENTITY else null)
             }
         }
+
+        fun onEdit(section: PartnerSection) = _uiState.update { if (it.loaded && it.editing == null) it.copy(editing = section) else it }
+
+        fun onCancelEdit() = _uiState.update { persisted }
 
         fun onFirstNameChange(value: String) = _uiState.update { it.copy(firstName = value.take(MAX_NAME_LENGTH)) }
 
@@ -68,8 +81,11 @@ class PartnerProfileViewModel
             _uiState.update { it.copy(saving = true) }
             viewModelScope.launch {
                 try {
-                    partnerRepository.savePartner(state.toPartner())
-                    _uiState.update { it.copy(saved = true) }
+                    val partner = state.toPartner()
+                    partnerRepository.savePartner(partner)
+                    // Relu depuis ce qui est enregistré : la lecture montre les goûts dédoublonnés, les lignes vides en moins.
+                    persisted = partner.toDraft()
+                    _uiState.value = persisted
                 } finally {
                     _uiState.update { it.copy(saving = false) }
                 }
@@ -77,9 +93,12 @@ class PartnerProfileViewModel
         }
 
         private fun Partner?.toDraft(): PartnerProfileUiState {
-            if (this == null) return PartnerProfileUiState(loaded = true)
+            val today = LocalDate.now(clock)
+            if (this == null) return PartnerProfileUiState(loaded = true, today = today)
             return PartnerProfileUiState(
                 loaded = true,
+                hasProfile = true,
+                today = today,
                 firstName = firstName,
                 addressForm = addressForm,
                 birthday = birthday,
@@ -98,12 +117,7 @@ class PartnerProfileViewModel
                 relationshipStart = relationshipStart,
                 tastes =
                     tastes.flatMap { (category, text) ->
-                        text
-                            .split(',')
-                            .map(String::trim)
-                            .filter(String::isNotEmpty)
-                            .distinct()
-                            .map { Taste(category, it) }
+                        splitTastes(text).map { Taste(category, it) }
                     },
                 sizes = sizes.mapValues { it.value.trim() }.filterValues(String::isNotEmpty),
                 // Un proche sans prénom n'a pas de sens : la ligne vide est simplement ignorée.

@@ -10,9 +10,7 @@ import com.bastiensabos.betterhusband.domain.model.DateLabel
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.Idea
 import com.bastiensabos.betterhusband.domain.model.IdeaCategory
-import com.bastiensabos.betterhusband.domain.model.SizeKind
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
-import com.bastiensabos.betterhusband.domain.model.TasteCategory
 import com.bastiensabos.betterhusband.domain.model.UpcomingDate
 import com.bastiensabos.betterhusband.feature.couple.CoupleProfileActions
 import com.bastiensabos.betterhusband.feature.couple.CoupleProfileScreen
@@ -33,7 +31,9 @@ import com.bastiensabos.betterhusband.feature.onboarding.OnboardingScreen
 import com.bastiensabos.betterhusband.feature.onboarding.OnboardingUiState
 import com.bastiensabos.betterhusband.feature.partner.PartnerProfileScreen
 import com.bastiensabos.betterhusband.feature.partner.PartnerProfileUiState
-import com.bastiensabos.betterhusband.feature.partner.RelativeDraft
+import com.bastiensabos.betterhusband.feature.partner.PartnerSection
+import com.bastiensabos.betterhusband.feature.partner.previewActions
+import com.bastiensabos.betterhusband.feature.partner.previewProfile
 import com.bastiensabos.betterhusband.feature.settings.SettingsScreen
 import com.bastiensabos.betterhusband.feature.tasks.TaskItem
 import com.bastiensabos.betterhusband.feature.tasks.TasksActions
@@ -153,31 +153,18 @@ class ScreensCaptureTest {
         }
 
     @Test
-    fun partner() =
-        compose.captureScreen("fiche") {
-            PartnerProfileScreen(
-                uiState =
-                    PartnerProfileUiState(
-                        loaded = true,
-                        firstName = "Camille",
-                        addressForm = AddressForm.FEMININE,
-                        birthday = LocalDate.of(1992, 11, 21),
-                        tastes = mapOf(TasteCategory.FLOWERS to "Pivoines, tulipes"),
-                        sizes = mapOf(SizeKind.SHOES to "39"),
-                        relatives = listOf(RelativeDraft(0, "Sœur", "Léa", LocalDate.of(1989, 9, 3))),
-                    ),
-                onBack = {},
-                onFirstNameChange = {},
-                onAddressFormSelect = {},
-                onBirthdayChange = {},
-                onRelationshipStartChange = {},
-                onTastesChange = { _, _ -> },
-                onSizeChange = { _, _ -> },
-                onAddRelative = {},
-                onRelativeChange = {},
-                onRemoveRelative = {},
-                onSave = {},
-            )
+    fun partner() = compose.captureScreen("fiche") { PartnerProfileScreen(previewProfile, previewActions) }
+
+    @Test
+    fun partnerEmpty() =
+        compose.captureScreen("fiche_vide") {
+            PartnerProfileScreen(PartnerProfileUiState(loaded = true, hasProfile = true, firstName = "Camille"), previewActions)
+        }
+
+    @Test
+    fun partnerEditing() =
+        compose.captureScreen("fiche_edition") {
+            PartnerProfileScreen(previewProfile.copy(editing = PartnerSection.RELATIVES), previewActions)
         }
 
     @Test
