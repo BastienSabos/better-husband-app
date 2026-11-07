@@ -59,7 +59,7 @@ cette appli. Les formulaires de la Console changent : relire leur aide en les re
 > L'application te propose chaque jour une attention concrète à faire aujourd'hui, te rappelle les dates qui comptent
 > et garde au même endroit ce que tu ne veux pas oublier. Cinq minutes par jour suffisent.
 >
-> • L'attention du jour : un geste simple, et un avis si tu veux une autre idée
+> • L'attention du jour : un geste simple, et une autre idée si celui-là ne te parle pas
 > • La fiche de ton ou ta partenaire : goûts, tailles, proches importants
 > • Les dates et les rappels : anniversaires, fêtes, voyages, avec une notification discrète
 > • Un carnet d'idées : cadeaux, sorties, attentions, ajouté depuis n'importe quelle appli par le menu Partager
