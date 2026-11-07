@@ -21,7 +21,7 @@ Dans l'ordre, parce que chaque étape débloque la suivante :
   retomber le compteur.
 - Des **couples réels**, de situations variées : avec ou sans enfants, ensemble ou à distance, mariés ou non, de tout
   genre. L'appli doit convenir à tous : c'est ce que la bêta vérifie le mieux.
-- Au moins **deux personnes du même couple** n'ont aucun intérêt (pas de mode duo en v1) : un testeur par couple.
+- Un seul testeur par couple : il n'y a pas de mode duo en v1, le second apporterait peu.
 - Prévenir que les données sont locales : **si l'appli est désinstallée, tout disparaît**, et que l'export JSON
   n'est pas chiffré.
 
