@@ -28,7 +28,9 @@ import com.bastiensabos.betterhusband.feature.mydata.MyDataActions
 import com.bastiensabos.betterhusband.feature.mydata.MyDataScreen
 import com.bastiensabos.betterhusband.feature.mydata.MyDataUiState
 import com.bastiensabos.betterhusband.feature.onboarding.OnboardingScreen
+import com.bastiensabos.betterhusband.feature.onboarding.OnboardingStep
 import com.bastiensabos.betterhusband.feature.onboarding.OnboardingUiState
+import com.bastiensabos.betterhusband.feature.onboarding.previewOnboardingActions
 import com.bastiensabos.betterhusband.feature.partner.PartnerProfileScreen
 import com.bastiensabos.betterhusband.feature.partner.PartnerProfileUiState
 import com.bastiensabos.betterhusband.feature.partner.PartnerSection
@@ -89,9 +91,21 @@ class ScreensCaptureTest {
     fun settings() = compose.captureScreen("reglages") { SettingsScreen(onBack = {}, onOpenCoupleProfile = {}, onOpenMyData = {}) }
 
     @Test
-    fun onboarding() =
-        compose.captureScreen("onboarding") {
-            OnboardingScreen(OnboardingUiState(firstName = "Camille", addressForm = AddressForm.FEMININE), {}, {}, {})
+    fun onboarding() = compose.captureScreen("onboarding") { OnboardingScreen(OnboardingUiState(), previewOnboardingActions) }
+
+    @Test
+    fun onboardingPartner() =
+        compose.captureScreen("onboarding_partenaire") {
+            OnboardingScreen(
+                OnboardingUiState(step = OnboardingStep.PARTNER, firstName = "Camille", addressForm = AddressForm.FEMININE),
+                previewOnboardingActions,
+            )
+        }
+
+    @Test
+    fun onboardingBirthday() =
+        compose.captureScreen("onboarding_anniversaire") {
+            OnboardingScreen(OnboardingUiState(step = OnboardingStep.BIRTHDAY, firstName = "Camille"), previewOnboardingActions)
         }
 
     @Test
