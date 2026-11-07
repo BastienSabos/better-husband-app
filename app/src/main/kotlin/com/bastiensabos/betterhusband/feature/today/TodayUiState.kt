@@ -16,6 +16,8 @@ sealed interface TodayUiState {
         val nextDate: UpcomingDate?,
         /** Jours d'affilée où l'attention a été faite (0 : pas de série en cours). */
         val streak: Int,
+        /** Aucune réponse dans « Notre couple » : on invite à le remplir, une carte qui disparaît dès la première. */
+        val suggestCoupleProfile: Boolean = false,
     ) : TodayUiState
 }
 

@@ -2,14 +2,19 @@ package com.bastiensabos.betterhusband.feature.today
 
 import com.bastiensabos.betterhusband.data.repository.FakeAttentionBank
 import com.bastiensabos.betterhusband.data.repository.FakeAttentionLogRepository
+import com.bastiensabos.betterhusband.data.repository.FakeCoupleProfileRepository
 import com.bastiensabos.betterhusband.data.repository.FakeHouseholdTaskRepository
 import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepository
 import com.bastiensabos.betterhusband.data.repository.FakePartnerRepository
+import com.bastiensabos.betterhusband.domain.AttentionGroup
 import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
 import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
+import com.bastiensabos.betterhusband.domain.model.CoupleProfile
 import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
+import com.bastiensabos.betterhusband.domain.model.KidsAtHome
+import com.bastiensabos.betterhusband.domain.model.LivingArrangement
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
 import com.bastiensabos.betterhusband.testutil.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
@@ -32,14 +37,16 @@ class TodayViewModelTest {
     private val log = FakeAttentionLogRepository()
     private val tasks = FakeHouseholdTaskRepository()
     private val dates = FakeImportantDateRepository()
+    private val coupleProfile = FakeCoupleProfileRepository()
 
-    private fun viewModel() =
+    private fun viewModel(bank: FakeAttentionBank = FakeAttentionBank()) =
         TodayViewModel(
             attentionLog = log,
             taskRepository = tasks,
             partnerRepository = FakePartnerRepository(),
+            coupleProfile = coupleProfile,
             observeUpcomingDates = ObserveUpcomingDatesUseCase(FakePartnerRepository(), dates, clock),
-            bank = FakeAttentionBank(),
+            bank = bank,
             clock = clock,
         )
 
@@ -201,5 +208,39 @@ class TodayViewModelTest {
             advanceUntilIdle()
 
             assertThat(viewModel.ready().nextDate?.daysUntil).isEqualTo(10)
+        }
+
+    @Test
+    fun `an empty couple profile invites to fill it`() =
+        runTest {
+            val viewModel = viewModel()
+            collectState(viewModel)
+
+            assertThat(viewModel.ready().suggestCoupleProfile).isTrue()
+
+            coupleProfile.save(CoupleProfile(kids = KidsAtHome.NONE))
+            advanceUntilIdle()
+
+            assertThat(viewModel.ready().suggestCoupleProfile).isFalse()
+        }
+
+    @Test
+    fun `the attention comes from a group that matches the profile`() =
+        runTest {
+            coupleProfile.save(CoupleProfile(living = LivingArrangement.LONG_DISTANCE))
+            val bank =
+                FakeAttentionBank(
+                    mapOf(AttentionGroup.EVERYONE to 0, AttentionGroup.LONG_DISTANCE to 3, AttentionGroup.TOGETHER to 3),
+                )
+            val viewModel = viewModel(bank)
+            collectState(viewModel)
+
+            assertThat(
+                AttentionGroup.of(
+                    log.state.value
+                        .single()
+                        .attentionId,
+                ),
+            ).isEqualTo(AttentionGroup.LONG_DISTANCE)
         }
 }

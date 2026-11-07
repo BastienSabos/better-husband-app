@@ -70,3 +70,15 @@ val MIGRATION_5_6 =
             )
         }
     }
+
+/** v6 → v7 : profil du couple (enfants, vie commune, budget, rythme, centres d'intérêt), pour filtrer les attentions. */
+val MIGRATION_6_7 =
+    object : Migration(6, 7) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `couple_profile` " +
+                    "(`id` INTEGER NOT NULL, `kids` TEXT, `living` TEXT, `budget` TEXT, `rhythm` TEXT, " +
+                    "`interests` TEXT NOT NULL, PRIMARY KEY(`id`))",
+            )
+        }
+    }

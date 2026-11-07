@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bastiensabos.betterhusband.data.repository.AttentionBank
 import com.bastiensabos.betterhusband.data.repository.AttentionLogRepository
+import com.bastiensabos.betterhusband.data.repository.CoupleProfileRepository
 import com.bastiensabos.betterhusband.data.repository.HouseholdTaskRepository
 import com.bastiensabos.betterhusband.data.repository.PartnerRepository
 import com.bastiensabos.betterhusband.domain.AttentionCatalog
@@ -39,6 +40,7 @@ class TodayViewModel
         private val attentionLog: AttentionLogRepository,
         private val taskRepository: HouseholdTaskRepository,
         private val partnerRepository: PartnerRepository,
+        private val coupleProfile: CoupleProfileRepository,
         observeUpcomingDates: ObserveUpcomingDatesUseCase,
         private val bank: AttentionBank,
         private val clock: Clock,
@@ -61,7 +63,8 @@ class TodayViewModel
                 attentionLog.observeAll(),
                 taskRepository.observeAll(),
                 observeUpcomingDates(),
-            ) { log, tasks, dates ->
+                coupleProfile.observe(),
+            ) { log, tasks, dates, profile ->
                 val today = LocalDate.now(clock)
                 val entry = log.lastOrNull { it.date == today }
                 if (entry == null) {
@@ -74,6 +77,7 @@ class TodayViewModel
                         moreTasks = (due.size - MAX_TASKS).coerceAtLeast(0),
                         nextDate = dates.firstOrNull { it.daysUntil <= NEXT_DATE_WINDOW_DAYS },
                         streak = StreakMath.current(log.filter { it.done }.map { it.date }.toSet(), today),
+                        suggestCoupleProfile = profile == CoupleProfile(),
                     )
                 }
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), TodayUiState.Loading)
@@ -115,7 +119,8 @@ class TodayViewModel
         private suspend fun eligibleIds(today: LocalDate): List<Int> {
             val partner = partnerRepository.observePartner().first()
             val years = partner?.relationshipStart?.let { Period.between(it, today).years }
-            val context = AttentionContext(profile = CoupleProfile(), relationshipYears = years, month = today.month)
+            val profile = coupleProfile.observe().first()
+            val context = AttentionContext(profile = profile, relationshipYears = years, month = today.month)
             val eligible = AttentionCatalog.eligibleIds(bank.groupSizes, context)
             return eligible.ifEmpty { (0 until (bank.groupSizes[AttentionGroup.EVERYONE] ?: 0)).toList() }
         }

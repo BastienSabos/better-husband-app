@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.data.security.BiometricAuthenticator
 import com.bastiensabos.betterhusband.data.security.LockSettings
 import com.bastiensabos.betterhusband.domain.AppLock
+import com.bastiensabos.betterhusband.feature.couple.CoupleProfileRoute
 import com.bastiensabos.betterhusband.feature.dates.DatesRoute
 import com.bastiensabos.betterhusband.feature.ideas.IdeasRoute
 import com.bastiensabos.betterhusband.feature.lock.LockRoute
@@ -30,7 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /** Navigation à plat tant qu'il n'y a que quelques écrans ; Navigation Compose viendra avec les onglets. */
-private enum class Destination { TODAY, PARTNER, DATES, IDEAS, TASKS, MY_DATA }
+private enum class Destination { TODAY, PARTNER, DATES, IDEAS, TASKS, MY_DATA, COUPLE }
 
 // FragmentActivity (et non ComponentActivity) : BiometricPrompt l'exige.
 @AndroidEntryPoint
@@ -103,6 +104,7 @@ private fun AppContent(state: AppUiState) {
                         onOpenIdeas = { destination = Destination.IDEAS },
                         onOpenTasks = { destination = Destination.TASKS },
                         onOpenMyData = { destination = Destination.MY_DATA },
+                        onOpenCoupleProfile = { destination = Destination.COUPLE },
                     )
                 }
 
@@ -124,6 +126,10 @@ private fun AppContent(state: AppUiState) {
 
                 Destination.MY_DATA -> {
                     MyDataRoute(onBack = { destination = Destination.TODAY })
+                }
+
+                Destination.COUPLE -> {
+                    CoupleProfileRoute(onFinish = { destination = Destination.TODAY })
                 }
             }
         }

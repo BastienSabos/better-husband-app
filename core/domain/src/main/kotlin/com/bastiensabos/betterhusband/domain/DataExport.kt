@@ -1,6 +1,7 @@
 package com.bastiensabos.betterhusband.domain
 
 import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
+import com.bastiensabos.betterhusband.domain.model.CoupleProfile
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.Idea
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
@@ -15,6 +16,7 @@ data class UserDataSnapshot(
     val tasks: List<HouseholdTask>,
     val attentions: List<AttentionLogEntry>,
     val exportedAt: Instant,
+    val coupleProfile: CoupleProfile = CoupleProfile(),
 )
 
 /**
@@ -31,6 +33,14 @@ object DataExport {
             "formatVersion" to FORMAT_VERSION,
             "exportedAt" to exportedAt.toString(),
             "partner" to partner?.toTree(),
+            "coupleProfile" to
+                linkedMapOf(
+                    "kids" to coupleProfile.kids?.name,
+                    "living" to coupleProfile.living?.name,
+                    "budget" to coupleProfile.budget?.name,
+                    "rhythm" to coupleProfile.rhythm?.name,
+                    "interests" to coupleProfile.interests.map { it.name }.sorted(),
+                ),
             "importantDates" to
                 dates.map {
                     linkedMapOf(

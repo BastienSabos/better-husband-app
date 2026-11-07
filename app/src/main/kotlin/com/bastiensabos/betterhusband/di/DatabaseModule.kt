@@ -10,7 +10,9 @@ import com.bastiensabos.betterhusband.data.local.MIGRATION_2_3
 import com.bastiensabos.betterhusband.data.local.MIGRATION_3_4
 import com.bastiensabos.betterhusband.data.local.MIGRATION_4_5
 import com.bastiensabos.betterhusband.data.local.MIGRATION_5_6
+import com.bastiensabos.betterhusband.data.local.MIGRATION_6_7
 import com.bastiensabos.betterhusband.data.local.dao.AttentionLogDao
+import com.bastiensabos.betterhusband.data.local.dao.CoupleProfileDao
 import com.bastiensabos.betterhusband.data.local.dao.HouseholdTaskDao
 import com.bastiensabos.betterhusband.data.local.dao.IdeaDao
 import com.bastiensabos.betterhusband.data.local.dao.ImportantDateDao
@@ -45,7 +47,7 @@ object DatabaseModule {
             .databaseBuilder(context, AppDatabase::class.java, AppDatabase.NAME)
             .openHelperFactory(SupportOpenHelperFactory(keyProvider.passphrase()))
             // Jamais de migration destructive : on ne perd pas les souvenirs d'un couple.
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
             .build()
     }
 
@@ -63,4 +65,7 @@ object DatabaseModule {
 
     @Provides
     fun provideAttentionLogDao(database: AppDatabase): AttentionLogDao = database.attentionLogDao()
+
+    @Provides
+    fun provideCoupleProfileDao(database: AppDatabase): CoupleProfileDao = database.coupleProfileDao()
 }
