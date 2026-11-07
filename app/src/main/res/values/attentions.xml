@@ -486,4 +486,419 @@
         <item>Regardez une vidéo ancienne de vous deux.</item>
         <item>Demande-lui la plus belle réussite de votre histoire, selon ton ou ta partenaire.</item>
     </string-array>
+
+    <!-- Un peu de dépense (petit cadeau, sortie simple) : budget raisonnable ou confortable. -->
+    <string-array name="attention_bank_treats">
+        <item>Réserve une table dans un endroit qui lui plaît.</item>
+        <item>Offre-lui un livre ou un disque dont vous avez parlé ensemble.</item>
+        <item>Offre une fleur ou une plante, juste comme ça.</item>
+        <item>Rapporte une pâtisserie d\'une boulangerie que vous ne connaissez pas.</item>
+        <item>Offre deux places de cinéma pour un film que vous attendez tous les deux.</item>
+        <item>Commande son plat préféré à emporter un soir de fatigue.</item>
+        <item>Offre-lui un carnet joli pour noter ses idées.</item>
+        <item>Achète une bougie à son parfum préféré.</item>
+        <item>Offre une séance de massage ou de soin près de chez vous.</item>
+        <item>Prends deux places pour un petit concert local.</item>
+        <item>Offre-lui une boîte de son thé ou café préféré.</item>
+        <item>Choisis un petit objet qui rappelle une blague entre vous.</item>
+        <item>Offre une plante à son bureau ou à son coin préféré.</item>
+        <item>Invite ton ou ta partenaire à bruncher dans un nouvel endroit.</item>
+        <item>Fais imprimer une photo de vous deux en grand format.</item>
+        <item>Offre un abonnement d\'un mois à un service qui lui manque.</item>
+        <item>Achète des fleurs de saison au marché.</item>
+        <item>Offre-lui l\'accessoire qui manque à sa passion du moment.</item>
+        <item>Réserve une séance de bowling, de billard ou de minigolf.</item>
+        <item>Offre une jolie carte et écris-y un vrai mot.</item>
+        <item>Achète le dessert d\'une pâtisserie réputée pour le partager.</item>
+        <item>Offre-lui des chaussettes rigolotes, avec un mot tendre.</item>
+        <item>Paye un trajet en taxi un soir de fatigue.</item>
+        <item>Offre une sortie au musée et le café qui va avec.</item>
+        <item>Fais encadrer un dessin, un ticket ou une photo de vous.</item>
+    </string-array>
+
+    <!-- Grosse dépense : budget confortable. -->
+    <string-array name="attention_bank_splurge">
+        <item>Réserve une nuit dans un hôtel de charme pas trop loin.</item>
+        <item>Offre un week-end surprise dans une ville qui lui fait envie.</item>
+        <item>Réserve un dîner gastronomique pour une date qui compte.</item>
+        <item>Offre une expérience à deux : montgolfière, spa, cours de cuisine.</item>
+        <item>Offre-lui l\'objet dont l\'achat est repoussé depuis des mois.</item>
+        <item>Organise un séjour à deux sans les contraintes du quotidien.</item>
+        <item>Réserve des places pour un grand spectacle ou un match.</item>
+        <item>Offre un bijou ou une montre gravés d\'une date à vous.</item>
+        <item>Offre une journée complète au spa, rien que pour ton ou ta partenaire.</item>
+        <item>Prévois un voyage au soleil hors saison.</item>
+        <item>Offre un cours particulier dans la passion de ton ou ta partenaire.</item>
+        <item>Réserve une croisière sur un lac ou une rivière.</item>
+        <item>Offre une séance photo de couple avec un photographe.</item>
+        <item>Organise une soirée privée dans un lieu insolite.</item>
+        <item>Prévois une escapade gourmande dans une région viticole.</item>
+    </string-array>
+
+    <!-- Demande une soirée ou une demi-journée : pas pour qui a dit n'avoir presque pas de temps libre. -->
+    <string-array name="attention_bank_takes_time">
+        <item>Réserve une soirée à deux cette semaine et note-la dans l\'agenda.</item>
+        <item>Prends rendez-vous pour une activité à deux que vous n\'avez jamais faite.</item>
+        <item>Planifie une petite escapade d\'une demi-journée à deux.</item>
+        <item>Propose un week-end sans programme, juste pour être ensemble.</item>
+        <item>Cuisinez ensemble une recette que vous n\'avez jamais essayée.</item>
+        <item>Choisis un lieu que vous ne connaissez pas et visitez-le ensemble.</item>
+        <item>Fais le tri dans vos photos et créez un petit album.</item>
+        <item>Prévois une activité qui lui plaît et que tu ne fais jamais d\'habitude.</item>
+        <item>Prends un moment pour planifier ensemble un projet qui vous enthousiasme.</item>
+        <item>Faites une longue balade sans destination précise.</item>
+        <item>Organise une journée « oui » : tu acceptes chacune de ses envies.</item>
+        <item>Préparez ensemble un repas de fête pour un dimanche ordinaire.</item>
+        <item>Faites une randonnée d\'une demi-journée et un pique-nique.</item>
+        <item>Organise une chasse au trésor avec des petits mots cachés.</item>
+        <item>Passez une soirée à écrire vos rêves de voyage et chiffrez-les.</item>
+        <item>Montez ensemble un meuble, une étagère, un projet manuel.</item>
+        <item>Offre-lui une matinée entière de liberté, en t\'occupant de tout.</item>
+        <item>Faites une soirée diapos ou vidéos de vos meilleurs moments.</item>
+        <item>Visitez un village voisin et goûtez sa spécialité.</item>
+        <item>Passez un après-midi dans une librairie, puis dans un café.</item>
+        <item>Organisez une soirée à thème : un pays, un plat, une musique.</item>
+        <item>Prenez un cours d\'initiation ensemble : poterie, escalade, danse.</item>
+        <item>Partez faire une balade à vélo jusqu\'à un point de vue.</item>
+        <item>Prévois une soirée longue, téléphones éteints, juste pour parler.</item>
+    </string-array>
+
+    <!-- Hiver (décembre à février). -->
+    <string-array name="attention_bank_winter">
+        <item>Prépare un chocolat chaud maison un soir de froid.</item>
+        <item>Réchauffe ses mains entre les tiennes, sans rien dire.</item>
+        <item>Choisissez ensemble un film de Noël, même si vous trouvez ça kitsch.</item>
+        <item>Dégivre son pare-brise avant son départ.</item>
+        <item>Fais une balade sous la neige ou le givre, bonnets et écharpes compris.</item>
+        <item>Prépare une soupe réconfortante pour le dîner.</item>
+        <item>Glisse une bouillotte dans le lit avant le coucher.</item>
+        <item>Écrivez ensemble vos souhaits pour la nouvelle année.</item>
+        <item>Décorez ensemble un coin de la maison pour les fêtes.</item>
+        <item>Offre-lui une paire de gants ou un bonnet tout doux.</item>
+        <item>Prépare un vin chaud ou une boisson épicée sans alcool.</item>
+        <item>Organisez une soirée raclette ou fondue à deux.</item>
+        <item>Faites une liste de vos plus beaux souvenirs de l\'année.</item>
+        <item>Allez voir les illuminations de la ville à la tombée de la nuit.</item>
+        <item>Prépare un plaid et une boisson chaude pour une soirée lecture.</item>
+        <item>Fais un bonhomme ou un ange dans la neige, même petit.</item>
+        <item>Choisis une carte de vœux et écris-y un vrai mot.</item>
+        <item>Préparez ensemble des biscuits de Noël ou une galette.</item>
+        <item>Prends le relais pour les courses de fêtes.</item>
+        <item>Propose une sieste sous la couette un dimanche gris.</item>
+        <item>Pour la Saint-Valentin, écris trois raisons de ton amour.</item>
+        <item>Prévois une sortie au marché de Noël.</item>
+    </string-array>
+
+    <!-- Printemps (mars à mai). -->
+    <string-array name="attention_bank_spring">
+        <item>Faites la liste de ce que vous voudriez vivre cet été.</item>
+        <item>Offre un bouquet de fleurs de printemps.</item>
+        <item>Prenez votre premier café en terrasse de l\'année.</item>
+        <item>Plantez ensemble quelques graines sur un balcon ou au jardin.</item>
+        <item>Faites une balade pour voir les arbres en fleurs.</item>
+        <item>Organisez un grand ménage de printemps à deux, avec musique.</item>
+        <item>Préparez un premier pique-nique de la saison.</item>
+        <item>Trie ses vêtements d\'hiver avec ton ou ta partenaire, en musique.</item>
+        <item>Ressortez les vélos et faites un premier tour.</item>
+        <item>Allez cueillir des fleurs sauvages ou du muguet.</item>
+        <item>Organisez une chasse aux œufs à deux ou en famille.</item>
+        <item>Proposez un apéritif au soleil dès son retour.</item>
+        <item>Prévois un week-end de printemps dans un jardin ou un parc.</item>
+        <item>Profitez du jour qui rallonge pour une marche après le dîner.</item>
+        <item>Préparez une salade de printemps avec les premiers légumes.</item>
+        <item>Préparez ensemble les vacances d\'été autour d\'un café.</item>
+        <item>Écoutez les oiseaux un matin, la fenêtre ouverte.</item>
+        <item>Offre-lui une plante aromatique pour la cuisine.</item>
+        <item>Fêtez le premier jour de beau temps avec une glace.</item>
+        <item>Rangez ensemble une pièce pour accueillir le printemps.</item>
+    </string-array>
+
+    <!-- Été (juin à août). -->
+    <string-array name="attention_bank_summer">
+        <item>Préparez une glace ou un sorbet maison.</item>
+        <item>Dînez dehors un soir d\'été, même simplement.</item>
+        <item>Allez voir un coucher de soleil au bord de l\'eau.</item>
+        <item>Prépare une limonade ou un thé glacé pour la journée.</item>
+        <item>Faites une soirée à la belle étoile ou sur le balcon.</item>
+        <item>Partez vous baigner dans un lac, une rivière ou la mer.</item>
+        <item>Allez à un concert gratuit en plein air.</item>
+        <item>Prépare un pique-nique pour un parc ou une plage.</item>
+        <item>Faites une balade nocturne quand la chaleur tombe.</item>
+        <item>Organisez un barbecue ou une plancha avec des amis.</item>
+        <item>Allez voir un feu d\'artifice ou une fête de village.</item>
+        <item>Faites une sieste à l\'ombre d\'un arbre.</item>
+        <item>Allez au cinéma en plein air.</item>
+        <item>Prépare des fruits coupés au frais pour son retour.</item>
+        <item>Partez tôt le matin pour une balade avant la chaleur.</item>
+        <item>Ramasse des coquillages ou des galets en souvenir.</item>
+        <item>Organisez un apéritif au jardin ou sur un toit.</item>
+        <item>Allez cueillir des fruits dans une ferme.</item>
+        <item>Écrivez une carte postale de vacances à vous deux.</item>
+        <item>Préparez une soirée jeux de société en terrasse.</item>
+        <item>Prends une photo souvenir de votre plus belle journée d\'été.</item>
+    </string-array>
+
+    <!-- Automne (septembre à novembre). -->
+    <string-array name="attention_bank_autumn">
+        <item>Faites une balade en forêt pour voir les couleurs.</item>
+        <item>Ramassez des châtaignes ou des champignons connus.</item>
+        <item>Prépare une soupe de potiron ou de courge.</item>
+        <item>Organisez une soirée film sous un plaid.</item>
+        <item>Faites cuire des pommes au four avec de la cannelle.</item>
+        <item>Prépare un thé épicé un soir de pluie.</item>
+        <item>Prévoyez une sortie au cinéma un dimanche pluvieux.</item>
+        <item>Faites un bouquet de feuilles mortes pour la table.</item>
+        <item>Offre-lui un nouveau pull tout doux.</item>
+        <item>Organisez une soirée jeux un soir de pluie.</item>
+        <item>Faites une tarte aux pommes ensemble.</item>
+        <item>Allez visiter une ferme ou un verger pour la récolte.</item>
+        <item>Prends en charge les vêtements de pluie et les parapluies de la maison.</item>
+        <item>Faites une balade sous la pluie, avec bottes et capuche.</item>
+        <item>Passez un après-midi dans une bibliothèque ou un musée.</item>
+        <item>Préparez la maison pour l\'hiver en faisant une liste à deux.</item>
+        <item>Allume une bougie et partagez une conversation au calme.</item>
+        <item>Organisez une soirée raclette pour la première fraîcheur.</item>
+        <item>Fêtez la rentrée avec un petit projet à deux.</item>
+        <item>Choisissez ensemble un livre à lire chacun pour en parler.</item>
+    </string-array>
+
+    <!-- Centre d'intérêt : nature. -->
+    <string-array name="attention_bank_nature">
+        <item>Partez marcher sur un sentier que vous ne connaissez pas.</item>
+        <item>Allez voir le lever du soleil depuis un point haut.</item>
+        <item>Faites une sortie pour observer les oiseaux.</item>
+        <item>Prévoyez un pique-nique au bord d\'une rivière.</item>
+        <item>Passez une nuit sous la tente, même dans le jardin.</item>
+        <item>Faites une balade nocturne pour écouter la forêt.</item>
+        <item>Allez marcher pieds nus dans l\'herbe ou le sable.</item>
+        <item>Cherchez ensemble une cascade ou un lac près de chez vous.</item>
+        <item>Prenez une photo du même arbre à chaque saison.</item>
+        <item>Faites une sortie à vélo dans la campagne.</item>
+        <item>Apprenez à reconnaître trois plantes pendant une balade.</item>
+        <item>Prévoyez un week-end en gîte au milieu de la nature.</item>
+        <item>Plantez un arbre ou une plante pour marquer un moment.</item>
+        <item>Faites une randonnée avec un objectif : un sommet, un refuge.</item>
+        <item>Observez les étoiles loin des lumières de la ville.</item>
+        <item>Préparez un thermos et partez marcher au petit matin.</item>
+        <item>Allez voir la mer un jour de vent.</item>
+        <item>Faites une cueillette de fruits sauvages en saison.</item>
+        <item>Faites du kayak ou du canoë sur une rivière calme.</item>
+        <item>Inscrivez-vous à une sortie nature guidée près de chez vous.</item>
+    </string-array>
+
+    <!-- Centre d'intérêt : culture. -->
+    <string-array name="attention_bank_culture">
+        <item>Allez voir une exposition dont on parle en ce moment.</item>
+        <item>Réserve deux places de théâtre pour une pièce drôle.</item>
+        <item>Visitez un musée que vous n\'avez jamais vu dans votre ville.</item>
+        <item>Choisissez un film d\'auteur et parlez-en autour d\'un verre.</item>
+        <item>Allez à une visite guidée de votre ville, comme des touristes.</item>
+        <item>Assistez à une conférence ou un débat sur un sujet qui l\'intéresse.</item>
+        <item>Allez à un concert d\'un style que vous ne connaissez pas.</item>
+        <item>Découvrez une galerie d\'art près de chez vous.</item>
+        <item>Faites une soirée court-métrages et votez pour le meilleur.</item>
+        <item>Visitez un château, une abbaye ou un monument proche.</item>
+        <item>Allez voir un spectacle de danse.</item>
+        <item>Partagez chacun l\'œuvre la plus marquante de votre vie, et pourquoi.</item>
+        <item>Écoutez ensemble un podcast d\'histoire et discutez-en.</item>
+        <item>Allez à une avant-première ou un festival de cinéma.</item>
+        <item>Visitez un atelier d\'artiste ou des portes ouvertes.</item>
+        <item>Faites une sortie à l\'opéra ou à un concert classique.</item>
+        <item>Choisissez une ville et découvrez sa culture en un dîner et un film.</item>
+        <item>Allez voir un spectacle d\'humour.</item>
+        <item>Prenez la nuit des musées ou une journée du patrimoine.</item>
+        <item>Lisez un poème à voix haute, choisi pour ton ou ta partenaire.</item>
+    </string-array>
+
+    <!-- Centre d'intérêt : sport. -->
+    <string-array name="attention_bank_sport">
+        <item>Allez courir ensemble, au rythme le plus lent des deux.</item>
+        <item>Faites une séance de sport à la maison à deux.</item>
+        <item>Inscrivez-vous à une course amicale ensemble.</item>
+        <item>Essayez un nouveau sport le temps d\'une séance.</item>
+        <item>Prépare ses affaires de sport la veille.</item>
+        <item>Viens encourager ton ou ta partenaire à sa compétition ou son match.</item>
+        <item>Faites une partie de badminton ou de ping-pong.</item>
+        <item>Allez nager ensemble à la piscine ou au lac.</item>
+        <item>Faites une séance d\'étirements à deux le soir.</item>
+        <item>Regardez un match ensemble avec ses snacks préférés.</item>
+        <item>Faites une sortie d\'escalade en salle.</item>
+        <item>Allez patiner, en salle ou dehors.</item>
+        <item>Proposez un défi sportif doux sur un mois.</item>
+        <item>Faites une balade à vélo jusqu\'à un café.</item>
+        <item>Prépare une collation pour l\'après-sport.</item>
+        <item>Offre-lui une séance avec un coach ou un cours d\'essai.</item>
+        <item>Faites une randonnée sportive avec un beau dénivelé.</item>
+        <item>Jouez au frisbee ou au ballon dans un parc.</item>
+        <item>Essayez un cours de yoga en duo.</item>
+        <item>Fêtez un record personnel, même petit.</item>
+    </string-array>
+
+    <!-- Centre d'intérêt : cuisine. -->
+    <string-array name="attention_bank_cooking">
+        <item>Cuisinez ensemble un plat d\'un pays où vous rêvez d\'aller.</item>
+        <item>Essayez une recette de son enfance.</item>
+        <item>Organisez un concours de cuisine amical à deux.</item>
+        <item>Allez au marché et cuisinez ce qui vous inspire.</item>
+        <item>Préparez des pâtes fraîches ensemble.</item>
+        <item>Prenez un cours de cuisine ou de pâtisserie à deux.</item>
+        <item>Faites une soirée dégustation : fromages, chocolats ou thés.</item>
+        <item>Cuisinez un plat de grand-mère et appelez la famille pour la recette.</item>
+        <item>Préparez un brunch maison du dimanche.</item>
+        <item>Essayez une recette végétarienne nouvelle.</item>
+        <item>Faites un pain ou une brioche maison.</item>
+        <item>Préparez des pizzas maison, chacun la sienne.</item>
+        <item>Organisez une soirée sushis ou rouleaux faits maison.</item>
+        <item>Prépare un plat à emporter pour son déjeuner du lendemain.</item>
+        <item>Écrivez ensemble votre carnet de recettes de couple.</item>
+        <item>Préparez des confitures ou des conserves de saison.</item>
+        <item>Testez un restaurant d\'une cuisine que vous ne connaissez pas.</item>
+        <item>Faites un gâteau rien que pour célébrer un mardi.</item>
+        <item>Préparez un apéritif dînatoire avec dix petites bouchées.</item>
+        <item>Recréez à la maison le plat de votre premier restaurant.</item>
+    </string-array>
+
+    <!-- Centre d'intérêt : jeux. -->
+    <string-array name="attention_bank_games">
+        <item>Faites une partie de votre jeu de société préféré.</item>
+        <item>Essayez un nouveau jeu de cartes à deux.</item>
+        <item>Faites un escape game ensemble.</item>
+        <item>Construisez un puzzle à deux en une soirée ou une semaine.</item>
+        <item>Jouez à un jeu vidéo en coopération.</item>
+        <item>Inventez un quiz sur votre couple et jouez-y.</item>
+        <item>Allez dans un bar à jeux découvrir une nouveauté.</item>
+        <item>Faites une partie d\'échecs ou de dames, sans pression.</item>
+        <item>Invitez des amis pour tester un nouveau jeu.</item>
+        <item>Jouez à deviner des mots ou des dessins.</item>
+        <item>Faites un tournoi sur une semaine, avec un petit prix.</item>
+        <item>Résolvez ensemble une énigme ou des mots croisés.</item>
+        <item>Offre-lui le jeu dont vous avez parlé.</item>
+        <item>Jouez à un jeu de questions pour vous découvrir encore.</item>
+        <item>Faites une partie de pétanque ou de molkky.</item>
+        <item>Lancez une partie au long cours, un tour par jour.</item>
+        <item>Jouez à un jeu d\'enquête ou de mystère à deux.</item>
+        <item>Organisez une soirée karaoké.</item>
+        <item>Faites un bowling ou un laser game.</item>
+        <item>Créez un jeu rien qu\'à vous avec vos souvenirs.</item>
+    </string-array>
+
+    <!-- Centre d'intérêt : voyages. -->
+    <string-array name="attention_bank_travel">
+        <item>Choisissez votre prochaine destination et fixez une date.</item>
+        <item>Planifiez un week-end dans une ville à moins de deux heures.</item>
+        <item>Préparez une carte des lieux où vous voulez aller ensemble.</item>
+        <item>Revivez un voyage en photos et racontez vos souvenirs.</item>
+        <item>Cuisinez un plat d\'un pays visité ensemble.</item>
+        <item>Apprenez dix mots de la langue de votre prochaine destination.</item>
+        <item>Regardez un documentaire sur un pays qui vous fait rêver.</item>
+        <item>Faites une liste de voyages, des plus simples aux plus fous.</item>
+        <item>Partez en train pour une journée sans programme.</item>
+        <item>Organisez une soirée à thème sur un pays lointain.</item>
+        <item>Imprimez une photo de voyage et encadrez-la.</item>
+        <item>Lisez un récit de voyage et parlez-en ensemble.</item>
+        <item>Préparez une cagnotte pour un voyage rêvé.</item>
+        <item>Explorez votre propre région comme des voyageurs.</item>
+        <item>Choisissez un village sur la carte au hasard et allez-y.</item>
+        <item>Faites une liste des hébergements insolites qui vous tentent.</item>
+        <item>Écrivez ensemble le carnet d\'un voyage passé.</item>
+        <item>Prenez un petit-déjeuner d\'un autre pays, salé ou sucré.</item>
+        <item>Planifiez un road trip, même court, avec une playlist.</item>
+        <item>Offre-lui un guide de la prochaine destination qui vous fait envie.</item>
+    </string-array>
+
+    <!-- Centre d'intérêt : musique. -->
+    <string-array name="attention_bank_music">
+        <item>Créez ensemble une playlist de vos chansons de couple.</item>
+        <item>Allez voir un concert d\'un artiste que vous aimez.</item>
+        <item>Écoutez un album en entier, sans rien faire d\'autre.</item>
+        <item>Dansez dans le salon sur la musique de votre jeunesse.</item>
+        <item>Fais-lui découvrir trois chansons de ton adolescence.</item>
+        <item>Chantez ensemble en voiture, sans retenue.</item>
+        <item>Allez dans un bar avec de la musique live.</item>
+        <item>Apprenez une chanson ensemble, avec un instrument ou la voix.</item>
+        <item>Prends deux places pour un festival.</item>
+        <item>Demande-lui la chanson qui accompagne ses meilleurs souvenirs.</item>
+        <item>Préparez une playlist pour votre prochain voyage.</item>
+        <item>Allez chiner des vinyles ou des disques.</item>
+        <item>Écoutez la radio d\'une autre époque et devinez les titres.</item>
+        <item>Offre-lui un concert d\'un artiste qui le ou la fait vibrer.</item>
+        <item>Écrivez ensemble les paroles d\'une chanson drôle sur vous.</item>
+        <item>Faites une soirée blind test à deux.</item>
+        <item>Allez voir une chorale ou un concert gratuit.</item>
+        <item>Prenez un cours de danse sur une musique que vous aimez.</item>
+        <item>Partagez chacun la chanson qui vous décrit le mieux.</item>
+        <item>Endormez-vous en écoutant un morceau calme choisi à deux.</item>
+    </string-array>
+
+    <!-- Centre d'intérêt : lecture. -->
+    <string-array name="attention_bank_reading">
+        <item>Offre-lui un livre choisi avec soin et écris un mot dedans.</item>
+        <item>Lisez le même livre et parlez-en chaque semaine.</item>
+        <item>Faites un tour en librairie et choisissez un livre l\'un pour l\'autre.</item>
+        <item>Lis-lui un passage qui t\'a plu, à voix haute.</item>
+        <item>Préparez un coin lecture douillet à la maison.</item>
+        <item>Allez à une rencontre d\'auteur ou un salon du livre.</item>
+        <item>Lisez chacun votre livre, côte à côte, une heure.</item>
+        <item>Offre une bande dessinée qui va le ou la faire rire.</item>
+        <item>Échangez vos livres préférés de jeunesse.</item>
+        <item>Abonnez-vous ensemble à une bibliothèque.</item>
+        <item>Écoutez un livre audio pendant un trajet.</item>
+        <item>Recopie une citation qui te fait penser à vous et offre-la.</item>
+        <item>Faites une soirée lecture avec thé et plaid.</item>
+        <item>Lisez un recueil de poèmes à tour de rôle.</item>
+        <item>Créez une liste de livres à lire ensemble cette année.</item>
+        <item>Cachez un livre avec un petit mot dans son sac.</item>
+        <item>Visitez une bouquinerie et chinez une édition ancienne.</item>
+        <item>Racontez-vous le livre le plus marquant de votre vie.</item>
+        <item>Lisez un roman qui se passe dans votre prochaine destination.</item>
+        <item>Écris une petite histoire dont vous êtes les héros.</item>
+    </string-array>
+
+    <!-- Centre d'intérêt : bricolage, déco. -->
+    <string-array name="attention_bank_diy">
+        <item>Réalisez un petit projet de déco ensemble ce week-end.</item>
+        <item>Repeignez un meuble ou un mur qui en a besoin.</item>
+        <item>Fabriquez un cadre pour une photo de vous deux.</item>
+        <item>Créez un tableau ou une affiche de vos souvenirs.</item>
+        <item>Rempotez les plantes de la maison ensemble.</item>
+        <item>Montez une étagère ou un rangement qui manque.</item>
+        <item>Faites un atelier bougies ou savons maison.</item>
+        <item>Réparez ensemble un objet cassé au lieu de le jeter.</item>
+        <item>Chinez dans une brocante un objet à restaurer.</item>
+        <item>Créez un coin cosy avec ce que vous avez déjà.</item>
+        <item>Fabriquez une jardinière pour le balcon.</item>
+        <item>Prends en charge un petit chantier qui l\'agace.</item>
+        <item>Faites un tableau de liège pour vos projets à deux.</item>
+        <item>Inscrivez-vous à un atelier poterie, couture ou menuiserie.</item>
+        <item>Fabriquez une carte ou un cadeau fait main.</item>
+        <item>Réorganisez une pièce pour la rendre plus agréable.</item>
+        <item>Créez un calendrier photo pour l\'année prochaine.</item>
+        <item>Peignez ensemble une toile, même sans talent.</item>
+        <item>Réparez son vélo ou une affaire qui traîne.</item>
+        <item>Préparez un petit jardin d\'herbes aromatiques.</item>
+    </string-array>
+
+    <!-- Centre d'intérêt : bien-être. -->
+    <string-array name="attention_bank_wellbeing">
+        <item>Faites une séance de méditation de dix minutes à deux.</item>
+        <item>Propose-lui un massage des pieds ou des mains.</item>
+        <item>Prépare un bain moussant avec bougies.</item>
+        <item>Faites une séance de yoga doux le matin.</item>
+        <item>Offrez-vous une journée sans écran.</item>
+        <item>Prépare une tisane relaxante avant le coucher.</item>
+        <item>Faites une balade lente, en respirant profondément.</item>
+        <item>Prévoyez une soirée soin du visage à deux.</item>
+        <item>Couchez-vous tôt ensemble, sans téléphone.</item>
+        <item>Faites une séance de respiration ensemble avant une journée stressante.</item>
+        <item>Allez au sauna, au hammam ou dans un spa.</item>
+        <item>Écrivez chacun trois gratitudes de la journée.</item>
+        <item>Prépare un petit-déjeuner sain et coloré.</item>
+        <item>Faites une sieste à deux le week-end.</item>
+        <item>Proposez une marche au soleil en milieu de journée.</item>
+        <item>Dansez librement cinq minutes pour relâcher la pression.</item>
+        <item>Offre-lui une séance de réflexologie ou d\'ostéopathie.</item>
+        <item>Préparez un repas léger et réconfortant ensemble.</item>
+        <item>Faites une pause étirements au milieu de la soirée.</item>
+        <item>Rangez ensemble un coin de la maison pour en faire un espace apaisant.</item>
+    </string-array>
 </resources>

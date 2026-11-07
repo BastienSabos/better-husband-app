@@ -41,7 +41,7 @@ class ResourceAttentionBank
         }
 
         private companion object {
-            /** Les groupes déjà écrits ; les autres arrivent avec leurs textes. */
+            /** Une liste par groupe ; un test d'architecture vérifie qu'aucune liste n'est oubliée. */
             val ARRAYS =
                 mapOf(
                     AttentionGroup.EVERYONE to R.array.attention_bank,
@@ -55,6 +55,23 @@ class ResourceAttentionBank
                     AttentionGroup.TEENS to R.array.attention_bank_teens,
                     AttentionGroup.NEW_COUPLE to R.array.attention_bank_new_couple,
                     AttentionGroup.LONG_COUPLE to R.array.attention_bank_long_couple,
+                    AttentionGroup.TREATS to R.array.attention_bank_treats,
+                    AttentionGroup.SPLURGE to R.array.attention_bank_splurge,
+                    AttentionGroup.TAKES_TIME to R.array.attention_bank_takes_time,
+                    AttentionGroup.WINTER to R.array.attention_bank_winter,
+                    AttentionGroup.SPRING to R.array.attention_bank_spring,
+                    AttentionGroup.SUMMER to R.array.attention_bank_summer,
+                    AttentionGroup.AUTUMN to R.array.attention_bank_autumn,
+                    AttentionGroup.NATURE to R.array.attention_bank_nature,
+                    AttentionGroup.CULTURE to R.array.attention_bank_culture,
+                    AttentionGroup.SPORT to R.array.attention_bank_sport,
+                    AttentionGroup.COOKING to R.array.attention_bank_cooking,
+                    AttentionGroup.GAMES to R.array.attention_bank_games,
+                    AttentionGroup.TRAVEL to R.array.attention_bank_travel,
+                    AttentionGroup.MUSIC to R.array.attention_bank_music,
+                    AttentionGroup.READING to R.array.attention_bank_reading,
+                    AttentionGroup.DIY to R.array.attention_bank_diy,
+                    AttentionGroup.WELLBEING to R.array.attention_bank_wellbeing,
                 )
         }
     }
