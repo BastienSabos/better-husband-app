@@ -36,7 +36,7 @@ com.bastiensabos.betterhusband
 ├── di/
 ├── ui/theme/                    thème Material 3, couleurs, typo
 ├── data/{local,repository,work}/
-├── domain/
+├── domain/                      cas d'usage (le reste du domaine pur vit dans :core:domain)
 └── feature/
     ├── onboarding/              brique 1 : onboarding + fiche partenaire
     ├── partner/
@@ -46,7 +46,9 @@ com.bastiensabos.betterhusband
     └── chores/                  brique 5 : tâches du foyer
 ```
 
-Quand modulariser : voir le skill `.claude/skills/add-module`.
+Modules : `:app` et `:core:domain` (Kotlin pur, sans Android ni Hilt : modèles, `DateMath`). Le domaine pur se
+teste sur n'importe quelle JVM avec `./gradlew :core:domain:test`, sans SDK Android. Les packages n'ont pas changé.
+Quand modulariser davantage : voir le skill `.claude/skills/add-module`.
 
 ## Décisions
 
