@@ -9,6 +9,11 @@ ksp = "2.3.4"
 hilt = "2.59"
 androidxHilt = "1.2.0"
 androidxHiltNavigationCompose = "1.2.0"
+androidxNavigation = "2.10.2"
+# Contraintes seulement : Navigation tire 1.7.3 et 1.1.0, room-testing et androidx.test 1.8.1 et 1.2.0 ; AGP exige les
+# mêmes versions dans l'appli et ses tests instrumentés.
+kotlinxSerialization = "1.8.1"
+androidxConcurrent = "1.2.0"
 androidxActivity = "1.9.3"
 androidxBiometric = "1.1.0"
 androidxComposeBom = "2025.09.01"
@@ -34,6 +39,10 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "androidxBiometric" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
+androidx-concurrent-futures-ktx = { group = "androidx.concurrent", name = "concurrent-futures-ktx", version.ref = "androidxConcurrent" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }

@@ -8,7 +8,7 @@ set -uo pipefail
 KTLINT_VERSION="1.8.0"          # garder aligné avec gradle/libs.versions.toml
 COMPOSE_RULES_VERSION="0.6.8"   # idem
 CMDLINE_TOOLS_BUILD="13114758"
-ANDROID_PLATFORM="android-36"
+ANDROID_PLATFORM="android-37.0"
 BUILD_TOOLS="36.0.0"
 
 log() { echo "[session-start] $*" >&2; }
