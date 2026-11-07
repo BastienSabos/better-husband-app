@@ -1,9 +1,12 @@
 package com.bastiensabos.betterhusband.feature.dates
 
+import com.bastiensabos.betterhusband.data.repository.FakeIdeaRepository
 import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepository
 import com.bastiensabos.betterhusband.data.repository.FakePartnerRepository
 import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
 import com.bastiensabos.betterhusband.domain.model.DateKind
+import com.bastiensabos.betterhusband.domain.model.DateLabel
+import com.bastiensabos.betterhusband.domain.model.IdeaCategory
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
 import com.bastiensabos.betterhusband.testutil.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
@@ -17,6 +20,7 @@ import org.junit.Test
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.ZoneOffset
 
 class DatesViewModelTest {
@@ -24,9 +28,16 @@ class DatesViewModelTest {
 
     private val clock = Clock.fixed(Instant.parse("2027-03-10T09:00:00Z"), ZoneOffset.UTC)
     private val repository = FakeImportantDateRepository()
+    private val ideas = FakeIdeaRepository()
 
     // Créé au premier usage, donc après MainDispatcherRule : sinon viewModelScope part sur un autre Main.
-    private val viewModel by lazy { DatesViewModel(ObserveUpcomingDatesUseCase(FakePartnerRepository(), repository, clock), repository) }
+    private val viewModel by lazy {
+        DatesViewModel(
+            ObserveUpcomingDatesUseCase(FakePartnerRepository(), repository, clock),
+            repository,
+            ideas,
+        )
+    }
 
     /** Garde le flux actif (WhileSubscribed) pendant le test. */
     private fun TestScope.collectState() {
@@ -136,5 +147,21 @@ class DatesViewModelTest {
 
             assertThat(repository.state.value).containsExactly(before)
             assertThat(viewModel.uiState.value.undo).isNull()
+        }
+
+    @Test
+    fun `the next date is set apart with the notebook ideas that fit it, the rest by month`() =
+        runTest {
+            repository.save(ImportantDate(title = "Fête", kind = DateKind.BIRTHDAY, date = LocalDate.of(2027, 3, 20), recurring = true))
+            repository.save(ImportantDate(title = "Voyage", kind = DateKind.OTHER, date = LocalDate.of(2027, 5, 2), recurring = false))
+            ideas.add("Pivoines", IdeaCategory.GIFT)
+            ideas.add("Balade", IdeaCategory.OUTING)
+            collectState()
+
+            val ready = viewModel.uiState.value.list as DatesListState.Ready
+
+            assertThat(ready.next.label).isEqualTo(DateLabel.Custom("Fête"))
+            assertThat(ready.nextIdeas).isEqualTo(2)
+            assertThat(ready.months.map { it.month }).containsExactly(YearMonth.of(2027, 5))
         }
 }
