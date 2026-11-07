@@ -150,6 +150,28 @@ class ConventionsTest {
         assertTrue("migrations absentes de MigrationTest : $untested", untested.isEmpty())
     }
 
+    // La banque d'attentions est écrite à la main et ne doit jamais présupposer le genre de qui la lit ou de son ou sa
+    // partenaire (docs/ux-writing.md) ; l'ordre est figé (l'historique garde la position), seule la taille peut croître.
+    @Test
+    fun `la banque d'attentions est assez grande, neutre et concise`() {
+        val resource = File(root, "app/src/main/res/values/attentions.xml").readText()
+        val items = Regex("""<item>(.*?)</item>""").findAll(resource).map { it.groupValues[1] }.toList()
+        val forbidden =
+            Regex(
+                """(?<![\p{L}])(il|ils|elle|elles|mari|femme|fier|fière|heureux|heureuse|seul|seule)(?![\p{L}])""",
+                RegexOption.IGNORE_CASE,
+            )
+
+        assertTrue("moins de 150 attentions : ${items.size}", items.size >= 150)
+        assertTrue("doublons dans la banque", items.toSet().size == items.size)
+        val tooLong = items.filter { it.split(" ").size > 16 }
+        assertTrue("plus de 16 mots : $tooLong", tooLong.isEmpty())
+        val gendered = items.filter { forbidden.containsMatchIn(it) }
+        assertTrue("genre présupposé : $gendered", gendered.isEmpty())
+        val unfinished = items.filterNot { it.endsWith(".") }
+        assertTrue("sans point final : $unfinished", unfinished.isEmpty())
+    }
+
     /** Sans les commentaires ni la documentation, qui peuvent citer ces mots sans les employer. */
     private fun codeWithoutComments(text: String) =
         text
