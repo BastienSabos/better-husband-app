@@ -67,6 +67,9 @@ enum class AttentionGroup(
     READING(270_000, { Interest.READING in it.profile.interests }),
     DIY(280_000, { Interest.DIY in it.profile.interests }),
     WELLBEING(290_000, { Interest.WELLBEING in it.profile.interests }),
+
+    /** Se voir en vrai (une balade, un câlin) : tout le monde, sauf qui a dit vivre à distance. */
+    IN_PERSON(300_000, { it.profile.living != LivingArrangement.LONG_DISTANCE }),
     ;
 
     fun appliesTo(context: AttentionContext): Boolean = appliesTo.invoke(context)

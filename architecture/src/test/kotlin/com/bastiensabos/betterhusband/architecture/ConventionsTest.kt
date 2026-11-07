@@ -151,25 +151,40 @@ class ConventionsTest {
     }
 
     // La banque d'attentions est écrite à la main et ne doit jamais présupposer le genre de qui la lit ou de son ou sa
-    // partenaire (docs/ux-writing.md) ; l'ordre est figé (l'historique garde la position), seule la taille peut croître.
+    // partenaire (docs/ux-writing.md) : ni pronom ni accord genré, ni « pour lui » / « chez lui » (masculins), alors
+    // que « dis-lui » est neutre. Chaque liste de groupe est branchée dans ResourceAttentionBank.
     @Test
     fun `la banque d'attentions est assez grande, neutre et concise`() {
         val resource = File(root, "app/src/main/res/values/attentions.xml").readText()
         val items = Regex("""<item>(.*?)</item>""").findAll(resource).map { it.groupValues[1] }.toList()
         val forbidden =
             Regex(
-                """(?<![\p{L}])(il|ils|elle|elles|mari|femme|fier|fière|heureux|heureuse|seul|seule)(?![\p{L}])""",
+                """(?<![\p{L}])(il|ils|elle|elles|mari|femme|fier|fière|heureux|heureuse|seul|seule|prêt|prête|""" +
+                    """aimé|aimée)(?![\p{L}])""",
                 RegexOption.IGNORE_CASE,
             )
+        // « lui » complément d'une préposition est masculin, sauf devant un infinitif (« pour lui laisser »).
+        val masculineLui =
+            Regex("""(?<![\p{L}])(pour|chez|avec|sans|à|par|sur|vers|envers|contre|comme) lui(?=[\s]*[.,;:!?]|\s+(et|ou|hier|aujourd))""")
 
-        assertTrue("moins de 150 attentions : ${items.size}", items.size >= 150)
+        assertTrue("moins de 400 attentions : ${items.size}", items.size >= 400)
         assertTrue("doublons dans la banque", items.toSet().size == items.size)
         val tooLong = items.filter { it.split(" ").size > 16 }
         assertTrue("plus de 16 mots : $tooLong", tooLong.isEmpty())
-        val gendered = items.filter { forbidden.containsMatchIn(it) }
+        val gendered = items.filter { forbidden.containsMatchIn(it) || masculineLui.containsMatchIn(it) }
         assertTrue("genre présupposé : $gendered", gendered.isEmpty())
         val unfinished = items.filterNot { it.endsWith(".") }
         assertTrue("sans point final : $unfinished", unfinished.isEmpty())
+    }
+
+    @Test
+    fun `chaque liste de la banque d'attentions est lue par l'appli`() {
+        val resource = File(root, "app/src/main/res/values/attentions.xml").readText()
+        val bank = File(root, "app/src/main/kotlin/com/bastiensabos/betterhusband/data/repository/AttentionBank.kt").readText()
+        val arrays = Regex("""<string-array name="(attention_bank\w*)">""").findAll(resource).map { it.groupValues[1] }.toList()
+
+        val unread = arrays.filterNot { "R.array.$it," in bank || "R.array.$it\n" in bank }
+        assertTrue("listes de la banque jamais lues : $unread", unread.isEmpty())
     }
 
     /** Sans les commentaires ni la documentation, qui peuvent citer ces mots sans les employer. */

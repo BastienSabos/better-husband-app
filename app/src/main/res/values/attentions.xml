@@ -1,162 +1,489 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-        Banque d'attentions du flux du jour (une idée par jour, tirée par AttentionPicker).
-        RÈGLES : ne JAMAIS réordonner ni supprimer une entrée (l'historique garde la position) ; on n'ajoute qu'à la
-        fin. Tutoiement, une idée par phrase, 16 mots maximum, aucun « il », « elle », « mari », « femme » (le ou la
-        partenaire se désigne par « lui », neutre) ; rien d'infantilisant ni de manipulateur (docs/ux-writing.md).
+        Banque d'attentions du flux du jour, une liste par groupe (AttentionGroup, AttentionCatalog). L'identifiant d'une
+        attention vaut l'offset de son groupe plus sa position : après la sortie sur le Play Store, ne JAMAIS réordonner
+        ni supprimer une entrée, on n'ajoute qu'à la fin d'une liste. Tant que l'appli n'est pas publiée, on peut encore
+        réorganiser.
+        Règles d'écriture (docs/ux-writing.md) : tutoiement, une idée par phrase, 16 mots maximum, point final. Rien qui
+        présuppose le genre de qui lit ni de son ou sa partenaire : ni « il », « elle », « mari », « femme », ni accord
+        (« fier », « prêt », « aimé »), ni « pour lui » ou « chez lui » ; « lui » seulement comme dans « dis-lui ». Rien
+        d'infantilisant ni de manipulateur. Une idée qui demande une situation va dans la liste de cette situation.
         ConventionsTest vérifie la taille, les doublons et ces mots.
     -->
+
+    <!-- Pour tout le monde : sans présupposer de situation, gratuit ou presque, court. -->
     <string-array name="attention_bank">
-        <item>Écris-lui un mot doux et glisse-le dans une poche ou un sac.</item>
-        <item>Prépare son petit-déjeuner préféré, sans occasion particulière.</item>
-        <item>Envoie-lui un message pour dire ce que tu as aimé chez lui hier.</item>
-        <item>Propose une marche de vingt minutes ensemble après le dîner.</item>
-        <item>Prends en charge la tâche qui lui pèse le plus en ce moment.</item>
-        <item>Pose ton téléphone pendant le repas de ce soir et écoute vraiment.</item>
+        <item>Envoie-lui un message sur le meilleur moment d\'hier entre vous.</item>
         <item>Demande-lui comment s\'est passée sa journée, puis écoute sans l\'interrompre.</item>
-        <item>Lance sa chanson préférée à la maison et danse deux minutes.</item>
-        <item>Prépare-lui un thé ou un café et apporte-le sans rien demander.</item>
         <item>Dis-lui merci pour une chose précise qui revient tout le temps.</item>
         <item>Fais-lui un vrai compliment sur autre chose que l\'apparence.</item>
-        <item>Réserve une soirée à deux cette semaine et note-la dans l\'agenda.</item>
-        <item>Cuisine son plat favori ce soir.</item>
         <item>Rappelle-lui un souvenir drôle que vous avez vécu ensemble.</item>
-        <item>Propose-lui un massage de cinq minutes des épaules.</item>
-        <item>Dépose un petit mot sur le miroir de la salle de bain.</item>
         <item>Envoie-lui une photo de vous deux qui te fait sourire.</item>
-        <item>Demande-lui ce qui lui ferait plaisir ce week-end, et organise-le.</item>
+        <item>Demande-lui ce qui lui ferait plaisir ce week-end.</item>
         <item>Prends dix minutes pour parler de vos envies pour les mois qui viennent.</item>
-        <item>Prépare le lit avec des draps propres ce soir.</item>
         <item>Demande-lui ce qui l\'aiderait à souffler aujourd\'hui.</item>
-        <item>Offre-lui une heure rien que pour lui, sans rien à gérer.</item>
-        <item>Choisissez ensemble un film dont vous aviez envie depuis longtemps.</item>
-        <item>Prépare un petit pique-nique, même dans le salon.</item>
         <item>Dis-lui merci pour une chose qu\'on remercie rarement.</item>
-        <item>Propose de faire les courses à sa place cette semaine.</item>
-        <item>Écris trois choses que tu aimes chez lui et lis-les à voix haute.</item>
-        <item>Fais un câlin de dix secondes, sans rien dire.</item>
-        <item>Propose un jeu de société ce soir, sans écran.</item>
-        <item>Retrouve un objet qui lui manquait depuis longtemps.</item>
-        <item>Remplis sa gourde avant le départ de ce matin.</item>
-        <item>Montre-lui une vidéo qui t\'a fait penser à lui.</item>
+        <item>Écris trois choses que tu aimes chez ton ou ta partenaire et partage-les.</item>
+        <item>Montre-lui une vidéo qui t\'a fait penser à vous.</item>
         <item>Demande-lui de te raconter un rêve ou un projet un peu fou.</item>
-        <item>Fais la vaisselle pendant que vous vous reposez.</item>
-        <item>Garde un moment de la soirée pour une conversation sans sujet utile.</item>
-        <item>Prends rendez-vous pour une activité à deux que vous n\'avez jamais faite.</item>
-        <item>Prépare une surprise sucrée qui lui plaît.</item>
-        <item>Éteins la lumière du salon et allume des bougies pour le dîner.</item>
         <item>Demande-lui son avis sur quelque chose et suis-le vraiment.</item>
-        <item>Profite d\'un trajet pour mettre sa playlist préférée.</item>
         <item>Écris-lui une lettre courte à la main, même trois lignes.</item>
-        <item>Offre une fleur ou une plante pour la maison.</item>
-        <item>Propose-lui de choisir le programme de la soirée.</item>
-        <item>Dis-lui à quel moment de la journée tu as pensé à lui.</item>
-        <item>Range un endroit de la maison qui l\'agace depuis longtemps.</item>
-        <item>Laisse-lui la dernière part du dessert, avec un sourire.</item>
-        <item>Propose de regarder le coucher du soleil ensemble.</item>
-        <item>Propose de venir avec lui à un rendez-vous qui l\'inquiète.</item>
-        <item>Prépare les affaires dont vous aurez besoin demain.</item>
-        <item>Demande-lui ce que tu pourrais faire de mieux pour lui en ce moment.</item>
-        <item>Prends une photo de vous deux et garde-la précieusement.</item>
+        <item>Dis-lui à quel moment de la journée tu as pensé à vous deux.</item>
+        <item>Demande-lui ce que tu pourrais faire de mieux en ce moment.</item>
         <item>Dis-lui une qualité que tu admires et que tu n\'as jamais dite.</item>
-        <item>Planifie une petite escapade d\'une demi-journée à deux.</item>
-        <item>Prépare-lui un bain ou une douche tranquille.</item>
-        <item>Prends le relais pour le coucher de ce soir.</item>
         <item>Dis-lui ce qui t\'impressionne dans un effort récent.</item>
-        <item>Retourne par la pensée au lieu de votre premier rendez-vous.</item>
-        <item>Cuisinez ensemble une recette que vous n\'avez jamais essayée.</item>
-        <item>Imprime une photo de vous et pose-la bien en vue.</item>
-        <item>Propose un week-end sans programme, juste pour être ensemble.</item>
+        <item>Repense au lieu de votre premier rendez-vous et raconte-lui ce souvenir.</item>
         <item>Écoute parler de son travail sans chercher à donner des conseils.</item>
         <item>Demande-lui ce qui lui trotte dans la tête, puis écoute sans te défendre.</item>
-        <item>Prends un moment pour dire ce que tu as apprécié cette semaine.</item>
-        <item>Réserve une table dans un endroit qui lui plaît.</item>
-        <item>Rapporte-lui un petit quelque chose en rentrant, même un fruit.</item>
-        <item>Prends l\'initiative d\'un baiser pour dire bonjour ou bonsoir.</item>
-        <item>Passez dix minutes dehors ensemble, sans téléphone.</item>
-        <item>Demande-lui de te faire découvrir une chanson ou un film qui compte pour lui.</item>
-        <item>Prépare un goûter surprise et prenez-le assis, sans écran.</item>
-        <item>Laisse-lui dormir un peu plus longtemps ce matin.</item>
+        <item>Dis-lui ce que tu as apprécié chez vous cette semaine.</item>
+        <item>Demande-lui de te faire découvrir une chanson qui compte beaucoup.</item>
         <item>Demande-lui quelle est sa plus belle journée avec toi.</item>
         <item>Choisissez ensemble une destination de rêve et cherchez-la sur une carte.</item>
         <item>Dis-lui un mot d\'encouragement pour quelque chose qui lui tient à cœur.</item>
-        <item>Prépare un petit mot à ouvrir plus tard dans la journée.</item>
-        <item>Demande-lui quelle tâche lui pèse, et prends-la ce soir.</item>
-        <item>Dis merci devant d\'autres personnes pour un coup de main récent.</item>
         <item>Fais-lui un compliment sincère devant un proche.</item>
-        <item>Propose une soirée où chacun choisit un plat et un film.</item>
         <item>Passe-lui un coup de fil au milieu de la journée, juste pour dire bonjour.</item>
-        <item>Prends dix minutes pour mettre à jour votre agenda commun.</item>
-        <item>Offre-lui un livre ou un disque dont vous avez parlé ensemble.</item>
         <item>Dis-lui simplement ce que tu ressens aujourd\'hui.</item>
-        <item>Passe un moment à regarder de vieilles photos ensemble.</item>
-        <item>Propose-lui un défi léger à deux, comme cuisiner sans recette.</item>
-        <item>Prévois un détour sur le chemin pour un café ensemble.</item>
         <item>Envoie-lui un mot de soutien avant un moment important.</item>
-        <item>Fais une pause avant de répondre, la prochaine fois que ça s\'énerve.</item>
-        <item>Propose une activité douce pour dimanche et laisse-lui le choix.</item>
+        <item>Fais une pause avant de répondre, la prochaine fois que le ton monte.</item>
         <item>Dis-lui merci pour quelque chose qui a rendu ta journée plus facile.</item>
-        <item>Offre-lui un moment calme en t\'occupant du reste.</item>
-        <item>Prépare un apéritif improvisé avec ce que vous avez.</item>
         <item>Demande-lui ce qui lui manque en ce moment, et écoute.</item>
-        <item>Prenez l\'air à deux sur le balcon ou devant la porte.</item>
         <item>Demande-lui de t\'apprendre une astuce de son quotidien.</item>
-        <item>Laisse un petit mot sur la table avant de partir.</item>
-        <item>Fais-lui une surprise très simple, comme son dessert préféré.</item>
-        <item>Prends l\'initiative d\'un moment à deux avant la fin de la journée.</item>
-        <item>Demande-lui quel moment de votre première année vous devriez revivre.</item>
-        <item>Fais le tri dans vos photos et choisis-en une à encadrer.</item>
-        <item>Propose de poser chacun une question pendant le dîner.</item>
+        <item>Demande-lui quel moment de vos débuts vous devriez revivre.</item>
         <item>Dis-lui ce que tu espères pour vous dans un an.</item>
-        <item>Un jour de fatigue : propose un repas simple, du calme, aucun reproche.</item>
-        <item>Prépare sa boisson chaude favorite en l\'attendant.</item>
         <item>Dis-lui merci pour un geste discret que tu as remarqué cette semaine.</item>
         <item>Choisis une chanson qui te fait penser à vous et envoie-la.</item>
-        <item>Prépare un moment d\'écoute : dix minutes rien que pour lui.</item>
+        <item>Garde dix minutes d\'écoute rien que pour ton ou ta partenaire aujourd\'hui.</item>
         <item>Fais-lui un compliment sur sa façon d\'être avec les autres.</item>
-        <item>Dis-lui ce qui t\'a attiré chez lui quand vous vous êtes rencontrés.</item>
-        <item>Prévois une activité qui lui plaît et que tu ne fais jamais d\'habitude.</item>
-        <item>Dis-lui ce que tu aimes dans le fait de rentrer chez vous.</item>
+        <item>Dis-lui ce qui t\'a plu dès votre rencontre.</item>
         <item>Écris une liste de petits bonheurs partagés ces derniers mois.</item>
-        <item>Passe un moment à faire quelque chose de simple ensemble, sans but.</item>
         <item>Reviens sur un désaccord récent pour proposer une idée apaisante.</item>
-        <item>Fais à pied une course que vous faites d\'habitude en voiture.</item>
-        <item>Prends un moment pour planifier ensemble un projet qui vous enthousiasme.</item>
-        <item>Répare quelque chose qui traîne depuis des semaines.</item>
-        <item>Écris une question pour lui et glisse-la dans son sac.</item>
-        <item>Passe cinq minutes à regarder les étoiles ou la lune ensemble.</item>
-        <item>Offre-lui un moment d\'attention complète, sans tâche en parallèle.</item>
         <item>Montre-lui un petit truc que tu viens de découvrir.</item>
         <item>Renseigne-toi sur une activité qui l\'intrigue et propose-la.</item>
-        <item>Dis-lui ce que tu aimes dans votre routine à deux.</item>
-        <item>Prépare un dîner aux chandelles avec ce que vous avez à la maison.</item>
-        <item>Demande-lui de raconter un souvenir d\'enfance qui lui est cher.</item>
+        <item>Demande-lui de raconter un souvenir d\'enfance précieux.</item>
         <item>Demande-lui si une démarche en attente mérite un coup de main.</item>
         <item>Écris-lui trois lignes pour dire merci d\'être là.</item>
-        <item>Prépare un plat que vous n\'avez pas mangé depuis longtemps.</item>
         <item>Dis-lui qu\'on peut compter sur toi cette semaine, et précise comment.</item>
-        <item>Laisse-lui choisir la musique pendant le trajet.</item>
-        <item>Termine une tâche laissée en plan, sans en faire un sujet.</item>
-        <item>Imagine un petit rituel du soir à deux et propose-le.</item>
         <item>Raconte-lui un moment récent où vous étiez très proches.</item>
-        <item>Remplace une soirée écran par une promenade ou une discussion.</item>
         <item>Envoie-lui un mot d\'encouragement avant sa grosse journée.</item>
-        <item>Choisis un lieu que vous ne connaissez pas et visitez-le ensemble.</item>
         <item>Dis-lui merci pour sa patience de ces derniers temps.</item>
-        <item>Prends un moment pour ranger ensemble un coin qui vous encombre.</item>
-        <item>Regardez un épisode d\'une série que vous aimiez au début.</item>
-        <item>Prépare une petite pause bien-être : thé, plaid, silence.</item>
-        <item>Faites la liste de ce que vous voudriez vivre cet été.</item>
         <item>Propose un jeu de questions pour mieux vous connaître encore.</item>
         <item>Commence la journée en lui disant quelque chose de gentil.</item>
         <item>Mets ton téléphone en silence pour lui accorder un vrai moment.</item>
-        <item>Rapporte-lui une pâtisserie ou un fruit qui lui plaît.</item>
         <item>Demande-lui son meilleur souvenir avec toi.</item>
         <item>Dis-lui ce que tu as appris à son contact cette année.</item>
-        <item>Fête une petite réussite récente avec une boisson ou un dessert.</item>
         <item>Dis à voix haute une phrase tendre que tu gardes pour toi.</item>
-        <item>Propose d\'inviter une personne qui lui fait plaisir à revoir.</item>
-        <item>Dis-lui que ce soir, c\'est son choix pour tout.</item>
+        <item>Demande-lui ce qui l\'a fait rire aujourd\'hui.</item>
+        <item>Envoie-lui un message sans demande ni logistique, juste de l\'affection.</item>
+        <item>Retiens un détail confié hier et reparles-en aujourd\'hui.</item>
+        <item>Pose une question sur un sujet qui le ou la passionne.</item>
+        <item>Demande-lui ce qui rendrait sa semaine plus légère.</item>
+        <item>Dis-lui pardon pour une petite chose, sans te justifier.</item>
+        <item>Dis-lui merci pour un service qu\'on te rend souvent sans rien dire.</item>
+        <item>Écris la date d\'un prochain moment à deux et confirme-la.</item>
+        <item>Envoie un message vocal plutôt qu\'un texte, juste pour la voix.</item>
+        <item>Demande-lui quel conseil donner à sa version de vingt ans.</item>
+        <item>Partage une chose qui t\'inquiète, simplement, sans attendre de solution.</item>
+        <item>Raconte-lui un succès du jour, même minuscule.</item>
+        <item>Demande-lui quelle chanson lui donne de l\'énergie en ce moment.</item>
+        <item>Dis-lui bravo pour une décision difficile prise récemment.</item>
+        <item>Demande-lui une recommandation de livre, de film ou de podcast, et suis-la.</item>
+        <item>Note une phrase de ton ou ta partenaire qui te reste en tête, et dis-le.</item>
+        <item>Propose de choisir ensemble le prochain film ou la prochaine série.</item>
+        <item>Envoie une photo d\'un endroit qui te rappelle vos débuts.</item>
+        <item>Dis-lui que tu es là, même sans savoir quoi faire.</item>
+        <item>Demande-lui ce dont sa journée idéale serait faite.</item>
+        <item>Prends des nouvelles d\'un proche qui compte beaucoup pour ton ou ta partenaire.</item>
+        <item>Souviens-toi de son rendez-vous important et demande comment ça s\'est passé.</item>
+        <item>Ne coupe pas la parole pendant toute une conversation aujourd\'hui.</item>
+        <item>Dis merci pour un repas, un trajet ou un message, à voix haute.</item>
+        <item>Demande-lui de choisir un mot pour résumer sa semaine.</item>
+        <item>Envoie une photo de vacances et demandez-vous ce que vous en gardez.</item>
+        <item>Propose une soirée sans sujets d\'organisation ni de soucis.</item>
+        <item>Pose une question dont tu ne connais pas encore la réponse.</item>
+        <item>Dis ce que tu trouves beau dans sa façon de rire.</item>
+        <item>Rappelle-lui une épreuve traversée ensemble, et ce que vous y avez gagné.</item>
+        <item>Écris un petit mot à ouvrir dans un moment difficile.</item>
+        <item>Demande-lui ce qui lui ferait du bien demain matin.</item>
+        <item>Fais une liste de cinq choses à faire ensemble avant la fin de l\'année.</item>
+        <item>Accepte une invitation qui lui fait plaisir, même si ce n\'est pas ton truc.</item>
+        <item>Garde pour plus tard un souci logistique et profite de l\'instant.</item>
+        <item>Dis-lui ce que tu admires dans votre couple.</item>
+        <item>Demande-lui une chose que tu pourrais arrêter de faire.</item>
+        <item>Envoie-lui un mème ou une blague qui va lui parler.</item>
+        <item>Demande-lui quel moment récent lui a serré le cœur.</item>
+        <item>Rappelle-toi une promesse faite et tiens-la aujourd\'hui.</item>
+        <item>Propose une pause de deux minutes pour respirer ensemble, même au téléphone.</item>
+    </string-array>
+
+    <!-- Se voir en vrai : tout le monde sauf les couples à distance. -->
+    <string-array name="attention_bank_in_person">
+        <item>Écris-lui un mot doux et glisse-le dans une poche ou un sac.</item>
+        <item>Propose une marche de vingt minutes ensemble.</item>
+        <item>Pose ton téléphone pendant votre prochain repas et écoute vraiment.</item>
+        <item>Propose-lui un massage de cinq minutes des épaules.</item>
+        <item>Fais un câlin de dix secondes, sans rien dire.</item>
+        <item>Propose un jeu de société, sans écran.</item>
+        <item>Propose-lui de choisir le programme de votre prochaine soirée.</item>
+        <item>Prends une photo de vous deux et garde-la précieusement.</item>
+        <item>Passez dix minutes dehors ensemble, sans téléphone.</item>
+        <item>Prends l\'initiative d\'un baiser pour dire bonjour ou au revoir.</item>
+        <item>Prévois un détour pour un café ensemble.</item>
+        <item>Propose de regarder le coucher du soleil ensemble.</item>
+        <item>Propose de l\'accompagner à un rendez-vous qui l\'inquiète.</item>
+        <item>Passe un moment à regarder de vieilles photos ensemble.</item>
+        <item>Propose de poser chacun une question pendant le repas.</item>
+        <item>Passe un moment à faire quelque chose de simple ensemble, sans but.</item>
+        <item>Passe cinq minutes à regarder les étoiles ou la lune ensemble.</item>
+        <item>Offre-lui un moment d\'attention complète, sans tâche en parallèle.</item>
+        <item>Choisis un lieu que vous ne connaissez pas près de chez vous et allez-y.</item>
+        <item>Laisse-lui choisir la musique pendant le trajet.</item>
+        <item>Remplace une soirée écran par une promenade ou une discussion.</item>
+        <item>Regardez un épisode d\'une série que vous aimiez au début.</item>
+        <item>Rapporte-lui une pâtisserie ou un fruit qui lui plaît.</item>
+        <item>Prends sa main en marchant, sans raison.</item>
+        <item>Fais une photo de son meilleur profil et envoie-la ensuite.</item>
+        <item>Asseyez-vous côte à côte dix minutes, sans écran, juste pour parler.</item>
+        <item>Marchez un peu plus lentement que d\'habitude, au rythme de la conversation.</item>
+        <item>Danse avec ton ou ta partenaire sur une chanson que vous aimez.</item>
+        <item>Lisez chacun un livre, l\'un contre l\'autre, sans parler.</item>
+        <item>Propose une partie de cartes rapide avant de dormir.</item>
+        <item>Fais un tour au marché ensemble et choisissez un produit nouveau.</item>
+        <item>Va chercher votre boisson préférée et partagez-la dehors.</item>
+        <item>Montre-lui un endroit de ton enfance, ou raconte-le en photos.</item>
+    </string-array>
+
+    <!-- Vous vivez ensemble. -->
+    <string-array name="attention_bank_together">
+        <item>Prépare son petit-déjeuner préféré, sans occasion particulière.</item>
+        <item>Prends en charge la tâche qui lui pèse le plus en ce moment.</item>
+        <item>Lance sa chanson préférée à la maison et danse deux minutes.</item>
+        <item>Prépare-lui un thé ou un café et apporte-le sans rien demander.</item>
+        <item>Cuisine son plat favori ce soir.</item>
+        <item>Dépose un petit mot sur le miroir de la salle de bain.</item>
+        <item>Prépare le lit avec des draps propres ce soir.</item>
+        <item>Propose de faire les courses à sa place cette semaine.</item>
+        <item>Remplis sa gourde avant le départ de ce matin.</item>
+        <item>Fais la vaisselle pendant que ton ou ta partenaire se repose.</item>
+        <item>Éteins la lumière du salon et allume des bougies pour le dîner.</item>
+        <item>Range un endroit de la maison qui l\'agace depuis longtemps.</item>
+        <item>Laisse-lui la dernière part du dessert, avec un sourire.</item>
+        <item>Prépare les affaires dont vous aurez besoin demain.</item>
+        <item>Prépare-lui un bain ou une douche tranquille.</item>
+        <item>Imprime une photo de vous et pose-la bien en vue.</item>
+        <item>Prépare un goûter surprise et prenez-le assis, sans écran.</item>
+        <item>Laisse-lui dormir un peu plus longtemps ce matin.</item>
+        <item>Prépare un petit mot à trouver plus tard dans la journée.</item>
+        <item>Demande-lui quelle tâche lui pèse, et prends-la ce soir.</item>
+        <item>Prends dix minutes pour mettre à jour votre agenda commun.</item>
+        <item>Offre-lui un moment calme en t\'occupant du reste.</item>
+        <item>Prépare un apéritif improvisé avec ce que vous avez.</item>
+        <item>Prenez l\'air à deux sur le balcon ou devant la porte.</item>
+        <item>Laisse un petit mot sur la table avant de partir.</item>
+        <item>Prépare sa boisson chaude favorite en l\'attendant.</item>
+        <item>Dis-lui ce que tu aimes dans le fait de rentrer chez vous.</item>
+        <item>Répare quelque chose qui traîne depuis des semaines.</item>
+        <item>Écris une question et glisse-la dans son sac.</item>
+        <item>Dis-lui ce que tu aimes dans votre routine à deux.</item>
+        <item>Prépare un dîner aux chandelles avec ce que vous avez à la maison.</item>
+        <item>Prépare un plat que vous n\'avez pas mangé depuis longtemps.</item>
+        <item>Termine une tâche laissée en plan, sans en faire un sujet.</item>
+        <item>Imagine un petit rituel du soir à deux et propose-le.</item>
+        <item>Prends un moment pour ranger ensemble un coin qui vous encombre.</item>
+        <item>Prépare une petite pause bien-être : thé, plaid, silence.</item>
+        <item>Un jour de fatigue : propose un repas simple, du calme, aucun reproche.</item>
+        <item>Prépare un petit pique-nique dans le salon.</item>
+        <item>Va accueillir ton ou ta partenaire à la porte à son retour.</item>
+        <item>Mets la table joliment, même pour un repas simple.</item>
+        <item>Fais le tour des factures et papiers en attente, sans rien demander.</item>
+        <item>Change l\'ampoule, la pile ou le joint qui manque depuis longtemps.</item>
+        <item>Prépare la cafetière ou la théière la veille au soir.</item>
+        <item>Fais un lit au carré et pose un mot sur l\'oreiller.</item>
+        <item>Propose un dîner sans télé, la table tournée vers la fenêtre.</item>
+        <item>Vide le lave-vaisselle avant qu\'on te le demande.</item>
+        <item>Préchauffe la serviette ou le peignoir avant sa douche.</item>
+        <item>Couche-toi en même temps ce soir, téléphones hors de la chambre.</item>
+        <item>Fais une liste de courses avec ses envies de la semaine.</item>
+        <item>Prépare son déjeuner à emporter pour demain.</item>
+        <item>Range ses affaires éparpillées sans faire de remarque.</item>
+        <item>Prenez dix minutes au réveil pour parler avant d\'allumer les écrans.</item>
+        <item>Partagez la répartition des tâches de la semaine en cinq minutes.</item>
+        <item>Arrose les plantes, sors les poubelles : tout ce qui lui revient d\'habitude.</item>
+        <item>Mets une musique douce pendant que vous cuisinez.</item>
+        <item>Glisse un chocolat dans sa poche de manteau.</item>
+        <item>Déplace enfin le meuble dont vous parlez depuis des semaines.</item>
+        <item>Laisse la salle de bain impeccable après ton passage.</item>
+        <item>Prépare un plateau télé soigné pour un soir de fatigue.</item>
+        <item>Fais une sieste ensemble ce week-end, sans culpabilité.</item>
+    </string-array>
+
+    <!-- Chacun chez soi (et à distance). -->
+    <string-array name="attention_bank_apart">
+        <item>Propose de passer chez ton ou ta partenaire avec un dessert.</item>
+        <item>Laisse une affaire à toi chez ton ou ta partenaire, un clin d\'œil pour plus tard.</item>
+        <item>Envoie un message pour souhaiter bonne nuit avec un détail de ta journée.</item>
+        <item>Propose de faire le trajet cette fois, pour lui éviter la route.</item>
+        <item>Glisse un petit sac de nuit dans ta voiture, au cas où tu restes.</item>
+        <item>Demande-lui ce qui rendrait vos soirées chez l\'un ou l\'autre plus agréables.</item>
+        <item>Garde un tiroir ou une étagère libre chez toi pour ses affaires.</item>
+        <item>Propose un rituel du dimanche soir : un appel avant la semaine.</item>
+        <item>Fais-lui découvrir ton quartier comme si vous étiez touristes.</item>
+        <item>Demande-lui son quartier préféré pour se retrouver en semaine.</item>
+        <item>Écris-lui un mot à trouver après ton départ.</item>
+        <item>Envoie une photo d\'un endroit où tu aimerais l\'emmener.</item>
+        <item>Propose de faire vos courses ensemble pour cuisiner chez l\'un de vous.</item>
+        <item>Propose-lui un double de tes clés, si vous en avez envie tous les deux.</item>
+        <item>Raconte ce que tu as remarqué de nouveau dans son appartement.</item>
+        <item>Demande-lui à quoi ressemble une soirée idéale chez toi.</item>
+        <item>Prépare son en-cas préféré pour sa prochaine visite.</item>
+        <item>Laisse une brosse à dents et une serviette prêtes pour sa venue.</item>
+        <item>Propose de rentrer avec ton ou ta partenaire jusqu\'à sa porte.</item>
+        <item>Demande comment s\'est passée la semaine, avant de parler de la tienne.</item>
+        <item>Organise un petit-déjeuner à deux un matin où vous vous réveillez ensemble.</item>
+        <item>Parle de ce que vous aimez dans le fait de vivre chacun chez soi.</item>
+        <item>Propose une soirée à cuisiner chez l\'un, puis à dormir chez l\'autre.</item>
+        <item>Envoie un message à l\'heure du déjeuner pour dire à quoi tu penses.</item>
+        <item>Garde dans ton agenda un soir par semaine rien que pour vous.</item>
+        <item>Demande ce qui manque chez toi pour que ton ou ta partenaire s\'y sente bien.</item>
+    </string-array>
+
+    <!-- À distance. -->
+    <string-array name="attention_bank_long_distance">
+        <item>Planifie un appel vidéo et dînez en même temps, chacun chez soi.</item>
+        <item>Envoie une carte postale écrite à la main.</item>
+        <item>Regardez le même film en même temps et commentez par messages.</item>
+        <item>Prépare un colis avec un objet, un mot et une gourmandise.</item>
+        <item>Fixe la date de vos prochaines retrouvailles et lance le compte à rebours.</item>
+        <item>Envoie une photo de ton ciel ce soir et demande la sienne.</item>
+        <item>Enregistre un message vocal à écouter avant de dormir.</item>
+        <item>Lisez le même livre et parlez d\'un chapitre par semaine.</item>
+        <item>Envoie-lui une playlist pour son prochain trajet.</item>
+        <item>Fais livrer son petit-déjeuner ou son café préféré.</item>
+        <item>Faites une partie de jeu en ligne ensemble ce soir.</item>
+        <item>Écris une lettre à ouvrir le jour de vos retrouvailles.</item>
+        <item>Propose une balade au téléphone, chacun dans sa ville.</item>
+        <item>Cuisinez la même recette en appel vidéo.</item>
+        <item>Envoie trois photos de ta journée, sans légende, et devine les siennes.</item>
+        <item>Prépare une liste de ce que vous ferez à la prochaine visite.</item>
+        <item>Demande-lui le meilleur moment de sa semaine, en détail.</item>
+        <item>Note ses horaires de la semaine pour écrire au bon moment.</item>
+        <item>Envoie un de tes vêtements, à garder près de soi en ton absence.</item>
+        <item>Faites une visite virtuelle d\'un musée ensemble.</item>
+        <item>Propose un rituel : un message chaque matin au même moment.</item>
+        <item>Endormez-vous en appel, sans rien dire.</item>
+        <item>Regarde la météo de sa ville et envoie un mot adapté.</item>
+        <item>Prépare une boîte de petits mots à ouvrir un par jour.</item>
+        <item>Choisissez ensemble la prochaine destination où vous retrouver.</item>
+        <item>Parle de votre futur : où et quand vivre plus près.</item>
+        <item>Fais-lui une carte de vos lieux importants, à distance ou ensemble.</item>
+        <item>Envoie une recette de ton plat du jour et demande la sienne.</item>
+        <item>Fais une capture d\'écran de votre appel et imprime-la.</item>
+        <item>Envoie un message à son réveil, avec son fuseau horaire en tête.</item>
+        <item>Prévois une surprise pour son arrivée à la gare ou à l\'aéroport.</item>
+        <item>Demande comment l\'accompagner à distance un jour difficile.</item>
+        <item>Faites un quiz en ligne ensemble pendant un appel.</item>
+        <item>Raconte une chose que tu as vue et qui lui aurait plu.</item>
+    </string-array>
+
+    <!-- Pas d'enfant à la maison. -->
+    <string-array name="attention_bank_no_kids">
+        <item>Improvise une sortie en semaine, juste parce que vous pouvez.</item>
+        <item>Propose une grasse matinée à deux ce week-end.</item>
+        <item>Organise un petit-déjeuner au lit, sans raison.</item>
+        <item>Partez sur un coup de tête dans une ville voisine.</item>
+        <item>Invitez des amis pour une soirée simple, chez vous ou dehors.</item>
+        <item>Propose une soirée tardive : concert, film, verre en terrasse.</item>
+        <item>Faites une liste de projets à deux pour l\'année.</item>
+        <item>Parlez de ce qui vous rend libres en ce moment.</item>
+        <item>Proposez un brunch qui s\'étire tout l\'après-midi.</item>
+        <item>Testez une activité que vous n\'avez jamais osée.</item>
+        <item>Prenez un dîner tardif, sans regarder l\'heure.</item>
+        <item>Parlez ouvertement de vos envies pour la suite, sans rien vous interdire.</item>
+        <item>Passez une journée sans programme, à suivre vos envies.</item>
+        <item>Proposez une sortie au cinéma en semaine.</item>
+        <item>Partez en vélo ou à pied pour une heure, sans but.</item>
+        <item>Inscrivez-vous à un cours ensemble : danse, cuisine, poterie.</item>
+        <item>Organisez une soirée jeux avec des amis.</item>
+        <item>Allez dîner dans un quartier que vous ne connaissez pas.</item>
+        <item>Prenez un week-end sans réveil.</item>
+        <item>Faites une sortie spontanée après le travail.</item>
+        <item>Propose une nuit à la belle étoile ou dans un lieu insolite.</item>
+        <item>Prenez du temps pour un projet commun : jardin, déco, voyage.</item>
+        <item>Choisissez une nouvelle tradition rien qu\'à vous deux.</item>
+        <item>Partez voir un spectacle réservé à la dernière minute.</item>
+        <item>Parlez de ce que vous aimez dans votre vie de couple actuelle.</item>
+        <item>Prenez un apéritif sur un toit, une terrasse ou au bord de l\'eau.</item>
+        <item>Faites une soirée karaoké à deux.</item>
+        <item>Prenez un café en terrasse le samedi matin, sans vous presser.</item>
+    </string-array>
+
+    <!-- Des enfants à la maison, quel que soit leur âge. -->
+    <string-array name="attention_bank_kids">
+        <item>Prends en charge la routine du soir des enfants pour lui laisser souffler.</item>
+        <item>Dis-lui ce que tu admires dans sa façon d\'être parent.</item>
+        <item>Organise une soirée à deux après le coucher des enfants.</item>
+        <item>Trouve une solution de garde et réserve une soirée à deux.</item>
+        <item>Dis merci pour une tâche parentale invisible que tu as remarquée.</item>
+        <item>Prends les enfants une heure pour lui offrir du calme.</item>
+        <item>Raconte-lui un moment drôle de la journée avec les enfants.</item>
+        <item>Fais un câlin à trois, quatre ou plus, puis un à deux.</item>
+        <item>Prépare les sacs et affaires des enfants pour demain matin.</item>
+        <item>Propose un moment en famille sans écran, tous ensemble.</item>
+        <item>Prends le relais au réveil ce week-end.</item>
+        <item>Partagez la liste des rendez-vous des enfants pour alléger sa charge mentale.</item>
+        <item>Dis devant les enfants ce que tu aimes chez ton ou ta partenaire.</item>
+        <item>Demande-lui ce qui lui pèse le plus dans l\'organisation familiale.</item>
+        <item>Prends en charge un rendez-vous médical ou scolaire cette semaine, de bout en bout.</item>
+        <item>Propose un dîner tardif à deux une fois les enfants couchés.</item>
+        <item>Laissez les enfants chez des proches une après-midi et sortez.</item>
+        <item>Fais avec les enfants un dessin ou un mot pour ton ou ta partenaire.</item>
+        <item>Prends cinq minutes pour vous deux avant que la maison se réveille.</item>
+        <item>Envoie une photo des enfants qui va lui faire plaisir.</item>
+        <item>Parle d\'autre chose que des enfants pendant tout le repas.</item>
+        <item>Prends en charge les devoirs ou les bains ce soir.</item>
+        <item>Note les anniversaires et cadeaux des copains des enfants à sa place.</item>
+        <item>Propose un rituel du dimanche : un moment à deux, même court.</item>
+        <item>Dis-lui bravo pour un moment éducatif difficile bien géré.</item>
+        <item>Dis-lui que vous formez une bonne équipe, et pourquoi.</item>
+        <item>Prépare le goûter des enfants pour toute la semaine.</item>
+        <item>Organise un petit-déjeuner en famille un peu spécial.</item>
+        <item>Laisse-lui une matinée de repos pendant que tu sors avec les enfants.</item>
+        <item>Parlez de ce que vous voulez transmettre ensemble à vos enfants.</item>
+        <item>Prends en charge les inscriptions et papiers de la rentrée.</item>
+        <item>Propose une soirée film en famille, puis une tisane à deux.</item>
+        <item>Demande-lui un souvenir d\'enfance à raconter aux enfants.</item>
+        <item>Range la chambre des enfants avec eux, sans lui demander.</item>
+        <item>Prévoyez un code rien qu\'à vous pour dire « je t\'aime » devant les enfants.</item>
+        <item>Gère une crise des enfants pour lui épargner la fin de journée.</item>
+    </string-array>
+
+    <!-- Des petits (moins de 11 ans environ). -->
+    <string-array name="attention_bank_young_kids">
+        <item>Lève-toi pour le réveil nocturne cette nuit.</item>
+        <item>Prends le bain et le coucher des petits ce soir.</item>
+        <item>Emmène les petits au parc pour lui laisser une heure de calme.</item>
+        <item>Prépare les biberons, goûters ou repas des petits pour demain.</item>
+        <item>Dis-lui merci pour une nuit difficile, sans comparer la fatigue.</item>
+        <item>Lis l\'histoire du soir à sa place.</item>
+        <item>Gère le départ à la crèche ou à l\'école demain matin.</item>
+        <item>Organise une sieste pour toute la famille ce week-end.</item>
+        <item>Fabriquez avec les petits une carte pour ton ou ta partenaire.</item>
+        <item>Prends la tournée des couches ou des lessives aujourd\'hui.</item>
+        <item>Propose un dîner à deux pendant la sieste des petits.</item>
+        <item>Trie les vêtements trop petits sans qu\'on te le demande.</item>
+        <item>Prends rendez-vous chez le médecin ou le dentiste des petits.</item>
+        <item>Emmène les petits faire les courses pour lui libérer du temps.</item>
+        <item>Prépare une sortie au parc où chacun a un moment à soi.</item>
+        <item>Dis-lui que sa présence auprès des petits compte énormément.</item>
+        <item>Garde les petits pendant sa séance de sport ou sa sortie.</item>
+        <item>Écris sur un post-it un mot doux près de la table à langer.</item>
+        <item>Lave et range les jouets du salon ce soir.</item>
+        <item>Propose une soirée tranquille quand les petits dorment, sans tâches.</item>
+        <item>Prends le relais dès ton retour, sans attendre qu\'on te le demande.</item>
+        <item>Organise la garde pour une soirée à deux ce mois-ci.</item>
+        <item>Filme un moment tendre avec les petits et envoie-le.</item>
+        <item>Prépare le sac de la crèche ou de l\'école ce soir.</item>
+        <item>Prends la matinée du samedi avec les petits.</item>
+        <item>Propose de se relayer pour que chacun dorme une vraie nuit.</item>
+        <item>Fais une photo de famille pour l\'album, même en pyjama.</item>
+        <item>Range la poussette, le siège auto, tout ce qui traîne dans l\'entrée.</item>
+        <item>Dis-lui merci pour sa patience au moment des colères.</item>
+        <item>Demande-lui ce qui l\'aiderait vraiment cette semaine avec les petits.</item>
+    </string-array>
+
+    <!-- Des ados ou des grands à la maison. -->
+    <string-array name="attention_bank_teens">
+        <item>Gère un trajet ou un entraînement des ados cette semaine.</item>
+        <item>Dis-lui ce que tu admires dans sa patience avec les ados.</item>
+        <item>Organise une soirée à deux pendant que les ados sont chez des amis.</item>
+        <item>Prends en charge une discussion délicate avec un ado.</item>
+        <item>Propose un dîner où chacun raconte une chose de sa semaine.</item>
+        <item>Gère les rendez-vous et papiers de l\'orientation scolaire.</item>
+        <item>Dis-lui merci pour une négociation tendue bien menée.</item>
+        <item>Profite d\'un week-end où les ados sont absents pour une escapade.</item>
+        <item>Propose une sortie en famille choisie par un ado.</item>
+        <item>Fais les courses de la semaine pour toute la tribu.</item>
+        <item>Partage une victoire d\'ado avec ton ou ta partenaire, en détail.</item>
+        <item>Demande-lui comment vous pourriez mieux vous relayer avec les ados.</item>
+        <item>Prépare un repas que tout le monde aime, ados compris.</item>
+        <item>Dis devant les ados ce que tu apprécies chez ton ou ta partenaire.</item>
+        <item>Laissez les ados cuisiner un soir et profitez de la soirée.</item>
+        <item>Prends en charge les écrans et les horaires ce soir.</item>
+        <item>Propose un moment à deux en voiture, sans les enfants.</item>
+        <item>Fais une soirée jeu de société avec les ados.</item>
+        <item>Rappelle-lui un moment tendre quand les ados étaient petits.</item>
+        <item>Raconte une anecdote qui montre que vos ados vous ressemblent.</item>
+        <item>Planifie un projet de vacances en famille en écoutant les ados.</item>
+        <item>Garde ton calme face à un ado pour soulager ton ou ta partenaire.</item>
+        <item>Demandez-vous ce que vous aimeriez faire quand les enfants partiront.</item>
+        <item>Organise un dîner à deux un soir où les ados sont occupés.</item>
+        <item>Prends le relais pour les réveils difficiles du matin.</item>
+        <item>Dis-lui que vous tenez bon tous les deux, et que ça compte.</item>
+    </string-array>
+
+    <!-- Moins de deux ans ensemble. -->
+    <string-array name="attention_bank_new_couple">
+        <item>Demande-lui son plat d\'enfance préféré.</item>
+        <item>Pose une question sur sa famille que tu n\'as jamais posée.</item>
+        <item>Propose une activité que l\'autre adore et que tu ne connais pas.</item>
+        <item>Demande-lui sa chanson préférée de ses vingt ans.</item>
+        <item>Raconte-lui un souvenir de toi enfant qui te ressemble encore.</item>
+        <item>Demande-lui ce qui lui fait le plus sentir ton amour.</item>
+        <item>Note ses goûts au fur et à mesure dans la fiche pour ne rien oublier.</item>
+        <item>Propose de rencontrer un ami proche dans un cadre simple.</item>
+        <item>Demande-lui le voyage le plus marquant de sa vie.</item>
+        <item>Propose une balade dans un quartier qui compte pour l\'autre.</item>
+        <item>Dis-lui ce qui t\'a donné envie d\'un deuxième rendez-vous.</item>
+        <item>Demande-lui à quoi ressemble son dimanche idéal.</item>
+        <item>Partage un petit secret sans importance qui te fait rire.</item>
+        <item>Demande-lui ses habitudes du matin, et respecte-les.</item>
+        <item>Écris-lui un mot pour vos quelques mois ensemble.</item>
+        <item>Demande-lui une peur, et partage une des tiennes.</item>
+        <item>Propose un premier projet à deux : un week-end, un cours, un plat.</item>
+        <item>Demande-lui un rêve encore jamais raconté.</item>
+        <item>Pose des questions sur son travail et retiens les prénoms.</item>
+        <item>Demande-lui ce qui l\'agace, pour éviter de le faire.</item>
+        <item>Fais-lui découvrir ton endroit préféré en ville.</item>
+        <item>Demande-lui le meilleur cadeau jamais reçu, et pourquoi.</item>
+        <item>Garde une photo de votre premier rendez-vous.</item>
+        <item>Demande-lui comment se passe une bonne réconciliation, selon l\'autre.</item>
+        <item>Partage une chanson qui raconte quelque chose de toi.</item>
+        <item>Demande-lui un film qui l\'a fait pleurer.</item>
+        <item>Propose de cuisiner une recette de son enfance ensemble.</item>
+        <item>Parle de ce que tu attends d\'une relation, sans pression.</item>
+    </string-array>
+
+    <!-- Dix ans ou plus ensemble. -->
+    <string-array name="attention_bank_long_couple">
+        <item>Refaites ensemble votre tout premier rendez-vous.</item>
+        <item>Demande-lui ce qui a le plus changé chez vous depuis vos débuts.</item>
+        <item>Écris une lettre sur ce que vous avez construit ensemble.</item>
+        <item>Pose une question sur un sujet dont vous ne parlez plus.</item>
+        <item>Ressors l\'album de vos premières années et feuilletez-le.</item>
+        <item>Dis-lui ce que tu aimes encore plus aujourd\'hui qu\'au début.</item>
+        <item>Propose une nouvelle activité pour casser la routine.</item>
+        <item>Dis-lui merci d\'avoir tenu bon dans une épreuve traversée ensemble.</item>
+        <item>Demande-lui un rêve qui a changé avec les années.</item>
+        <item>Organise une soirée comme au début : tenue soignée, restaurant, sans parler logistique.</item>
+        <item>Redis-lui je t\'aime, en le regardant, sans raison.</item>
+        <item>Écoutez la musique de vos débuts et racontez vos souvenirs.</item>
+        <item>Demande-lui ce que vous pourriez vivre dans les dix prochaines années.</item>
+        <item>Choisissez une nouvelle tradition pour les années qui viennent.</item>
+        <item>Fais-lui la cour comme si c\'était un premier rendez-vous.</item>
+        <item>Raconte à un proche, devant l\'autre, l\'histoire de votre rencontre.</item>
+        <item>Demande-lui une habitude de couple à garder, et une à changer.</item>
+        <item>Écris dix choses que vous avez réussies ensemble.</item>
+        <item>Retournez dans un lieu qui a compté au début de votre histoire.</item>
+        <item>Dis-lui ce qui te rassure dans votre couple aujourd\'hui.</item>
+        <item>Reprends une attention que tu faisais au début et que tu as oubliée.</item>
+        <item>Demande-lui ce qui lui manque des premières années.</item>
+        <item>Propose de vous écrire chacun une lettre pour dans cinq ans.</item>
+        <item>Fais une liste de vos fous rires mémorables.</item>
+        <item>Offre un temps pour soi à ton ou ta partenaire, sans contrepartie.</item>
+        <item>Parle de vos parents ou grands-parents et de leurs leçons sur le couple.</item>
+        <item>Prévois une date d\'anniversaire de couple originale cette année.</item>
+        <item>Pose une question nouvelle, comme si tu ne connaissais pas encore la réponse.</item>
+        <item>Regardez une vidéo ancienne de vous deux.</item>
+        <item>Demande-lui la plus belle réussite de votre histoire, selon ton ou ta partenaire.</item>
     </string-array>
 </resources>

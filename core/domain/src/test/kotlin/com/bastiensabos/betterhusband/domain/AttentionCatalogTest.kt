@@ -23,8 +23,14 @@ class AttentionCatalogTest {
         .toSet()
 
     @Test
-    fun `an empty profile only gets attentions for everyone and the season`() {
-        assertThat(groups()).containsExactly(AttentionGroup.EVERYONE, AttentionGroup.WINTER)
+    fun `an empty profile only gets attentions for everyone, in person and the season`() {
+        assertThat(groups()).containsExactly(AttentionGroup.EVERYONE, AttentionGroup.IN_PERSON, AttentionGroup.WINTER)
+    }
+
+    @Test
+    fun `long distance gets no in person attention`() {
+        assertThat(groups(CoupleProfile(living = LivingArrangement.LONG_DISTANCE))).doesNotContain(AttentionGroup.IN_PERSON)
+        assertThat(groups(CoupleProfile(living = LivingArrangement.APART))).contains(AttentionGroup.IN_PERSON)
     }
 
     @Test
@@ -117,6 +123,7 @@ class AttentionCatalogTest {
         assertThat(AttentionGroup.of(10_001)).isEqualTo(AttentionGroup.TOGETHER)
         assertThat(AttentionGroup.of(-1)).isNull()
         assertThat(AttentionGroup.of(190_000)).isNull()
+        assertThat(AttentionGroup.of(300_001)).isEqualTo(AttentionGroup.IN_PERSON)
     }
 
     @Test
