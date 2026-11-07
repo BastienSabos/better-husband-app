@@ -83,4 +83,8 @@
     <string name="ideas_empty_filtered">Rien dans cette catégorie pour l\'instant.</string>
     <string name="ideas_done_description">Marquer comme fait</string>
     <string name="ideas_editor_title">Modifier l\'idée</string>
+    <string name="share_idea_label">Ajouter au carnet</string>
+    <string name="share_idea_title">Ajouter au carnet d\'idées</string>
+    <string name="share_idea_save">Ajouter au carnet</string>
+    <string name="share_idea_saved">Idée ajoutée au carnet.</string>
 </resources>

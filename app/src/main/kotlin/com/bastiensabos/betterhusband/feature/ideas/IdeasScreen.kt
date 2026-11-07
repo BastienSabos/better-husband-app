@@ -155,7 +155,7 @@ fun IdeasScreen(
 
 /** Une rangée de pastilles de catégorie ; [withAll] ajoute « Toutes » (filtre) et accepte `null`. */
 @Composable
-private fun CategoryChips(
+internal fun CategoryChips(
     selected: IdeaCategory?,
     onSelected: (IdeaCategory?) -> Unit,
     withAll: Boolean,
