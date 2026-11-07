@@ -7,7 +7,8 @@
         réorganiser.
         Règles d'écriture (docs/ux-writing.md) : tutoiement, une idée par phrase, 16 mots maximum, point final. Rien qui
         présuppose le genre de qui lit ni de son ou sa partenaire : ni « il », « elle », « mari », « femme », ni accord
-        (« fier », « prêt », « aimé »), ni « pour lui » ou « chez lui » ; « lui » seulement comme dans « dis-lui ». Rien
+        (« fier », « prêt », « aimé »), ni « pour lui » ou « chez lui » ; « lui » seulement comme dans « dis-lui ». Seules
+        exceptions : les listes accordées au genre choisi pour le ou la partenaire (attention_bank_partner_*). Rien
         d'infantilisant ni de manipulateur. Une idée qui demande une situation va dans la liste de cette situation.
         ConventionsTest vérifie la taille, les doublons et ces mots.
     -->
@@ -151,6 +152,99 @@
         <item>Fais un tour au marché ensemble et choisissez un produit nouveau.</item>
         <item>Va chercher votre boisson préférée et partagez-la dehors.</item>
         <item>Montre-lui un endroit de ton enfance, ou raconte-le en photos.</item>
+    </string-array>
+
+    <!--
+        Écrites pour « mon partenaire » (masculin) ou « ma partenaire » (féminin), choisi à l'onboarding ou sur la
+        fiche. Seule exception à la règle du neutre : ces listes accordent au genre du ou de la partenaire, jamais à
+        celui de qui lit (pas de « tu es fier »). Pas de cliché non plus : ni « des fleurs pour elle », ni « une bière
+        pour lui » ; l'accord rend la phrase plus naturelle, il ne dicte pas les goûts. ConventionsTest vérifie qu'aucune
+        liste ne glisse vers l'autre genre.
+    -->
+    <string-array name="attention_bank_partner_masculine">
+        <item>Dis-lui qu\'il compte pour toi, sans attendre une occasion.</item>
+        <item>Dis-lui ce qui fait de lui quelqu\'un de bien, avec un exemple précis.</item>
+        <item>Dis-lui qu\'il est beau aujourd\'hui, et pourquoi.</item>
+        <item>Demande-lui de quoi il est le plus fier cette année, et écoute.</item>
+        <item>Dis-lui qu\'il te rend la vie plus douce, et comment.</item>
+        <item>Remarque à voix haute un effort qu\'il fait sans qu\'on le voie.</item>
+        <item>Demande-lui comment il va vraiment, et laisse-lui le temps de répondre.</item>
+        <item>Dis-lui qu\'il a le droit d\'être fatigué, et propose de prendre le relais.</item>
+        <item>Écris-lui pourquoi c\'est lui que tu as choisi.</item>
+        <item>Dis-lui ce qu\'il t\'a appris sans le savoir.</item>
+        <item>Propose-lui une soirée où c\'est lui qui choisit tout.</item>
+        <item>Demande-lui à quoi il rêvait enfant, et ce qu\'il en a gardé.</item>
+        <item>Dis-lui que tu l\'admires pour la façon dont il gère une difficulté.</item>
+        <item>Envoie-lui un message pour dire qu\'il te manque déjà.</item>
+        <item>Dis-lui qu\'il peut tout te dire, même ce qui ne va pas.</item>
+        <item>Demande-lui ce qui le rendrait heureux ce mois-ci.</item>
+        <item>Félicite-le devant ses proches pour quelque chose de concret.</item>
+        <item>Prépare-lui son petit-déjeuner préféré sans qu\'il le demande.</item>
+        <item>Laisse-lui une heure rien qu\'à lui, sans culpabiliser.</item>
+        <item>Demande-lui quel proche il n\'a pas vu depuis longtemps, et aide à organiser.</item>
+        <item>Rappelle-lui un moment où il a été ton meilleur soutien.</item>
+        <item>Dis-lui merci d\'être là, en le regardant dans les yeux.</item>
+        <item>Demande-lui ce qui le tracasse en ce moment, sans chercher à régler.</item>
+        <item>Dis-lui qu\'il est drôle, et rappelle sa dernière blague qui t\'a fait rire.</item>
+        <item>Propose-lui de prendre rendez-vous chez le médecin s\'il repousse depuis longtemps.</item>
+        <item>Offre-lui un livre sur un sujet qui le passionne en ce moment.</item>
+        <item>Note un cadeau qu\'il a évoqué en passant, pour plus tard.</item>
+        <item>Offre-lui un soin qu\'il ne s\'offrirait jamais lui-même.</item>
+        <item>Glisse dans sa poche un mot qui dit pourquoi il compte.</item>
+        <item>Fais-lui découvrir un endroit où il n\'est jamais allé.</item>
+        <item>Dis-lui que tu crois en lui pour le projet qui lui tient à cœur.</item>
+        <item>Demande-lui de te parler d\'une personne qui l\'a marqué.</item>
+        <item>Dis-lui qu\'il n\'a rien à prouver avec toi.</item>
+        <item>Fais-lui un câlin long quand il rentre, sans rien demander.</item>
+        <item>Pense à ce qu\'il aimait faire avant vous, et propose-le.</item>
+        <item>Dis-lui qu\'il est un bon partenaire, et dis pourquoi.</item>
+        <item>Demande-lui s\'il se sent assez écouté en ce moment.</item>
+        <item>Offre-lui une soirée avec ses amis, et occupe-toi du reste.</item>
+        <item>Rappelle-lui qu\'il peut pleurer ou douter devant toi.</item>
+        <item>Dis-lui ce que tu as remarqué de beau chez lui cette semaine.</item>
+    </string-array>
+
+    <string-array name="attention_bank_partner_feminine">
+        <item>Dis-lui qu\'elle compte pour toi, sans attendre une occasion.</item>
+        <item>Dis-lui ce qui fait d\'elle quelqu\'un de bien, avec un exemple précis.</item>
+        <item>Dis-lui qu\'elle est belle aujourd\'hui, et pourquoi.</item>
+        <item>Demande-lui de quoi elle est la plus fière cette année, et écoute.</item>
+        <item>Dis-lui qu\'elle te rend la vie plus douce, et comment.</item>
+        <item>Remarque à voix haute un effort qu\'elle fait sans qu\'on le voie.</item>
+        <item>Demande-lui comment elle va vraiment, et laisse-lui le temps de répondre.</item>
+        <item>Dis-lui qu\'elle a le droit d\'être fatiguée, et propose de prendre le relais.</item>
+        <item>Écris-lui pourquoi c\'est elle que tu as choisie.</item>
+        <item>Dis-lui ce qu\'elle t\'a appris sans le savoir.</item>
+        <item>Propose-lui une soirée où c\'est elle qui choisit tout.</item>
+        <item>Demande-lui à quoi elle rêvait enfant, et ce qu\'elle en a gardé.</item>
+        <item>Dis-lui que tu l\'admires pour la façon dont elle gère une difficulté.</item>
+        <item>Envoie-lui un message pour dire qu\'elle te manque déjà.</item>
+        <item>Dis-lui qu\'elle peut tout te dire, même ce qui ne va pas.</item>
+        <item>Demande-lui ce qui la rendrait heureuse ce mois-ci.</item>
+        <item>Félicite-la devant ses proches pour quelque chose de concret.</item>
+        <item>Prépare-lui son petit-déjeuner préféré sans qu\'elle le demande.</item>
+        <item>Laisse-lui une heure rien qu\'à elle, sans culpabiliser.</item>
+        <item>Demande-lui quel proche elle n\'a pas vu depuis longtemps, et aide à organiser.</item>
+        <item>Rappelle-lui un moment où elle a été ton meilleur soutien.</item>
+        <item>Dis-lui merci d\'être là, en la regardant dans les yeux.</item>
+        <item>Demande-lui ce qui la tracasse en ce moment, sans chercher à régler.</item>
+        <item>Dis-lui qu\'elle est drôle, et rappelle sa dernière blague qui t\'a fait rire.</item>
+        <item>Propose-lui de prendre rendez-vous chez le médecin si elle repousse depuis longtemps.</item>
+        <item>Offre-lui un livre sur un sujet qui la passionne en ce moment.</item>
+        <item>Note un cadeau qu\'elle a évoqué en passant, pour plus tard.</item>
+        <item>Offre-lui un soin qu\'elle ne s\'offrirait jamais elle-même.</item>
+        <item>Glisse dans sa poche un mot qui dit pourquoi elle compte.</item>
+        <item>Fais-lui découvrir un endroit où elle n\'est jamais allée.</item>
+        <item>Dis-lui que tu crois en elle pour le projet qui lui tient à cœur.</item>
+        <item>Demande-lui de te parler d\'une personne qui l\'a marquée.</item>
+        <item>Dis-lui qu\'elle n\'a rien à prouver avec toi.</item>
+        <item>Fais-lui un câlin long quand elle rentre, sans rien demander.</item>
+        <item>Pense à ce qu\'elle aimait faire avant vous, et propose-le.</item>
+        <item>Dis-lui qu\'elle est une bonne partenaire, et dis pourquoi.</item>
+        <item>Demande-lui si elle se sent assez écoutée en ce moment.</item>
+        <item>Offre-lui un moment avec ses amis, et occupe-toi du reste.</item>
+        <item>Prends en charge une tâche qu\'elle porte toujours seule, sans le lui faire remarquer.</item>
+        <item>Dis-lui ce que tu as remarqué de beau chez elle cette semaine.</item>
     </string-array>
 
     <!-- Vous vivez ensemble. -->

@@ -1,5 +1,6 @@
 package com.bastiensabos.betterhusband.domain
 
+import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.domain.model.Budget
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
 import com.bastiensabos.betterhusband.domain.model.Interest
@@ -14,6 +15,8 @@ data class AttentionContext(
     /** Années pleines depuis le début de la relation, `null` si la date n'est pas renseignée. */
     val relationshipYears: Int?,
     val month: Month,
+    /** Comment l'utilisateur parle de son ou sa partenaire ; `null` tant que la fiche n'existe pas. */
+    val addressForm: AddressForm? = null,
 )
 
 /**
@@ -70,6 +73,13 @@ enum class AttentionGroup(
 
     /** Se voir en vrai (une balade, un câlin) : tout le monde, sauf qui a dit vivre à distance. */
     IN_PERSON(300_000, { it.profile.living != LivingArrangement.LONG_DISTANCE }),
+
+    /**
+     * Écrites au masculin ou au féminin (« dis-lui qu'il… », « elle »), selon le choix fait à l'onboarding.
+     * « Sans accord de genre » n'en reçoit aucune : le reste de la banque est neutre.
+     */
+    PARTNER_MASCULINE(310_000, { it.addressForm == AddressForm.MASCULINE }),
+    PARTNER_FEMININE(320_000, { it.addressForm == AddressForm.FEMININE }),
 
     // Temps forts (Moment) : jamais tirés au hasard, ils passent devant les jours choisis autour de la date.
     PARTNER_BIRTHDAY_PREPARE(400_000, { false }),

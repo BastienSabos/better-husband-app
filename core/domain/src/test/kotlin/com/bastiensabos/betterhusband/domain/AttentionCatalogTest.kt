@@ -1,5 +1,6 @@
 package com.bastiensabos.betterhusband.domain
 
+import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.domain.model.Budget
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
 import com.bastiensabos.betterhusband.domain.model.Interest
@@ -17,8 +18,9 @@ class AttentionCatalogTest {
         profile: CoupleProfile = CoupleProfile(),
         years: Int? = null,
         month: Month = Month.JANUARY,
+        addressForm: AddressForm? = null,
     ) = AttentionCatalog
-        .eligibleIds(sizes, AttentionContext(profile, years, month))
+        .eligibleIds(sizes, AttentionContext(profile, years, month, addressForm))
         .mapNotNull { AttentionGroup.of(it) }
         .toSet()
 
@@ -65,6 +67,20 @@ class AttentionCatalogTest {
         assertThat(groups(CoupleProfile(kids = KidsAtHome.YOUNG))).doesNotContain(AttentionGroup.TEENS)
         assertThat(groups(CoupleProfile(kids = KidsAtHome.BOTH)))
             .containsAtLeast(AttentionGroup.KIDS, AttentionGroup.YOUNG_KIDS, AttentionGroup.TEENS)
+    }
+
+    @Test
+    fun `the chosen address form opens the attentions written for it`() {
+        assertThat(groups(addressForm = AddressForm.MASCULINE)).contains(AttentionGroup.PARTNER_MASCULINE)
+        assertThat(groups(addressForm = AddressForm.MASCULINE)).doesNotContain(AttentionGroup.PARTNER_FEMININE)
+        assertThat(groups(addressForm = AddressForm.FEMININE)).contains(AttentionGroup.PARTNER_FEMININE)
+        assertThat(groups(addressForm = AddressForm.FEMININE)).doesNotContain(AttentionGroup.PARTNER_MASCULINE)
+    }
+
+    @Test
+    fun `without gender agreement no gendered attention is offered`() {
+        assertThat(groups(addressForm = AddressForm.NEUTRAL))
+            .containsNoneOf(AttentionGroup.PARTNER_MASCULINE, AttentionGroup.PARTNER_FEMININE)
     }
 
     @Test
