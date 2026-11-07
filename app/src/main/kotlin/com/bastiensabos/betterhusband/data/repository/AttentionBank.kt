@@ -72,6 +72,20 @@ class ResourceAttentionBank
                     AttentionGroup.READING to R.array.attention_bank_reading,
                     AttentionGroup.DIY to R.array.attention_bank_diy,
                     AttentionGroup.WELLBEING to R.array.attention_bank_wellbeing,
+                    AttentionGroup.ANNIVERSARY_DAY to R.array.attention_bank_anniversary_day,
+                    AttentionGroup.ANNIVERSARY_PREPARE to R.array.attention_bank_anniversary_prepare,
+                    AttentionGroup.BACK_TO_SCHOOL_DAY to R.array.attention_bank_back_to_school_day,
+                    AttentionGroup.BACK_TO_SCHOOL_PREPARE to R.array.attention_bank_back_to_school_prepare,
+                    AttentionGroup.CHRISTMAS_DAY to R.array.attention_bank_christmas_day,
+                    AttentionGroup.CHRISTMAS_PREPARE to R.array.attention_bank_christmas_prepare,
+                    AttentionGroup.NEW_YEAR_DAY to R.array.attention_bank_new_year_day,
+                    AttentionGroup.NEW_YEAR_PREPARE to R.array.attention_bank_new_year_prepare,
+                    AttentionGroup.PARTNER_BIRTHDAY_DAY to R.array.attention_bank_partner_birthday_day,
+                    AttentionGroup.PARTNER_BIRTHDAY_PREPARE to R.array.attention_bank_partner_birthday_prepare,
+                    AttentionGroup.RELATIVE_BIRTHDAY_DAY to R.array.attention_bank_relative_birthday_day,
+                    AttentionGroup.RELATIVE_BIRTHDAY_PREPARE to R.array.attention_bank_relative_birthday_prepare,
+                    AttentionGroup.VALENTINES_DAY to R.array.attention_bank_valentines_day,
+                    AttentionGroup.VALENTINES_PREPARE to R.array.attention_bank_valentines_prepare,
                 )
         }
     }

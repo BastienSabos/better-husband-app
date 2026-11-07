@@ -243,4 +243,32 @@ class TodayViewModelTest {
                 ),
             ).isEqualTo(AttentionGroup.LONG_DISTANCE)
         }
+
+    @Test
+    fun `a moment day takes over the daily draw until its ideas are all swapped`() =
+        runTest {
+            dates.save(ImportantDate(title = "Mariage", kind = DateKind.ANNIVERSARY, date = today.minusYears(5), recurring = true))
+            val bank = FakeAttentionBank(mapOf(AttentionGroup.EVERYONE to 5, AttentionGroup.ANNIVERSARY_DAY to 1))
+            val viewModel = viewModel(bank)
+            collectState(viewModel)
+
+            assertThat(
+                AttentionGroup.of(
+                    log.state.value
+                        .single()
+                        .attentionId,
+                ),
+            ).isEqualTo(AttentionGroup.ANNIVERSARY_DAY)
+
+            viewModel.onOtherAttention()
+            advanceUntilIdle()
+
+            assertThat(
+                AttentionGroup.of(
+                    log.state.value
+                        .single()
+                        .attentionId,
+                ),
+            ).isEqualTo(AttentionGroup.EVERYONE)
+        }
 }
