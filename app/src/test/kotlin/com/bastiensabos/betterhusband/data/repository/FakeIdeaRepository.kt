@@ -42,6 +42,10 @@ class FakeIdeaRepository(
         state.value = state.value.filterNot { it.id == id }
     }
 
+    override suspend fun restore(idea: Idea) {
+        state.value = (state.value + idea).sortedWith(compareBy<Idea> { it.done }.thenByDescending { it.createdAt })
+    }
+
     override suspend fun deleteAll() {
         state.value = emptyList()
     }

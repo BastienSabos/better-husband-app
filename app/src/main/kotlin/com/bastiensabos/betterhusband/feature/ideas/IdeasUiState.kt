@@ -2,6 +2,7 @@ package com.bastiensabos.betterhusband.feature.ideas
 
 import com.bastiensabos.betterhusband.domain.model.Idea
 import com.bastiensabos.betterhusband.domain.model.IdeaCategory
+import com.bastiensabos.betterhusband.ui.component.UndoNotice
 
 sealed interface IdeasListState {
     data object Loading : IdeasListState
@@ -31,6 +32,8 @@ data class IdeasUiState(
     /** Catégorie de la prochaine idée ; elle reste celle de la dernière saisie pour enchaîner vite. */
     val draftCategory: IdeaCategory = IdeaCategory.GIFT,
     val editor: IdeaEditorState? = null,
+    /** Idée qui vient d'être supprimée, encore récupérable. */
+    val undo: UndoNotice? = null,
 ) {
     val canAdd: Boolean get() = draft.isNotBlank()
 }

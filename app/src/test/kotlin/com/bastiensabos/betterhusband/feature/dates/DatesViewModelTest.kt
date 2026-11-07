@@ -113,4 +113,28 @@ class DatesViewModelTest {
             assertThat(viewModel.uiState.value.editor).isNull()
             assertThat(repository.state.value).isEmpty()
         }
+
+    @Test
+    fun `a deleted date comes back with undo`() =
+        runTest {
+            val id =
+                repository.save(
+                    ImportantDate(title = "Voyage", kind = DateKind.OTHER, date = LocalDate.of(2027, 7, 1), recurring = false),
+                )
+            val before = repository.state.value.single()
+            collectState()
+            viewModel.onEdit(id)
+            advanceUntilIdle()
+
+            viewModel.onDelete()
+            advanceUntilIdle()
+            assertThat(repository.state.value).isEmpty()
+            assertThat(viewModel.uiState.value.undo).isNotNull()
+
+            viewModel.onUndo()
+            advanceUntilIdle()
+
+            assertThat(repository.state.value).containsExactly(before)
+            assertThat(viewModel.uiState.value.undo).isNull()
+        }
 }

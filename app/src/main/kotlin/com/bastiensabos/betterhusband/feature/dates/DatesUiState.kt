@@ -2,6 +2,7 @@ package com.bastiensabos.betterhusband.feature.dates
 
 import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.UpcomingDate
+import com.bastiensabos.betterhusband.ui.component.UndoNotice
 import java.time.LocalDate
 
 sealed interface DatesListState {
@@ -28,4 +29,6 @@ data class DateEditorState(
 data class DatesUiState(
     val list: DatesListState = DatesListState.Loading,
     val editor: DateEditorState? = null,
+    /** Date qui vient d'être supprimée, encore récupérable. */
+    val undo: UndoNotice? = null,
 )

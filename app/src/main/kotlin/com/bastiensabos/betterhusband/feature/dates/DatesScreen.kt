@@ -30,6 +30,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -53,6 +55,7 @@ import com.bastiensabos.betterhusband.domain.model.UpcomingDate
 import com.bastiensabos.betterhusband.ui.component.DateField
 import com.bastiensabos.betterhusband.ui.component.Heading
 import com.bastiensabos.betterhusband.ui.component.NotificationPermissionPrompt
+import com.bastiensabos.betterhusband.ui.component.UndoSnackbarEffect
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
 import java.time.LocalDate
@@ -77,6 +80,8 @@ fun DatesRoute(
                 onSave = viewModel::onSave,
                 onDelete = viewModel::onDelete,
                 onDismiss = viewModel::onDismissEditor,
+                onUndo = viewModel::onUndo,
+                onUndoDismissed = viewModel::onUndoDismissed,
             ),
         modifier = modifier,
     )
@@ -90,6 +95,8 @@ data class DateEditorActions(
     val onSave: () -> Unit,
     val onDelete: () -> Unit,
     val onDismiss: () -> Unit,
+    val onUndo: () -> Unit = {},
+    val onUndoDismissed: () -> Unit = {},
 )
 
 @Composable
@@ -101,8 +108,11 @@ fun DatesScreen(
     modifier: Modifier = Modifier,
 ) {
     val spacing = Spacing()
+    val snackbar = remember { SnackbarHostState() }
+    UndoSnackbarEffect(uiState.undo, snackbar, onUndo = editor.onUndo, onDismiss = editor.onUndoDismissed)
     Scaffold(
         modifier = modifier,
+        snackbarHost = { SnackbarHost(snackbar) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onAddClick,

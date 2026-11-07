@@ -170,4 +170,26 @@ class TasksViewModelTest {
             assertThat(repository.state.value).isEmpty()
             assertThat(viewModel.uiState.value.editor).isNull()
         }
+
+    @Test
+    fun `a deleted task comes back with its history with undo`() =
+        runTest {
+            val task =
+                HouseholdTask(title = "Linge", repeat = TaskRepeat.WEEKLY, createdOn = today.minusDays(9), lastDoneOn = today.minusDays(2))
+            repository.save(task)
+            val before = repository.state.value.single()
+            collectState()
+            viewModel.onEdit(before)
+
+            viewModel.onDeleteEditor()
+            advanceUntilIdle()
+            assertThat(repository.state.value).isEmpty()
+            assertThat(viewModel.uiState.value.undo).isNotNull()
+
+            viewModel.onUndo()
+            advanceUntilIdle()
+
+            assertThat(repository.state.value).containsExactly(before)
+            assertThat(viewModel.uiState.value.undo).isNull()
+        }
 }

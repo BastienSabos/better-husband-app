@@ -2,14 +2,17 @@ package com.bastiensabos.betterhusband.feature.ideas
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.data.repository.IdeaRepository
 import com.bastiensabos.betterhusband.domain.model.Idea
 import com.bastiensabos.betterhusband.domain.model.IdeaCategory
+import com.bastiensabos.betterhusband.ui.component.UndoNotice
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,6 +26,9 @@ class IdeasViewModel
         private val ideaRepository: IdeaRepository,
     ) : ViewModel() {
         private val local = MutableStateFlow(IdeasUiState())
+
+        /** La dernière idée supprimée, tant que « Annuler » est proposé. */
+        private var deleted: Idea? = null
 
         val uiState: StateFlow<IdeasUiState> =
             combine(ideaRepository.observeAll(), local) { ideas, state ->
@@ -72,12 +78,26 @@ class IdeasViewModel
             }
         }
 
+        /** Supprime tout de suite, et garde l'idée le temps du bandeau « Annuler ». */
         fun onDeleteEditor() {
             val editor = local.value.editor ?: return
             viewModelScope.launch {
+                deleted = ideaRepository.observeAll().first().firstOrNull { it.id == editor.id }
                 ideaRepository.delete(editor.id)
-                local.update { it.copy(editor = null) }
+                local.update { it.copy(editor = null, undo = UndoNotice(R.string.ideas_deleted, editor.id)) }
             }
+        }
+
+        fun onUndo() {
+            val idea = deleted ?: return
+            deleted = null
+            local.update { it.copy(undo = null) }
+            viewModelScope.launch { ideaRepository.restore(idea) }
+        }
+
+        fun onUndoDismissed() {
+            deleted = null
+            local.update { it.copy(undo = null) }
         }
 
         private companion object {
