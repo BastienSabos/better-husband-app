@@ -63,6 +63,22 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun migrate4To5AddsHouseholdTasks() {
+        helper.createDatabase(DB_NAME, 4).close()
+
+        val db = helper.runMigrationsAndValidate(DB_NAME, 5, true, MIGRATION_4_5)
+
+        db.execSQL(
+            "INSERT INTO household_task (title, `repeat`, created_on, last_done_on) " +
+                "VALUES ('Poubelles', 'WEEKLY', '2027-01-04', NULL)",
+        )
+        db.query("SELECT COUNT(*) FROM household_task").use {
+            it.moveToFirst()
+            assertThat(it.getInt(0)).isEqualTo(1)
+        }
+    }
+
     private companion object {
         const val DB_NAME = "migration-test"
     }
