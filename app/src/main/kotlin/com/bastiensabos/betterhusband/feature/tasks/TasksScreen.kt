@@ -49,7 +49,6 @@ import com.bastiensabos.betterhusband.ui.theme.Spacing
 import java.time.LocalDate
 
 data class TasksActions(
-    val onBack: () -> Unit,
     val onDraftChange: (String) -> Unit,
     val onDraftRepeatChange: (TaskRepeat) -> Unit,
     val onAdd: () -> Unit,
@@ -64,7 +63,6 @@ data class TasksActions(
 
 @Composable
 fun TasksRoute(
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TasksViewModel = hiltViewModel(),
 ) {
@@ -73,7 +71,6 @@ fun TasksRoute(
         uiState = uiState,
         actions =
             TasksActions(
-                onBack = onBack,
                 onDraftChange = viewModel::onDraftChange,
                 onDraftRepeatChange = viewModel::onDraftRepeatChange,
                 onAdd = viewModel::onAdd,
@@ -98,12 +95,9 @@ fun TasksScreen(
     val spacing = Spacing()
     Scaffold(modifier = modifier) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = spacing.screen),
+            modifier = Modifier.fillMaxSize().padding(padding).padding(start = spacing.screen, end = spacing.screen, top = spacing.md),
             verticalArrangement = Arrangement.spacedBy(spacing.sm),
         ) {
-            TextButton(onClick = actions.onBack, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                Text(stringResource(R.string.partner_profile_back))
-            }
             Heading(text = stringResource(R.string.tasks_title), style = MaterialTheme.typography.headlineMedium)
 
             // Ajout rapide : un titre, un rythme, un bouton.
@@ -243,7 +237,7 @@ private fun TaskRepeat.labelRes(): Int =
         TaskRepeat.MONTHLY -> R.string.tasks_repeat_monthly
     }
 
-private val previewActions = TasksActions({}, {}, {}, {}, { _, _ -> }, {}, {}, {}, {}, {}, {})
+private val previewActions = TasksActions({}, {}, {}, { _, _ -> }, {}, {}, {}, {}, {}, {})
 
 private val previewDay = LocalDate.of(2026, 11, 7)
 

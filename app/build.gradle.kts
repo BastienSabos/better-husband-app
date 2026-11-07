@@ -16,7 +16,7 @@ android {
     // ⚠️ L'applicationId est définitif une fois publié sur le Play Store : à remplacer par un identifiant
     // reflétant la marque d'appli de couple avant le premier upload (le namespace peut suivre plus tard).
     namespace = "com.bastiensabos.betterhusband"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.bastiensabos.betterhusband"
@@ -67,6 +67,14 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
+    // Icônes Material (barre de navigation, retour, réglages) ; R8 retire celles qui ne servent pas. Comme le budget planner.
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.navigation.compose)
+    constraints {
+        // Alignées sur les tests instrumentés (room-testing, androidx.test), sinon AGP refuse les deux classpaths.
+        implementation(libs.kotlinx.serialization.core)
+        implementation(libs.androidx.concurrent.futures.ktx)
+    }
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.R
+import com.bastiensabos.betterhusband.ui.component.BackTopBar
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
 
@@ -82,7 +83,10 @@ fun MyDataScreen(
     modifier: Modifier = Modifier,
 ) {
     val spacing = Spacing()
-    Scaffold(modifier = modifier) { padding ->
+    Scaffold(
+        modifier = modifier,
+        topBar = { BackTopBar(title = stringResource(R.string.my_data_title), onBack = actions.onBack) },
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -92,14 +96,6 @@ fun MyDataScreen(
                     .padding(horizontal = spacing.screen),
             verticalArrangement = Arrangement.spacedBy(spacing.md),
         ) {
-            TextButton(onClick = actions.onBack, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                Text(stringResource(R.string.partner_profile_back))
-            }
-            Text(
-                text = stringResource(R.string.my_data_title),
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.semantics { heading() },
-            )
             Text(text = stringResource(R.string.my_data_intro), style = MaterialTheme.typography.bodyLarge)
 
             LockSetting(uiState, actions.onLockChange)

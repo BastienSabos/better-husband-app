@@ -18,16 +18,21 @@ import com.bastiensabos.betterhusband.domain.TaskMath
 import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
 import com.bastiensabos.betterhusband.domain.model.CoupleProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Clock
+import java.time.Duration
 import java.time.LocalDate
 import java.time.Period
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 /**
@@ -50,24 +55,34 @@ class TodayViewModel
         /** Attentions déjà écartées aujourd'hui avec « Autre idée » : on ne les reproposera pas. */
         private val swapped = MutableStateFlow<Set<Int>>(emptySet())
 
+        /**
+         * Le jour affiché. Il ne change que par [refreshDay] (retour au premier plan, minuit, une action) : tout l'écran
+         * se recalcule alors pour ce jour, et l'attention du nouveau jour est tirée.
+         */
+        private val day = MutableStateFlow(LocalDate.now(clock))
+
         init {
             viewModelScope.launch {
-                val today = LocalDate.now(clock)
-                val log = attentionLog.observeAll().first()
-                if (log.none { it.date == today }) {
-                    attentionLog.save(AttentionLogEntry(today, pickFor(today, log, emptySet())))
+                day.collectLatest { today ->
+                    val log = attentionLog.observeAll().first()
+                    if (log.none { it.date == today }) {
+                        swapped.value = emptySet()
+                        attentionLog.save(AttentionLogEntry(today, pickFor(today, log, emptySet())))
+                    }
                 }
             }
         }
 
+        @OptIn(ExperimentalCoroutinesApi::class)
         val uiState: StateFlow<TodayUiState> =
             combine(
+                day,
                 attentionLog.observeAll(),
                 taskRepository.observeAll(),
-                observeUpcomingDates(),
-                coupleProfile.observe(),
-            ) { log, tasks, dates, profile ->
-                val today = LocalDate.now(clock)
+                // Les « dans N jours » se recalculent quand le jour change.
+                day.flatMapLatest { observeUpcomingDates() },
+                combine(coupleProfile.observe(), partnerRepository.observePartner(), ::Pair),
+            ) { today, log, tasks, dates, (profile, partner) ->
                 val entry = log.lastOrNull { it.date == today }
                 if (entry == null) {
                     TodayUiState.Loading
@@ -80,18 +95,33 @@ class TodayViewModel
                         nextDate = dates.firstOrNull { it.daysUntil <= NEXT_DATE_WINDOW_DAYS },
                         streak = StreakMath.current(log.filter { it.done }.map { it.date }.toSet(), today),
                         suggestCoupleProfile = profile == CoupleProfile(),
+                        partnerName = partner?.firstName,
                     )
                 }
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), TodayUiState.Loading)
 
+        /** À appeler au retour au premier plan et à minuit : passe au nouveau jour s'il a changé. */
+        fun refreshDay() {
+            day.value = LocalDate.now(clock)
+        }
+
+        /** Millisecondes jusqu'au prochain minuit, pour que l'écran resté ouvert passe au jour suivant. */
+        fun millisUntilNextDay(): Long {
+            val now = ZonedDateTime.now(clock)
+            val midnight = now.toLocalDate().plusDays(1).atStartOfDay(now.zone)
+            return Duration.between(now, midnight).toMillis().coerceAtLeast(1)
+        }
+
         fun onAttentionDone(done: Boolean) {
-            viewModelScope.launch { attentionLog.setDone(LocalDate.now(clock), done) }
+            refreshDay()
+            viewModelScope.launch { attentionLog.setDone(day.value, done) }
         }
 
         /** « Autre idée » : remplace l'attention du jour par une autre, tant qu'elle n'est pas faite. */
         fun onOtherAttention() {
+            refreshDay()
             viewModelScope.launch {
-                val today = LocalDate.now(clock)
+                val today = day.value
                 val log = attentionLog.observeAll().first()
                 val current = log.lastOrNull { it.date == today } ?: return@launch
                 if (current.done) return@launch
@@ -102,7 +132,8 @@ class TodayViewModel
         }
 
         fun onTaskDone(id: Long) {
-            viewModelScope.launch { taskRepository.setLastDone(id, LocalDate.now(clock)) }
+            refreshDay()
+            viewModelScope.launch { taskRepository.setLastDone(id, day.value) }
         }
 
         private suspend fun pickFor(

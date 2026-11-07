@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.bastiensabos.betterhusband.R
+import com.bastiensabos.betterhusband.ui.component.BackTopBar
 import com.bastiensabos.betterhusband.ui.component.Heading
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
@@ -37,7 +38,10 @@ fun PrivacyPolicyScreen(
     modifier: Modifier = Modifier,
 ) {
     val spacing = Spacing()
-    Scaffold(modifier = modifier) { padding ->
+    Scaffold(
+        modifier = modifier,
+        topBar = { BackTopBar(title = stringResource(R.string.privacy_title), onBack = onBack) },
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -47,10 +51,6 @@ fun PrivacyPolicyScreen(
                     .padding(horizontal = spacing.screen),
             verticalArrangement = Arrangement.spacedBy(spacing.md),
         ) {
-            TextButton(onClick = onBack, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                Text(stringResource(R.string.partner_profile_back))
-            }
-            Heading(stringResource(R.string.privacy_title), MaterialTheme.typography.headlineMedium)
             Text(text = stringResource(R.string.privacy_updated), style = MaterialTheme.typography.bodyMedium)
             Text(text = stringResource(R.string.privacy_intro), style = MaterialTheme.typography.bodyLarge)
             sections.forEach { (title, body) ->

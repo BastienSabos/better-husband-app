@@ -51,7 +51,6 @@ import com.bastiensabos.betterhusband.ui.theme.ToneColors
 import java.time.Instant
 
 data class IdeasActions(
-    val onBack: () -> Unit,
     val onDraftChange: (String) -> Unit,
     val onDraftCategoryChange: (IdeaCategory) -> Unit,
     val onAdd: () -> Unit,
@@ -67,7 +66,6 @@ data class IdeasActions(
 
 @Composable
 fun IdeasRoute(
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: IdeasViewModel = hiltViewModel(),
 ) {
@@ -76,7 +74,6 @@ fun IdeasRoute(
         uiState = uiState,
         actions =
             IdeasActions(
-                onBack = onBack,
                 onDraftChange = viewModel::onDraftChange,
                 onDraftCategoryChange = viewModel::onDraftCategoryChange,
                 onAdd = viewModel::onAdd,
@@ -102,12 +99,9 @@ fun IdeasScreen(
     val spacing = Spacing()
     Scaffold(modifier = modifier) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = spacing.screen),
+            modifier = Modifier.fillMaxSize().padding(padding).padding(start = spacing.screen, end = spacing.screen, top = spacing.md),
             verticalArrangement = Arrangement.spacedBy(spacing.sm),
         ) {
-            TextButton(onClick = actions.onBack, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                Text(stringResource(R.string.partner_profile_back))
-            }
             Heading(text = stringResource(R.string.ideas_title), style = MaterialTheme.typography.headlineMedium)
 
             // Capture rapide : une idée = un champ, une catégorie, un bouton.
@@ -259,7 +253,7 @@ private fun IdeaCategory.tone(): ToneColors =
         IdeaCategory.ATTENTION -> AppTheme.categoryColors.care
     }
 
-private val previewActions = IdeasActions({}, {}, {}, {}, {}, { _, _ -> }, {}, {}, {}, {}, {}, {})
+private val previewActions = IdeasActions({}, {}, {}, {}, { _, _ -> }, {}, {}, {}, {}, {}, {})
 
 private val previewIdeas =
     listOf(

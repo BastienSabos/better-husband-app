@@ -33,6 +33,7 @@ import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.domain.model.SizeKind
 import com.bastiensabos.betterhusband.domain.model.TasteCategory
 import com.bastiensabos.betterhusband.ui.component.AddressFormPicker
+import com.bastiensabos.betterhusband.ui.component.BackTopBar
 import com.bastiensabos.betterhusband.ui.component.DateField
 import com.bastiensabos.betterhusband.ui.component.Heading
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
@@ -84,7 +85,10 @@ fun PartnerProfileScreen(
     modifier: Modifier = Modifier,
 ) {
     val spacing = Spacing()
-    Scaffold(modifier = modifier) { padding ->
+    Scaffold(
+        modifier = modifier,
+        topBar = { BackTopBar(title = stringResource(R.string.partner_profile_title), onBack = onBack) },
+    ) { padding ->
         Column(
             modifier =
                 Modifier
@@ -94,11 +98,6 @@ fun PartnerProfileScreen(
                     .padding(spacing.screen),
             verticalArrangement = Arrangement.spacedBy(spacing.lg),
         ) {
-            TextButton(onClick = onBack, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
-                Text(stringResource(R.string.partner_profile_back))
-            }
-            Heading(text = stringResource(R.string.partner_profile_title), style = MaterialTheme.typography.headlineMedium)
-
             if (!uiState.loaded) return@Column
 
             OutlinedTextField(

@@ -2,37 +2,23 @@ package com.bastiensabos.betterhusband
 
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.data.security.BiometricAuthenticator
 import com.bastiensabos.betterhusband.data.security.LockSettings
 import com.bastiensabos.betterhusband.domain.AppLock
-import com.bastiensabos.betterhusband.feature.couple.CoupleProfileRoute
-import com.bastiensabos.betterhusband.feature.dates.DatesRoute
-import com.bastiensabos.betterhusband.feature.ideas.IdeasRoute
 import com.bastiensabos.betterhusband.feature.lock.LockRoute
-import com.bastiensabos.betterhusband.feature.mydata.MyDataRoute
-import com.bastiensabos.betterhusband.feature.mydata.PrivacyPolicyScreen
 import com.bastiensabos.betterhusband.feature.onboarding.OnboardingRoute
-import com.bastiensabos.betterhusband.feature.partner.PartnerProfileRoute
-import com.bastiensabos.betterhusband.feature.tasks.TasksRoute
-import com.bastiensabos.betterhusband.feature.today.TodayRoute
+import com.bastiensabos.betterhusband.ui.navigation.AppShell
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-
-/** Navigation à plat tant qu'il n'y a que quelques écrans ; Navigation Compose viendra avec les onglets. */
-private enum class Destination { TODAY, PARTNER, DATES, IDEAS, TASKS, MY_DATA, PRIVACY, COUPLE }
 
 // FragmentActivity (et non ComponentActivity) : BiometricPrompt l'exige.
 @AndroidEntryPoint
@@ -95,53 +81,7 @@ private fun AppContent(state: AppUiState) {
         }
 
         AppUiState.Ready -> {
-            var destination by rememberSaveable { mutableStateOf(Destination.TODAY) }
-            BackHandler(enabled = destination != Destination.TODAY) {
-                destination = if (destination == Destination.PRIVACY) Destination.MY_DATA else Destination.TODAY
-            }
-            when (destination) {
-                Destination.TODAY -> {
-                    TodayRoute(
-                        onOpenPartner = { destination = Destination.PARTNER },
-                        onOpenDates = { destination = Destination.DATES },
-                        onOpenIdeas = { destination = Destination.IDEAS },
-                        onOpenTasks = { destination = Destination.TASKS },
-                        onOpenMyData = { destination = Destination.MY_DATA },
-                        onOpenCoupleProfile = { destination = Destination.COUPLE },
-                    )
-                }
-
-                Destination.PARTNER -> {
-                    PartnerProfileRoute(onFinish = { destination = Destination.TODAY })
-                }
-
-                Destination.DATES -> {
-                    DatesRoute(onBack = { destination = Destination.TODAY })
-                }
-
-                Destination.IDEAS -> {
-                    IdeasRoute(onBack = { destination = Destination.TODAY })
-                }
-
-                Destination.TASKS -> {
-                    TasksRoute(onBack = { destination = Destination.TODAY })
-                }
-
-                Destination.MY_DATA -> {
-                    MyDataRoute(
-                        onBack = { destination = Destination.TODAY },
-                        onOpenPrivacy = { destination = Destination.PRIVACY },
-                    )
-                }
-
-                Destination.PRIVACY -> {
-                    PrivacyPolicyScreen(onBack = { destination = Destination.MY_DATA })
-                }
-
-                Destination.COUPLE -> {
-                    CoupleProfileRoute(onFinish = { destination = Destination.TODAY })
-                }
-            }
+            AppShell()
         }
     }
 }

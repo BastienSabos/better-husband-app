@@ -18,6 +18,8 @@ sealed interface TodayUiState {
         val streak: Int,
         /** Aucune réponse dans « Notre couple » : on invite à le remplir, une carte qui disparaît dès la première. */
         val suggestCoupleProfile: Boolean = false,
+        /** Prénom du ou de la partenaire, pour l'avatar qui ouvre la fiche. */
+        val partnerName: String? = null,
     ) : TodayUiState
 }
 
