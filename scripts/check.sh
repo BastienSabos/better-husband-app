@@ -21,6 +21,8 @@ if [ "$jvm_only" = true ]; then
   exit 0
 fi
 
-step "lint, tests unitaires et APK de debug de :app"
-"$gradle" lintDebug testDebugUnitTest assembleDebug
+# verifyRoborazziDebug : tests unitaires + comparaison des captures (app/src/test/screenshots/). Un écran modifié
+# exprès se ré-enregistre avec ./gradlew recordRoborazziDebug, puis on regarde et on commite les PNG.
+step "lint, tests unitaires, captures d'écran et APK de debug de :app"
+"$gradle" lintDebug verifyRoborazziDebug assembleDebug
 step "vert"

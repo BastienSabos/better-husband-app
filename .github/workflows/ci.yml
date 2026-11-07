@@ -60,8 +60,10 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
-      - name: Lint, unit tests, debug build
-        run: ./gradlew lintDebug testDebugUnitTest assembleDebug --continue
+      # verifyRoborazziDebug lance les tests unitaires et compare les captures d'écran à celles de
+      # app/src/test/screenshots/ : toute différence fait échouer (comme le budget planner).
+      - name: Lint, unit tests, screenshots, debug build
+        run: ./gradlew lintDebug verifyRoborazziDebug assembleDebug --continue
 
       - name: Release build (R8)
         run: ./gradlew assembleRelease
@@ -74,6 +76,7 @@ jobs:
           path: |
             **/build/reports/
             **/build/test-results/
+            app/build/outputs/roborazzi/
           retention-days: 7
 
       - name: Upload debug APK

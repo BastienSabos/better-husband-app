@@ -4,6 +4,8 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
@@ -14,6 +16,8 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
@@ -27,6 +31,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -112,19 +118,7 @@ fun AppShell(modifier: Modifier = Modifier) {
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            if (tab != null && !rail) {
-                NavigationBar {
-                    topLevels.forEach { top ->
-                        val selected = top.route == tab
-                        NavigationBarItem(
-                            selected = selected,
-                            onClick = { openTab(top.route) },
-                            icon = { Icon(if (selected) top.selectedIcon else top.icon, contentDescription = null) },
-                            label = { Text(stringResource(top.label)) },
-                        )
-                    }
-                }
-            }
+            if (tab != null && !rail) AppNavigationBar(tab, openTab)
         },
     ) { padding ->
         Row(Modifier.padding(padding).consumeWindowInsets(padding)) {
@@ -136,7 +130,7 @@ fun AppShell(modifier: Modifier = Modifier) {
                             selected = selected,
                             onClick = { openTab(top.route) },
                             icon = { Icon(if (selected) top.selectedIcon else top.icon, contentDescription = null) },
-                            label = { Text(stringResource(top.label)) },
+                            label = { TabLabel(top.label) },
                         )
                     }
                 }
@@ -145,6 +139,46 @@ fun AppShell(modifier: Modifier = Modifier) {
         }
     }
 }
+
+/** Barre du bas des quatre onglets, [tab] surligné. */
+@Composable
+internal fun AppNavigationBar(
+    tab: String,
+    onOpen: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    NavigationBar(modifier = modifier) {
+        topLevels.forEach { top ->
+            val selected = top.route == tab
+            NavigationBarItem(
+                selected = selected,
+                onClick = { onOpen(top.route) },
+                icon = { Icon(if (selected) top.selectedIcon else top.icon, contentDescription = null) },
+                label = { TabLabel(top.label) },
+            )
+        }
+    }
+}
+
+/**
+ * Libellé d'onglet sur une ligne : en police très agrandie, il rétrécit juste ce qu'il faut pour tenir plutôt que de
+ * se couper en « Aujour / d'hui ». TalkBack lit toujours le libellé entier.
+ */
+@Composable
+private fun TabLabel(
+    @StringRes label: Int,
+) {
+    val style = LocalTextStyle.current
+    BasicText(
+        text = stringResource(label),
+        style = style.copy(color = LocalContentColor.current),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        autoSize = TextAutoSize.StepBased(minFontSize = MIN_TAB_LABEL_SP.sp, maxFontSize = style.fontSize),
+    )
+}
+
+private const val MIN_TAB_LABEL_SP = 7
 
 @Composable
 private fun AppNavHost(nav: NavHostController) {

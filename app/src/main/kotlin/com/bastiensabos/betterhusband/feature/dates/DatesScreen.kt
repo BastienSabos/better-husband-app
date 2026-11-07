@@ -3,7 +3,9 @@ package com.bastiensabos.betterhusband.feature.dates
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,9 +18,13 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -37,6 +43,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.R
@@ -94,38 +101,44 @@ fun DatesScreen(
     modifier: Modifier = Modifier,
 ) {
     val spacing = Spacing()
-    Scaffold(modifier = modifier) { padding ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(start = spacing.screen, end = spacing.screen, top = spacing.md),
+    Scaffold(
+        modifier = modifier,
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onAddClick,
+                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                text = { Text(stringResource(R.string.dates_add)) },
+            )
+        },
+    ) { padding ->
+        // Une seule liste qui défile, sous le bouton d'ajout flottant : en police agrandie, rien n'est coupé.
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(padding),
+            contentPadding = PaddingValues(start = spacing.screen, end = spacing.screen, top = spacing.md, bottom = FAB_CLEARANCE),
             verticalArrangement = Arrangement.spacedBy(spacing.md),
         ) {
-            Heading(text = stringResource(R.string.dates_title), style = MaterialTheme.typography.headlineMedium)
-            NotificationPermissionPrompt()
+            item { Heading(text = stringResource(R.string.dates_title), style = MaterialTheme.typography.headlineMedium) }
+            item { NotificationPermissionPrompt() }
             when (val list = uiState.list) {
                 DatesListState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                    item { Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { CircularProgressIndicator() } }
                 }
 
                 DatesListState.Empty -> {
-                    Text(text = stringResource(R.string.dates_empty), style = MaterialTheme.typography.bodyLarge)
+                    item { Text(text = stringResource(R.string.dates_empty), style = MaterialTheme.typography.bodyLarge) }
                 }
 
                 is DatesListState.Ready -> {
-                    LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(list.items, key = { it.key }) { item -> UpcomingDateRow(item, onEdit) }
-                    }
+                    items(list.items, key = { it.key }) { item -> UpcomingDateRow(item, onEdit) }
                 }
-            }
-            Button(
-                onClick = onAddClick,
-                modifier = Modifier.fillMaxWidth().heightIn(min = spacing.touchTarget).padding(bottom = spacing.md),
-            ) {
-                Text(stringResource(R.string.dates_add))
             }
         }
     }
     uiState.editor?.let { DateEditorDialog(it, editor) }
 }
+
+/** Place laissée sous la liste pour que la dernière date ne reste pas cachée par le bouton flottant. */
+private val FAB_CLEARANCE = 96.dp
 
 @Composable
 private fun UpcomingDateRow(
@@ -137,14 +150,15 @@ private fun UpcomingDateRow(
     val years = item.yearsSince?.takeIf { it > 0 }
     // Seules les dates saisies à la main se modifient ici ; les autres se changent dans la fiche.
     val rowModifier = item.editableId?.let { id -> Modifier.clickable { onEdit(id) } } ?: Modifier
+    // L'échéance passe sous le nom plutôt qu'à droite : en police agrandie, le nom garde toute la largeur.
     ListItem(
         modifier = rowModifier.heightIn(min = Spacing().touchTarget),
+        overlineContent = { Text(daysUntilText(item.daysUntil)) },
         headlineContent = { Text(item.label.text()) },
         supportingContent = {
             val yearsText = years?.let { pluralStringResource(R.plurals.dates_years, it, it) }
             Text(listOfNotNull(yearsText, dateText).joinToString(" · "))
         },
-        trailingContent = { Text(daysUntilText(item.daysUntil), style = MaterialTheme.typography.labelLarge) },
     )
 }
 

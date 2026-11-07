@@ -65,6 +65,8 @@ Voir `docs/architecture.md`. En bref :
 ./gradlew spotlessApply          # formate tout (à lancer avant chaque commit)
 ./gradlew spotlessCheck          # vérifie le format (CI)
 ./gradlew testDebugUnitTest      # tests unitaires
+./gradlew verifyRoborazziDebug   # tests unitaires + captures d'écran comparées au pixel (CI)
+./gradlew recordRoborazziDebug   # (ré)enregistre les captures après un changement d'écran voulu
 ./gradlew lintDebug              # Android Lint (warnings = erreurs)
 ./gradlew assembleDebug          # APK debug
 ./gradlew check                  # tout ce qui précède, la porte de qualité locale
@@ -91,6 +93,8 @@ Un test unique : `./gradlew testDebugUnitTest --tests "*.TodayViewModelTest"`.
 - [ ] `./gradlew check` passe en local
 - [ ] Tests ajoutés ou mis à jour pour le comportement modifié
 - [ ] Previews Compose pour les nouveaux écrans (états vide, chargé, erreur)
+- [ ] Capture de l'écran dans `ScreensCaptureTest` (téléphone, sombre, police 200 %, contrôles ATF), PNG regardés
+      puis commités dans `app/src/test/screenshots/`
 - [ ] Textes en français dans `strings.xml`, relus avec `docs/ux-writing.md`
 - [ ] Aucune donnée personnelle dans les logs ; impact vie privée évalué
 - [ ] Accessibilité : `contentDescription`, cibles ≥ 48 dp, contraste, police dynamique

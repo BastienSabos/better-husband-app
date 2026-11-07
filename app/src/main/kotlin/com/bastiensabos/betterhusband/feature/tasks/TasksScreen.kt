@@ -4,7 +4,9 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,13 +15,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -32,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
@@ -94,45 +102,48 @@ fun TasksScreen(
 ) {
     val spacing = Spacing()
     Scaffold(modifier = modifier) { padding ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(padding).padding(start = spacing.screen, end = spacing.screen, top = spacing.md),
+        // Une seule liste qui défile : en police agrandie, l'ajout et les tâches restent tous accessibles.
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(padding),
+            contentPadding = PaddingValues(start = spacing.screen, end = spacing.screen, top = spacing.md, bottom = spacing.lg),
             verticalArrangement = Arrangement.spacedBy(spacing.sm),
         ) {
-            Heading(text = stringResource(R.string.tasks_title), style = MaterialTheme.typography.headlineMedium)
-
-            // Ajout rapide : un titre, un rythme, un bouton.
-            OutlinedTextField(
-                value = uiState.draft,
-                onValueChange = actions.onDraftChange,
-                label = { Text(stringResource(R.string.tasks_input_label)) },
-                singleLine = true,
-                keyboardOptions =
-                    KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { actions.onAdd() }),
-                modifier = Modifier.fillMaxWidth(),
-            )
-            RepeatChips(selected = uiState.draftRepeat, onSelect = actions.onDraftRepeatChange)
-            Button(
-                onClick = actions.onAdd,
-                enabled = uiState.canAdd,
-                modifier = Modifier.fillMaxWidth().heightIn(min = spacing.touchTarget),
-            ) {
-                Text(stringResource(R.string.tasks_add))
+            item { Heading(text = stringResource(R.string.tasks_title), style = MaterialTheme.typography.headlineMedium) }
+            item {
+                // Ajout rapide : un titre, un rythme, un bouton.
+                Column(verticalArrangement = Arrangement.spacedBy(spacing.sm)) {
+                    OutlinedTextField(
+                        value = uiState.draft,
+                        onValueChange = actions.onDraftChange,
+                        label = { Text(stringResource(R.string.tasks_input_label)) },
+                        singleLine = true,
+                        keyboardOptions =
+                            KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = { actions.onAdd() }),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    RepeatChips(selected = uiState.draftRepeat, onSelect = actions.onDraftRepeatChange)
+                    Button(
+                        onClick = actions.onAdd,
+                        enabled = uiState.canAdd,
+                        modifier = Modifier.fillMaxWidth().heightIn(min = spacing.touchTarget),
+                    ) {
+                        Text(stringResource(R.string.tasks_add))
+                    }
+                }
             }
 
             when (val list = uiState.list) {
                 TasksListState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                    item { Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { CircularProgressIndicator() } }
                 }
 
                 TasksListState.Empty -> {
-                    Text(text = stringResource(R.string.tasks_empty), style = MaterialTheme.typography.bodyLarge)
+                    item { Text(text = stringResource(R.string.tasks_empty), style = MaterialTheme.typography.bodyLarge) }
                 }
 
                 is TasksListState.Ready -> {
-                    LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(list.items, key = { it.task.id }) { item -> TaskRow(item, actions) }
-                    }
+                    items(list.items, key = { it.task.id }) { item -> TaskRow(item, actions) }
                 }
             }
         }
@@ -165,20 +176,23 @@ private fun TaskRow(
     item: TaskItem,
     actions: TasksActions,
 ) {
-    val doneDescription = stringResource(R.string.tasks_done_description)
+    val editDescription = stringResource(R.string.tasks_edit_description, item.task.title)
+    // Toute la ligne coche la tâche (TalkBack lit son nom et l'état de la case) ; le crayon ouvre la modification.
     ListItem(
-        modifier = Modifier.heightIn(min = Spacing().touchTarget).clickable { actions.onEdit(item.task) },
-        leadingContent = {
-            Checkbox(
-                checked = item.done,
-                onCheckedChange = { actions.onToggleDone(item.task.id, it) },
-                modifier = Modifier.semantics { contentDescription = doneDescription },
-            )
-        },
+        modifier =
+            Modifier
+                .heightIn(min = Spacing().touchTarget)
+                .toggleable(value = item.done, role = Role.Checkbox, onValueChange = { actions.onToggleDone(item.task.id, it) }),
+        leadingContent = { Checkbox(checked = item.done, onCheckedChange = null) },
         headlineContent = {
             Text(text = item.task.title, textDecoration = if (item.done) TextDecoration.LineThrough else null)
         },
         supportingContent = { Text(text = dueText(item)) },
+        trailingContent = {
+            IconButton(onClick = { actions.onEdit(item.task) }) {
+                Icon(Icons.Outlined.Edit, contentDescription = editDescription)
+            }
+        },
     )
 }
 
