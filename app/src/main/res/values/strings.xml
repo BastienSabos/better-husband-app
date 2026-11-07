@@ -41,8 +41,20 @@
         <item quantity="many">%d jours d\'affilée</item>
         <item quantity="other">%d jours d\'affilée</item>
     </plurals>
-    <string name="onboarding_title">Pour qui est cette appli ?</string>
-    <string name="onboarding_intro">Quelques secondes pour commencer. Tu pourras tout modifier ensuite.</string>
+    <string name="onboarding_welcome_title">Être là pour l\'autre, en 5 minutes par jour</string>
+    <string name="onboarding_welcome_body">Chaque jour, une attention simple à faire. Les dates qui comptent arrivent à temps, et les idées que tu notes ne se perdent plus.</string>
+    <string name="onboarding_step">Étape %1$d sur %2$d</string>
+    <string name="onboarding_title">Parle-moi de la personne qui compte</string>
+    <string name="onboarding_intro">Deux infos suffisent pour commencer. Tu compléteras au fil de l\'eau.</string>
+    <string name="onboarding_preview_label">Aperçu</string>
+    <string name="onboarding_preview_masculine">C\'est bientôt l\'anniversaire de ton partenaire, %1$s.</string>
+    <string name="onboarding_preview_feminine">C\'est bientôt l\'anniversaire de ta partenaire, %1$s.</string>
+    <string name="onboarding_preview_neutral">C\'est bientôt l\'anniversaire de %1$s.</string>
+    <string name="onboarding_continue">Continuer</string>
+    <string name="onboarding_birthday_title">Quand est l\'anniversaire de %1$s ?</string>
+    <string name="onboarding_birthday_body">Tu auras un rappel discret quelques jours avant. Tu peux aussi le noter plus tard.</string>
+    <string name="onboarding_finish">C\'est parti</string>
+    <string name="onboarding_later">Plus tard</string>
     <string name="onboarding_first_name_label">Prénom de ton ou ta partenaire</string>
     <string name="onboarding_address_form_question">Comment veux-tu en parler ?</string>
     <string name="address_form_masculine">Mon partenaire</string>
@@ -84,7 +96,7 @@
     </plurals>
     <string name="partner_profile_together_new">Ensemble depuis moins d\'un an</string>
     <string name="partner_profile_birthday_on">Anniversaire le %1$s</string>
-    <string name="partner_profile_tastes_empty">Rien de noté pour l\'instant. Fleurs, plats, couleurs : de quoi trouver une idée le jour venu.</string>
+    <string name="partner_profile_tastes_empty">Rien de noté pour l\'instant. Fleurs, plats, couleurs : de quoi trouver une idée le jour venu.</string>
     <string name="partner_profile_sizes_empty">Aucune taille notée. Pratique au moment d\'offrir un vêtement ou une bague.</string>
     <string name="partner_profile_relatives_empty">Aucun proche noté. Leurs anniversaires rejoindront tes dates.</string>
     <string name="dates_title">Dates qui comptent</string>
