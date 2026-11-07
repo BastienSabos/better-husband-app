@@ -28,6 +28,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "better-husband"
 include(":core:domain")
+include(":architecture")
 
 // Sans SDK Android ni accès à dl.google.com (session Claude Code dans le cloud) : `-PjvmOnly=true`, ou
 // ORG_GRADLE_PROJECT_jvmOnly=true, ne garde que les modules Kotlin purs. :app se construit alors dans la CI.

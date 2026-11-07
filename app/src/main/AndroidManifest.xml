@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Rappels de dates : notification discrète, demandée en contexte. Toujours aucune permission INTERNET. -->
+    <!-- Rappels de dates : notification discrète, demandée en contexte. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Données intimes : aucune sauvegarde cloud ni transfert d'appareil (voir docs/adr/0002). -->
