@@ -50,6 +50,19 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun migrate3To4AddsIdeas() {
+        helper.createDatabase(DB_NAME, 3).close()
+
+        val db = helper.runMigrationsAndValidate(DB_NAME, 4, true, MIGRATION_3_4)
+
+        db.execSQL("INSERT INTO idea (text, category, created_at, done) VALUES ('Pivoines', 'GIFT', 1800000000000, 0)")
+        db.query("SELECT COUNT(*) FROM idea").use {
+            it.moveToFirst()
+            assertThat(it.getInt(0)).isEqualTo(1)
+        }
+    }
+
     private companion object {
         const val DB_NAME = "migration-test"
     }
