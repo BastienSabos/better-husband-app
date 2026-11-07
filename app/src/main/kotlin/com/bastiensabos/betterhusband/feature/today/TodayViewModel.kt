@@ -5,11 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.bastiensabos.betterhusband.data.repository.AttentionBank
 import com.bastiensabos.betterhusband.data.repository.AttentionLogRepository
 import com.bastiensabos.betterhusband.data.repository.HouseholdTaskRepository
+import com.bastiensabos.betterhusband.data.repository.PartnerRepository
+import com.bastiensabos.betterhusband.domain.AttentionCatalog
+import com.bastiensabos.betterhusband.domain.AttentionContext
+import com.bastiensabos.betterhusband.domain.AttentionGroup
 import com.bastiensabos.betterhusband.domain.AttentionPicker
 import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
 import com.bastiensabos.betterhusband.domain.StreakMath
 import com.bastiensabos.betterhusband.domain.TaskMath
 import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
+import com.bastiensabos.betterhusband.domain.model.CoupleProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,6 +25,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Clock
 import java.time.LocalDate
+import java.time.Period
 import javax.inject.Inject
 
 /**
@@ -32,6 +38,7 @@ class TodayViewModel
     constructor(
         private val attentionLog: AttentionLogRepository,
         private val taskRepository: HouseholdTaskRepository,
+        private val partnerRepository: PartnerRepository,
         observeUpcomingDates: ObserveUpcomingDatesUseCase,
         private val bank: AttentionBank,
         private val clock: Clock,
@@ -101,7 +108,16 @@ class TodayViewModel
                 log
                     .filter { it.date < today && it.date >= today.minusDays(AttentionPicker.NO_REPEAT_DAYS.toLong()) }
                     .map { it.attentionId }
-            return AttentionPicker.pick(today, bank.size, recent, skipped)
+            return AttentionPicker.pick(today, eligibleIds(today), recent, skipped)
+        }
+
+        /** Les attentions qui conviennent aujourd'hui ; si aucune ne convient, toute la banque commune. */
+        private suspend fun eligibleIds(today: LocalDate): List<Int> {
+            val partner = partnerRepository.observePartner().first()
+            val years = partner?.relationshipStart?.let { Period.between(it, today).years }
+            val context = AttentionContext(profile = CoupleProfile(), relationshipYears = years, month = today.month)
+            val eligible = AttentionCatalog.eligibleIds(bank.groupSizes, context)
+            return eligible.ifEmpty { (0 until (bank.groupSizes[AttentionGroup.EVERYONE] ?: 0)).toList() }
         }
 
         private companion object {

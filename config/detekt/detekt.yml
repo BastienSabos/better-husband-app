@@ -5,6 +5,9 @@ style:
     active: false
   MagicNumber:
     excludes: ['**/test/**']
+    # Les nombres passés à une énumération sont des codes stables (identifiants de la banque d'attentions), pas des
+    # nombres magiques.
+    ignoreEnums: true
 naming:
   FunctionNaming:
     excludes: ['**/test/**']

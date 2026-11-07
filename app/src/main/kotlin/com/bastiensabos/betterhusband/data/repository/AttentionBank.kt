@@ -2,6 +2,7 @@ package com.bastiensabos.betterhusband.data.repository
 
 import android.content.Context
 import com.bastiensabos.betterhusband.R
+import com.bastiensabos.betterhusband.domain.AttentionGroup
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -11,13 +12,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Banque d'attentions (`res/values/attentions.xml`). L'identifiant d'une attention est sa position dans la liste :
- * la banque ne fait que s'allonger, jamais se réordonner.
+ * Banque d'attentions (`res/values/attentions.xml`), une liste par [AttentionGroup]. L'identifiant d'une attention
+ * vaut l'offset de son groupe plus sa position : un groupe ne fait que s'allonger, jamais se réordonner.
  */
 interface AttentionBank {
-    val size: Int
+    /** Nombre d'attentions écrites dans chaque groupe ; un groupe absent n'en a pas encore. */
+    val groupSizes: Map<AttentionGroup, Int>
 
-    /** Texte de l'attention [id] ; une position inconnue (banque plus courte) retombe sur la première. */
+    /** Texte de l'attention [id] ; un identifiant inconnu (groupe plus court) retombe sur la première. */
     fun text(id: Int): String
 }
 
@@ -27,11 +29,21 @@ class ResourceAttentionBank
     constructor(
         @ApplicationContext private val context: Context,
     ) : AttentionBank {
-        private val items: Array<String> by lazy { context.resources.getStringArray(R.array.attention_bank) }
+        private val groups: Map<AttentionGroup, Array<String>> by lazy {
+            ARRAYS.mapValues { (_, array) -> context.resources.getStringArray(array) }
+        }
 
-        override val size: Int get() = items.size
+        override val groupSizes: Map<AttentionGroup, Int> get() = groups.mapValues { it.value.size }
 
-        override fun text(id: Int): String = items.getOrElse(id) { items.first() }
+        override fun text(id: Int): String {
+            val text = AttentionGroup.of(id)?.let { group -> groups[group]?.getOrNull(id - group.offset) }
+            return text ?: groups.getValue(AttentionGroup.EVERYONE).first()
+        }
+
+        private companion object {
+            /** Les groupes déjà écrits ; les autres arrivent avec leurs textes. */
+            val ARRAYS = mapOf(AttentionGroup.EVERYONE to R.array.attention_bank)
+        }
     }
 
 @Module

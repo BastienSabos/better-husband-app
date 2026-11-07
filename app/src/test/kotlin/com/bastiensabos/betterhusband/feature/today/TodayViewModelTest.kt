@@ -37,6 +37,7 @@ class TodayViewModelTest {
         TodayViewModel(
             attentionLog = log,
             taskRepository = tasks,
+            partnerRepository = FakePartnerRepository(),
             observeUpcomingDates = ObserveUpcomingDatesUseCase(FakePartnerRepository(), dates, clock),
             bank = FakeAttentionBank(),
             clock = clock,
