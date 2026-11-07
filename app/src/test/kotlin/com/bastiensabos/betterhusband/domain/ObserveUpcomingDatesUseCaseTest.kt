@@ -50,6 +50,7 @@ class ObserveUpcomingDatesUseCaseTest {
                 .containsExactly("relative-0", "relationship-start", "partner-birthday", "date-7")
                 .inOrder()
             assertThat(items.first().label).isEqualTo(DateLabel.RelativeBirthday("Léa"))
+            assertThat(items[2].label).isEqualTo(DateLabel.PartnerBirthday("Camille"))
             assertThat(items.first().daysUntil).isEqualTo(1)
             assertThat(items.first().yearsSince).isEqualTo(38)
             assertThat(items.last().editableId).isEqualTo(7)

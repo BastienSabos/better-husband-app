@@ -2,6 +2,7 @@ package com.bastiensabos.betterhusband.feature.today
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,7 @@ import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 @Composable
 fun TodayRoute(
     onOpenPartner: () -> Unit,
+    onOpenDates: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
@@ -38,6 +40,7 @@ fun TodayRoute(
         uiState = uiState,
         onCardDone = viewModel::onCardDone,
         onOpenPartner = onOpenPartner,
+        onOpenDates = onOpenDates,
         modifier = modifier,
     )
 }
@@ -48,6 +51,7 @@ fun TodayScreen(
     uiState: TodayUiState,
     onCardDone: (String) -> Unit,
     onOpenPartner: () -> Unit,
+    onOpenDates: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(modifier = modifier) { padding ->
@@ -56,8 +60,13 @@ fun TodayScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(text = stringResource(R.string.today_title), style = MaterialTheme.typography.headlineMedium)
-            TextButton(onClick = onOpenPartner, modifier = Modifier.heightIn(min = 48.dp)) {
-                Text(stringResource(R.string.today_open_partner))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                TextButton(onClick = onOpenPartner, modifier = Modifier.heightIn(min = 48.dp)) {
+                    Text(stringResource(R.string.today_open_partner))
+                }
+                TextButton(onClick = onOpenDates, modifier = Modifier.heightIn(min = 48.dp)) {
+                    Text(stringResource(R.string.today_open_dates))
+                }
             }
             when (uiState) {
                 TodayUiState.Loading -> {
@@ -98,6 +107,7 @@ private fun TodayScreenReadyPreview() {
             ),
             onCardDone = {},
             onOpenPartner = {},
+            onOpenDates = {},
         )
     }
 }
@@ -106,6 +116,6 @@ private fun TodayScreenReadyPreview() {
 @Composable
 private fun TodayScreenEmptyPreview() {
     BetterHusbandTheme(dynamicColor = false) {
-        TodayScreen(uiState = TodayUiState.Empty, onCardDone = {}, onOpenPartner = {})
+        TodayScreen(uiState = TodayUiState.Empty, onCardDone = {}, onOpenPartner = {}, onOpenDates = {})
     }
 }
