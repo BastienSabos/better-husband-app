@@ -59,3 +59,14 @@ val MIGRATION_4_5 =
             )
         }
     }
+
+/** v5 → v6 : historique des attentions du jour (une ligne par jour). */
+val MIGRATION_5_6 =
+    object : Migration(5, 6) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `attention_log` " +
+                    "(`date` TEXT NOT NULL, `attention_id` INTEGER NOT NULL, `done` INTEGER NOT NULL, PRIMARY KEY(`date`))",
+            )
+        }
+    }

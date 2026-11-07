@@ -3,10 +3,12 @@ package com.bastiensabos.betterhusband.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.bastiensabos.betterhusband.data.local.dao.AttentionLogDao
 import com.bastiensabos.betterhusband.data.local.dao.HouseholdTaskDao
 import com.bastiensabos.betterhusband.data.local.dao.IdeaDao
 import com.bastiensabos.betterhusband.data.local.dao.ImportantDateDao
 import com.bastiensabos.betterhusband.data.local.dao.PartnerDao
+import com.bastiensabos.betterhusband.data.local.entity.AttentionLogEntity
 import com.bastiensabos.betterhusband.data.local.entity.HouseholdTaskEntity
 import com.bastiensabos.betterhusband.data.local.entity.IdeaEntity
 import com.bastiensabos.betterhusband.data.local.entity.ImportantDateEntity
@@ -28,8 +30,9 @@ import com.bastiensabos.betterhusband.data.local.entity.TasteEntity
         ImportantDateEntity::class,
         IdeaEntity::class,
         HouseholdTaskEntity::class,
+        AttentionLogEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -41,6 +44,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun ideaDao(): IdeaDao
 
     abstract fun householdTaskDao(): HouseholdTaskDao
+
+    abstract fun attentionLogDao(): AttentionLogDao
 
     companion object {
         const val NAME = "better_husband.db"
