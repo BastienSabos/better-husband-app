@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="fr">
     <!-- Nom de travail : l'app est une appli de couple, la marque définitive reste à choisir. -->
     <string name="app_name">Better husband</string>
     <string name="today_title">Aujourd\'hui</string>
@@ -11,11 +11,13 @@
     <string name="today_tasks_none">Rien à faire à la maison aujourd\'hui.</string>
     <plurals name="today_tasks_more">
         <item quantity="one">Voir %d autre tâche</item>
+        <item quantity="many">Voir %d autres tâches</item>
         <item quantity="other">Voir %d autres tâches</item>
     </plurals>
     <string name="today_next_date_title">À préparer</string>
     <plurals name="today_streak">
         <item quantity="one">%d jour d\'affilée</item>
+        <item quantity="many">%d jours d\'affilée</item>
         <item quantity="other">%d jours d\'affilée</item>
     </plurals>
     <string name="onboarding_title">Pour qui est cette appli ?</string>
@@ -61,10 +63,12 @@
     <string name="dates_tomorrow">Demain</string>
     <plurals name="dates_in_days">
         <item quantity="one">Dans %d jour</item>
+        <item quantity="many">Dans %d jours</item>
         <item quantity="other">Dans %d jours</item>
     </plurals>
     <plurals name="dates_years">
         <item quantity="one">%d an</item>
+        <item quantity="many">%d ans</item>
         <item quantity="other">%d ans</item>
     </plurals>
     <string name="dates_label_birthday_of">%1$s\u00a0: anniversaire</string>
@@ -111,10 +115,12 @@
     <string name="tasks_row_support">%1$s · %2$s</string>
     <plurals name="tasks_overdue_days">
         <item quantity="one">En retard d\'%d jour</item>
+        <item quantity="many">En retard de %d jours</item>
         <item quantity="other">En retard de %d jours</item>
     </plurals>
     <plurals name="tasks_next_in_days">
         <item quantity="one">Prochaine fois dans %d jour</item>
+        <item quantity="many">Prochaine fois dans %d jours</item>
         <item quantity="other">Prochaine fois dans %d jours</item>
     </plurals>
     <string name="ideas_editor_title">Modifier l\'idée</string>

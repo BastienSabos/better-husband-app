@@ -28,8 +28,25 @@ install_ktlint() {
   persist_env PATH "$bin:\$PATH"
 }
 
+# repo.maven.apache.org répond souvent 429 depuis le cloud : un script d'initialisation de Gradle (hors dépôt) ajoute
+# le miroir de Google, qui sert les mêmes fichiers. Repris du budget planner. La CI et les postes ne l'ont pas.
+add_maven_mirror() {
+  mkdir -p "$HOME/.gradle/init.d"
+  cat > "$HOME/.gradle/init.d/miroir-maven-central.gradle.kts" << 'KTS'
+// Écrit par .claude/hooks/session-start.sh (session cloud seulement).
+val miroir = "https://maven-central.storage-download.googleapis.com/maven2/"
+beforeSettings {
+    pluginManagement.repositories.maven(miroir)
+    dependencyResolutionManagement.repositories.maven(miroir)
+}
+KTS
+}
+
 install_android_sdk() {
-  local sdk="${ANDROID_HOME:-$HOME/android-sdk}"
+  # L'image cloud peut fournir un SDK dans /opt/android-sdk : le reprendre plutôt que d'en télécharger un autre.
+  local sdk="${ANDROID_HOME:-}"
+  [ -z "$sdk" ] && [ -x /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager ] && sdk=/opt/android-sdk
+  sdk="${sdk:-$HOME/android-sdk}"
   if [ ! -x "$sdk/cmdline-tools/latest/bin/sdkmanager" ]; then
     if ! curl -fsS -o /dev/null --max-time 10 https://dl.google.com/android/repository/repository2-3.xml; then
       log "dl.google.com inaccessible : SDK Android non installé. Ajoute dl.google.com et maven.google.com"
@@ -51,6 +68,7 @@ install_android_sdk() {
 
 if [ "${CLAUDE_CODE_REMOTE:-}" = "true" ]; then
   install_ktlint
+  add_maven_mirror
   install_android_sdk
 fi
 

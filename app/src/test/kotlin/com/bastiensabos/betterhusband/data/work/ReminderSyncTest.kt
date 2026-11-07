@@ -8,7 +8,7 @@ import com.bastiensabos.betterhusband.domain.ReminderPlanner
 import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import java.time.Clock
@@ -21,6 +21,8 @@ class ReminderSyncTest {
     private val dates = FakeImportantDateRepository()
     private val scheduler = RecordingScheduler()
 
+    // La synchro tourne dans backgroundScope : advanceUntilIdle() s'arrête dès qu'il ne reste que du travail de fond,
+    // runCurrent() l'exécute.
     private fun sync(scope: kotlinx.coroutines.CoroutineScope) =
         ReminderSync(ObserveUpcomingDatesUseCase(FakePartnerRepository(), dates, clock), ReminderPlanner(clock), scheduler, scope)
 
@@ -38,12 +40,12 @@ class ReminderSyncTest {
     fun `start ensures the daily sync and reschedules when dates change`() =
         runTest {
             sync(backgroundScope).start()
-            advanceUntilIdle()
+            runCurrent()
             assertThat(scheduler.dailySyncEnsured).isTrue()
             assertThat(scheduler.calls.last()).isEmpty()
 
             dates.save(ImportantDate(title = "Mariage", kind = DateKind.ANNIVERSARY, date = LocalDate.of(2015, 4, 12), recurring = true))
-            advanceUntilIdle()
+            runCurrent()
 
             assertThat(scheduler.calls.last()).hasSize(3)
         }
@@ -52,14 +54,14 @@ class ReminderSyncTest {
     fun `an unchanged plan is not rescheduled again`() =
         runTest {
             sync(backgroundScope).start()
-            advanceUntilIdle()
+            runCurrent()
             val before = scheduler.calls.size
 
             // Modifier un titre ne change aucun rappel : pas de nouvelle planification.
             val id = dates.save(ImportantDate(title = "A", kind = DateKind.OTHER, date = LocalDate.of(2027, 9, 1), recurring = false))
-            advanceUntilIdle()
+            runCurrent()
             dates.save(ImportantDate(id, "B", DateKind.OTHER, LocalDate.of(2027, 9, 1), recurring = false))
-            advanceUntilIdle()
+            runCurrent()
 
             assertThat(scheduler.calls.size).isEqualTo(before)
         }

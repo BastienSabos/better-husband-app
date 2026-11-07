@@ -1,7 +1,7 @@
 package com.bastiensabos.betterhusband.data.export
 
 import android.content.Context
-import android.net.Uri
+import androidx.core.net.toUri
 import com.bastiensabos.betterhusband.di.IoDispatcher
 import dagger.Binds
 import dagger.Module
@@ -33,7 +33,7 @@ class ContentResolverDocumentWriter
             content: String,
         ) = withContext(io) {
             // "wt" : tronque un fichier existant, sinon l'ancien contenu resterait derrière le nouveau.
-            val stream = context.contentResolver.openOutputStream(Uri.parse(uri), "wt") ?: throw IOException("No stream")
+            val stream = context.contentResolver.openOutputStream(uri.toUri(), "wt") ?: throw IOException("No stream")
             stream.use { it.write(content.toByteArray(Charsets.UTF_8)) }
         }
     }

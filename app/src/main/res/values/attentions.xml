@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="fr">
     <!--
         Banque d'attentions du flux du jour, une liste par groupe (AttentionGroup, AttentionCatalog). L'identifiant d'une
         attention vaut l'offset de son groupe plus sa position : après la sortie sur le Play Store, ne JAMAIS réordonner

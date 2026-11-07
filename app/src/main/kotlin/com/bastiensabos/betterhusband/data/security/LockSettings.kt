@@ -1,6 +1,7 @@
 package com.bastiensabos.betterhusband.data.security
 
 import android.content.Context
+import androidx.core.content.edit
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -34,7 +35,7 @@ class SharedPreferencesLockSettings
         override val enabled: StateFlow<Boolean> = state.asStateFlow()
 
         override fun setEnabled(enabled: Boolean) {
-            preferences.edit().putBoolean(KEY_ENABLED, enabled).apply()
+            preferences.edit { putBoolean(KEY_ENABLED, enabled) }
             state.value = enabled
         }
 

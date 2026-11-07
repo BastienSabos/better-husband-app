@@ -245,11 +245,13 @@ private fun TaskRepeat.labelRes(): Int =
 
 private val previewActions = TasksActions({}, {}, {}, {}, { _, _ -> }, {}, {}, {}, {}, {}, {})
 
+private val previewDay = LocalDate.of(2026, 11, 7)
+
 private val previewItems =
     listOf(
-        TaskItem(HouseholdTask(1, "Sortir les poubelles", TaskRepeat.WEEKLY, LocalDate.EPOCH), done = false, daysUntilDue = -2),
-        TaskItem(HouseholdTask(2, "Faire une lessive", TaskRepeat.WEEKLY, LocalDate.EPOCH), done = false, daysUntilDue = 0),
-        TaskItem(HouseholdTask(3, "Passer l'aspirateur", TaskRepeat.BIWEEKLY, LocalDate.EPOCH), done = true, daysUntilDue = 12),
+        TaskItem(HouseholdTask(1, "Sortir les poubelles", TaskRepeat.WEEKLY, previewDay), done = false, daysUntilDue = -2),
+        TaskItem(HouseholdTask(2, "Faire une lessive", TaskRepeat.WEEKLY, previewDay), done = false, daysUntilDue = 0),
+        TaskItem(HouseholdTask(3, "Passer l'aspirateur", TaskRepeat.BIWEEKLY, previewDay), done = true, daysUntilDue = 12),
     )
 
 @Preview(showBackground = true)
