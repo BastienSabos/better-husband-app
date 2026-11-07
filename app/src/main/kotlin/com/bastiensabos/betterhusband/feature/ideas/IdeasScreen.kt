@@ -42,6 +42,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.domain.model.Idea
 import com.bastiensabos.betterhusband.domain.model.IdeaCategory
+import com.bastiensabos.betterhusband.ui.component.Heading
 import com.bastiensabos.betterhusband.ui.component.ToneTag
 import com.bastiensabos.betterhusband.ui.theme.AppTheme
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
@@ -107,7 +108,7 @@ fun IdeasScreen(
             TextButton(onClick = actions.onBack, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
                 Text(stringResource(R.string.partner_profile_back))
             }
-            Text(text = stringResource(R.string.ideas_title), style = MaterialTheme.typography.headlineMedium)
+            Heading(text = stringResource(R.string.ideas_title), style = MaterialTheme.typography.headlineMedium)
 
             // Capture rapide : une idée = un champ, une catégorie, un bouton.
             OutlinedTextField(

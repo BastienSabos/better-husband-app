@@ -43,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
+import com.bastiensabos.betterhusband.ui.component.Heading
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
 import java.time.LocalDate
@@ -103,7 +104,7 @@ fun TasksScreen(
             TextButton(onClick = actions.onBack, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
                 Text(stringResource(R.string.partner_profile_back))
             }
-            Text(text = stringResource(R.string.tasks_title), style = MaterialTheme.typography.headlineMedium)
+            Heading(text = stringResource(R.string.tasks_title), style = MaterialTheme.typography.headlineMedium)
 
             // Ajout rapide : un titre, un rythme, un bouton.
             OutlinedTextField(

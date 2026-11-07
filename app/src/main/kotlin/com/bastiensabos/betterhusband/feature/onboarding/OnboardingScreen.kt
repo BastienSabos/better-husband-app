@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.ui.component.AddressFormPicker
+import com.bastiensabos.betterhusband.ui.component.Heading
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
 
@@ -64,7 +65,7 @@ fun OnboardingScreen(
                     .padding(spacing.screen),
             verticalArrangement = Arrangement.spacedBy(spacing.lg),
         ) {
-            Text(text = stringResource(R.string.onboarding_title), style = MaterialTheme.typography.headlineMedium)
+            Heading(text = stringResource(R.string.onboarding_title), style = MaterialTheme.typography.headlineMedium)
             Text(text = stringResource(R.string.onboarding_intro), style = MaterialTheme.typography.bodyLarge)
 
             OutlinedTextField(
