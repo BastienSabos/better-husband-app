@@ -74,6 +74,9 @@ Un test unique : `./gradlew testDebugUnitTest --tests "*.TodayViewModelTest"`.
 
 ## Conventions
 
+- **Doute technique** : le dépôt frère `budget--planner-` (github.com/BastienSabos/budget--planner-, socle commun voulu par
+  Bastien) a déjà tranché beaucoup de questions (outillage, CI, tests d'architecture, accessibilité). Aller y voir avant
+  d'inventer, et reprendre sa solution quand elle s'applique ; signaler l'écart si on s'en éloigne.
 - Code, identifiants, commits et PR en **anglais** ; docs et textes UI en **français**.
 - Textes UI uniquement dans `res/values/strings.xml` (aucune chaîne en dur dans le code Compose).
 - Commits : [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `refactor:`, `test:`,

@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.domain.model.IdeaCategory
+import com.bastiensabos.betterhusband.ui.component.Heading
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
 
@@ -44,7 +45,7 @@ fun ShareIdeaScreen(
                     .padding(spacing.screen),
             verticalArrangement = Arrangement.spacedBy(spacing.md),
         ) {
-            Text(text = stringResource(R.string.share_idea_title), style = MaterialTheme.typography.headlineMedium)
+            Heading(text = stringResource(R.string.share_idea_title), style = MaterialTheme.typography.headlineMedium)
             OutlinedTextField(
                 value = uiState.text,
                 onValueChange = onTextChange,

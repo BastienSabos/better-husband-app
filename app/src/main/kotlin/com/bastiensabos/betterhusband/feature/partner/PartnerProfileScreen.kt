@@ -34,6 +34,7 @@ import com.bastiensabos.betterhusband.domain.model.SizeKind
 import com.bastiensabos.betterhusband.domain.model.TasteCategory
 import com.bastiensabos.betterhusband.ui.component.AddressFormPicker
 import com.bastiensabos.betterhusband.ui.component.DateField
+import com.bastiensabos.betterhusband.ui.component.Heading
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
 import java.time.LocalDate
@@ -96,7 +97,7 @@ fun PartnerProfileScreen(
             TextButton(onClick = onBack, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
                 Text(stringResource(R.string.partner_profile_back))
             }
-            Text(text = stringResource(R.string.partner_profile_title), style = MaterialTheme.typography.headlineMedium)
+            Heading(text = stringResource(R.string.partner_profile_title), style = MaterialTheme.typography.headlineMedium)
 
             if (!uiState.loaded) return@Column
 
@@ -178,7 +179,7 @@ private fun Section(
     content: @Composable () -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(Spacing().sm)) {
-        Text(text = stringResource(titleRes), style = MaterialTheme.typography.titleLarge)
+        Heading(text = stringResource(titleRes), style = MaterialTheme.typography.titleLarge)
         content()
     }
 }

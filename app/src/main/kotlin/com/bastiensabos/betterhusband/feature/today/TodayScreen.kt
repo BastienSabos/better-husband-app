@@ -38,6 +38,7 @@ import com.bastiensabos.betterhusband.domain.model.DateLabel
 import com.bastiensabos.betterhusband.domain.model.UpcomingDate
 import com.bastiensabos.betterhusband.feature.dates.daysUntilText
 import com.bastiensabos.betterhusband.feature.dates.text
+import com.bastiensabos.betterhusband.ui.component.Heading
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
 import java.time.LocalDate
@@ -100,7 +101,7 @@ fun TodayScreen(
                     .padding(spacing.screen),
             verticalArrangement = Arrangement.spacedBy(spacing.md),
         ) {
-            Text(text = stringResource(R.string.today_title), style = MaterialTheme.typography.headlineMedium)
+            Heading(text = stringResource(R.string.today_title), style = MaterialTheme.typography.headlineMedium)
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(spacing.xs),
@@ -184,7 +185,7 @@ private fun TasksSection(
     val spacing = Spacing()
     val doneDescription = stringResource(R.string.tasks_done_description)
     Column(verticalArrangement = Arrangement.spacedBy(spacing.xxs)) {
-        Text(text = stringResource(R.string.today_tasks_title), style = MaterialTheme.typography.titleMedium)
+        Heading(text = stringResource(R.string.today_tasks_title), style = MaterialTheme.typography.titleMedium)
         if (state.tasks.isEmpty()) {
             Text(text = stringResource(R.string.today_tasks_none), style = MaterialTheme.typography.bodyLarge)
         }
@@ -216,7 +217,7 @@ private fun NextDateSection(
 ) {
     val spacing = Spacing()
     Column(verticalArrangement = Arrangement.spacedBy(spacing.xxs)) {
-        Text(text = stringResource(R.string.today_next_date_title), style = MaterialTheme.typography.titleMedium)
+        Heading(text = stringResource(R.string.today_next_date_title), style = MaterialTheme.typography.titleMedium)
         ListItem(
             modifier = Modifier.heightIn(min = spacing.touchTarget).clickable(onClick = onOpenDates),
             headlineContent = { Text(date.label.text()) },
