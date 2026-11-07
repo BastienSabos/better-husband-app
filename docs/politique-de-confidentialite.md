@@ -2,7 +2,8 @@
 
 <!-- Page publique dont l'adresse va dans la fiche Play Store. Modèle repris du dépôt budget--planner-. À relire et
 dater à chaque changement de ce que l'application fait des données. Le nom de l'application est à remplacer quand il
-sera choisi. -->
+sera choisi. La même politique est dans l'appli (strings `privacy_*`, au tutoiement) : changer la date ici change aussi
+la date là-bas (règle Konsist). -->
 
 L'application ne collecte aucune donnée. Voici ce qu'elle fait de vos informations, et ce qu'elle ne fait pas.
 Dernière mise à jour : 7 novembre 2026.

@@ -43,11 +43,13 @@ data class MyDataActions(
     val onDeleteRequest: () -> Unit,
     val onDeleteConfirm: () -> Unit,
     val onDeleteDismiss: () -> Unit,
+    val onOpenPrivacy: () -> Unit,
 )
 
 @Composable
 fun MyDataRoute(
     onBack: () -> Unit,
+    onOpenPrivacy: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MyDataViewModel = hiltViewModel(),
 ) {
@@ -67,6 +69,7 @@ fun MyDataRoute(
                 onDeleteRequest = viewModel::onDeleteRequest,
                 onDeleteConfirm = viewModel::onDeleteConfirm,
                 onDeleteDismiss = viewModel::onDeleteDismiss,
+                onOpenPrivacy = onOpenPrivacy,
             ),
         modifier = modifier,
     )
@@ -134,6 +137,10 @@ fun MyDataScreen(
             ) {
                 Text(stringResource(R.string.my_data_delete_action))
             }
+
+            TextButton(onClick = actions.onOpenPrivacy, modifier = Modifier.fillMaxWidth().heightIn(min = spacing.touchTarget)) {
+                Text(stringResource(R.string.my_data_privacy_action))
+            }
         }
     }
     if (uiState.confirmingDelete) {
@@ -197,7 +204,7 @@ private fun ExportFeedback(status: ExportStatus) {
     Text(text = stringResource(message), style = MaterialTheme.typography.bodyMedium, color = color)
 }
 
-private val previewActions = MyDataActions({}, {}, {}, {}, {}, {})
+private val previewActions = MyDataActions({}, {}, {}, {}, {}, {}, {})
 
 @Preview(showBackground = true)
 @Composable
