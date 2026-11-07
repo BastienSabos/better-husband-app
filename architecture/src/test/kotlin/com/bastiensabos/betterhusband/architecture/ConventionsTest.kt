@@ -167,7 +167,7 @@ class ConventionsTest {
         val masculineLui =
             Regex("""(?<![\p{L}])(pour|chez|avec|sans|à|par|sur|vers|envers|contre|comme) lui(?=[\s]*[.,;:!?]|\s+(et|ou|hier|aujourd))""")
 
-        assertTrue("moins de 400 attentions : ${items.size}", items.size >= 400)
+        assertTrue("moins de 750 attentions : ${items.size}", items.size >= 750)
         assertTrue("doublons dans la banque", items.toSet().size == items.size)
         val tooLong = items.filter { it.split(" ").size > 16 }
         assertTrue("plus de 16 mots : $tooLong", tooLong.isEmpty())
