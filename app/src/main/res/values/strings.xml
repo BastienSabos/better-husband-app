@@ -3,7 +3,21 @@
     <!-- Nom de travail : l'app est une appli de couple, la marque définitive reste à choisir. -->
     <string name="app_name">Better husband</string>
     <string name="today_title">Aujourd\'hui</string>
-    <string name="today_empty">Rien de prévu pour l\'instant. Ajoute une date qui compte pour commencer.</string>
+    <string name="today_attention_title">L\'attention du jour</string>
+    <string name="today_attention_done">C\'est fait</string>
+    <string name="today_attention_done_state">Fait aujourd\'hui</string>
+    <string name="today_attention_other">Autre idée</string>
+    <string name="today_tasks_title">À faire à la maison</string>
+    <string name="today_tasks_none">Rien à faire à la maison aujourd\'hui.</string>
+    <plurals name="today_tasks_more">
+        <item quantity="one">Voir %d autre tâche</item>
+        <item quantity="other">Voir %d autres tâches</item>
+    </plurals>
+    <string name="today_next_date_title">À préparer</string>
+    <plurals name="today_streak">
+        <item quantity="one">%d jour d\'affilée</item>
+        <item quantity="other">%d jours d\'affilée</item>
+    </plurals>
     <string name="onboarding_title">Pour qui est cette appli ?</string>
     <string name="onboarding_intro">Quelques secondes pour commencer. Tu pourras tout modifier ensuite.</string>
     <string name="onboarding_first_name_label">Prénom de ton ou ta partenaire</string>

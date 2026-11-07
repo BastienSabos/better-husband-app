@@ -1,31 +1,204 @@
 package com.bastiensabos.betterhusband.feature.today
 
-import app.cash.turbine.test
+import com.bastiensabos.betterhusband.data.repository.FakeAttentionBank
+import com.bastiensabos.betterhusband.data.repository.FakeAttentionLogRepository
+import com.bastiensabos.betterhusband.data.repository.FakeHouseholdTaskRepository
+import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepository
+import com.bastiensabos.betterhusband.data.repository.FakePartnerRepository
+import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
+import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
+import com.bastiensabos.betterhusband.domain.model.DateKind
+import com.bastiensabos.betterhusband.domain.model.HouseholdTask
+import com.bastiensabos.betterhusband.domain.model.ImportantDate
+import com.bastiensabos.betterhusband.domain.model.TaskRepeat
+import com.bastiensabos.betterhusband.testutil.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
 import org.junit.Test
+import java.time.Clock
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
 
 class TodayViewModelTest {
-    @Test
-    fun `initial state is empty`() =
-        runTest {
-            val viewModel = TodayViewModel()
+    @get:Rule val mainRule = MainDispatcherRule()
 
-            assertThat(viewModel.uiState.value).isEqualTo(TodayUiState.Empty)
+    private val today = LocalDate.of(2027, 1, 20)
+    private val clock = Clock.fixed(Instant.parse("2027-01-20T09:00:00Z"), ZoneOffset.UTC)
+    private val log = FakeAttentionLogRepository()
+    private val tasks = FakeHouseholdTaskRepository()
+    private val dates = FakeImportantDateRepository()
+
+    private fun viewModel() =
+        TodayViewModel(
+            attentionLog = log,
+            taskRepository = tasks,
+            observeUpcomingDates = ObserveUpcomingDatesUseCase(FakePartnerRepository(), dates, clock),
+            bank = FakeAttentionBank(),
+            clock = clock,
+        )
+
+    /** Garde le flux actif (WhileSubscribed) pendant le test. */
+    private fun TestScope.collectState(viewModel: TodayViewModel) {
+        backgroundScope.launch { viewModel.uiState.collect {} }
+        advanceUntilIdle()
+    }
+
+    private fun TodayViewModel.ready() = uiState.value as TodayUiState.Ready
+
+    @Test
+    fun `first open of the day chooses and keeps an attention`() =
+        runTest {
+            val viewModel = viewModel()
+            collectState(viewModel)
+
+            val entry = log.state.value.single()
+            assertThat(entry.date).isEqualTo(today)
+            assertThat(entry.done).isFalse()
+            assertThat(viewModel.ready().attention.text).isEqualTo("Attention ${entry.attentionId}")
         }
 
     @Test
-    fun `marking a card done only updates that card`() =
+    fun `reopening the same day keeps the same attention`() =
         runTest {
-            val viewModel = TodayViewModel()
-            viewModel.setCards(listOf(TodayCard("a", "Mot doux"), TodayCard("b", "Courses")))
+            log.save(AttentionLogEntry(today, 42))
+            val viewModel = viewModel()
+            collectState(viewModel)
 
-            viewModel.uiState.test {
-                assertThat(awaitItem()).isInstanceOf(TodayUiState.Ready::class.java)
-                viewModel.onCardComplete("a")
-                val cards = (awaitItem() as TodayUiState.Ready).cards
-                assertThat(cards.single { it.id == "a" }.done).isTrue()
-                assertThat(cards.single { it.id == "b" }.done).isFalse()
+            assertThat(log.state.value).containsExactly(AttentionLogEntry(today, 42))
+            assertThat(viewModel.ready().attention.text).isEqualTo("Attention 42")
+        }
+
+    @Test
+    fun `an attention used in the last days is not proposed again`() =
+        runTest {
+            val first = AttentionLogEntry(today.minusDays(1), 0)
+            log.save(first)
+            val viewModel = viewModel()
+            collectState(viewModel)
+
+            val chosen = log.state.value.single { it.date == today }
+            assertThat(chosen.attentionId).isNotEqualTo(first.attentionId)
+        }
+
+    @Test
+    fun `marking the attention done updates the card and the streak, and can be undone`() =
+        runTest {
+            log.save(AttentionLogEntry(today.minusDays(1), 1, done = true))
+            log.save(AttentionLogEntry(today, 2))
+            val viewModel = viewModel()
+            collectState(viewModel)
+            assertThat(viewModel.ready().streak).isEqualTo(1)
+
+            viewModel.onAttentionDone(true)
+            advanceUntilIdle()
+            assertThat(viewModel.ready().attention.done).isTrue()
+            assertThat(viewModel.ready().streak).isEqualTo(2)
+
+            viewModel.onAttentionDone(false)
+            advanceUntilIdle()
+            assertThat(viewModel.ready().attention.done).isFalse()
+            assertThat(viewModel.ready().streak).isEqualTo(1)
+        }
+
+    @Test
+    fun `other idea replaces the attention, never repeats one already swapped and is refused once done`() =
+        runTest {
+            val viewModel = viewModel()
+            collectState(viewModel)
+            val seen =
+                mutableSetOf(
+                    log.state.value
+                        .single()
+                        .attentionId,
+                )
+
+            repeat(3) {
+                viewModel.onOtherAttention()
+                advanceUntilIdle()
+                assertThat(
+                    seen.add(
+                        log.state.value
+                            .single()
+                            .attentionId,
+                    ),
+                ).isTrue()
             }
+
+            viewModel.onAttentionDone(true)
+            advanceUntilIdle()
+            val kept =
+                log.state.value
+                    .single()
+                    .attentionId
+            viewModel.onOtherAttention()
+            advanceUntilIdle()
+            assertThat(
+                log.state.value
+                    .single()
+                    .attentionId,
+            ).isEqualTo(kept)
+            assertThat(viewModel.ready().attention.canSwap).isFalse()
+        }
+
+    @Test
+    fun `due tasks are listed most overdue first, capped at three, with the rest counted`() =
+        runTest {
+            val created = today.minusDays(40)
+            listOf("A" to 5L, "B" to 4L, "C" to 3L, "D" to 2L).forEach { (title, overdue) ->
+                tasks.save(
+                    HouseholdTask(
+                        title = title,
+                        repeat = TaskRepeat.WEEKLY,
+                        createdOn = created,
+                        lastDoneOn = today.minusDays(7 + overdue),
+                    ),
+                )
+            }
+            tasks.save(HouseholdTask(title = "Faite", repeat = TaskRepeat.WEEKLY, createdOn = created, lastDoneOn = today))
+            val viewModel = viewModel()
+            collectState(viewModel)
+
+            val ready = viewModel.ready()
+            assertThat(ready.tasks.map { it.title }).containsExactly("A", "B", "C").inOrder()
+            assertThat(ready.tasks.first().overdueDays).isEqualTo(5)
+            assertThat(ready.moreTasks).isEqualTo(1)
+        }
+
+    @Test
+    fun `checking a task marks it done today and removes it from the list`() =
+        runTest {
+            val id = tasks.save(HouseholdTask(title = "Linge", repeat = TaskRepeat.WEEKLY, createdOn = today.minusDays(3)))
+            val viewModel = viewModel()
+            collectState(viewModel)
+            assertThat(viewModel.ready().tasks).hasSize(1)
+
+            viewModel.onTaskDone(id)
+            advanceUntilIdle()
+
+            assertThat(
+                tasks.state.value
+                    .single()
+                    .lastDoneOn,
+            ).isEqualTo(today)
+            assertThat(viewModel.ready().tasks).isEmpty()
+        }
+
+    @Test
+    fun `next date is shown only within thirty days`() =
+        runTest {
+            dates.save(ImportantDate(title = "Loin", kind = DateKind.OTHER, date = today.plusDays(90), recurring = false))
+            val viewModel = viewModel()
+            collectState(viewModel)
+            assertThat(viewModel.ready().nextDate).isNull()
+
+            dates.save(ImportantDate(title = "Bientôt", kind = DateKind.OTHER, date = today.plusDays(10), recurring = false))
+            advanceUntilIdle()
+
+            assertThat(viewModel.ready().nextDate?.daysUntil).isEqualTo(10)
         }
 }
