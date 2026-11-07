@@ -47,3 +47,15 @@ val MIGRATION_3_4 =
             )
         }
     }
+
+/** v4 → v5 : tâches récurrentes du foyer. */
+val MIGRATION_4_5 =
+    object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `household_task` " +
+                    "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, " +
+                    "`repeat` TEXT NOT NULL, `created_on` TEXT NOT NULL, `last_done_on` TEXT)",
+            )
+        }
+    }
