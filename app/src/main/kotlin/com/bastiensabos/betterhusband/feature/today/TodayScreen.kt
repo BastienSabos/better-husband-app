@@ -18,6 +18,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -52,6 +53,7 @@ data class TodayActions(
     val onOpenIdeas: () -> Unit,
     val onOpenTasks: () -> Unit,
     val onOpenMyData: () -> Unit,
+    val onOpenCoupleProfile: () -> Unit,
 )
 
 /** Point d'entrée « stateful » : branche le ViewModel. */
@@ -62,6 +64,7 @@ fun TodayRoute(
     onOpenIdeas: () -> Unit,
     onOpenTasks: () -> Unit,
     onOpenMyData: () -> Unit,
+    onOpenCoupleProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
@@ -78,6 +81,7 @@ fun TodayRoute(
                 onOpenIdeas = onOpenIdeas,
                 onOpenTasks = onOpenTasks,
                 onOpenMyData = onOpenMyData,
+                onOpenCoupleProfile = onOpenCoupleProfile,
             ),
         modifier = modifier,
     )
@@ -118,6 +122,9 @@ fun TodayScreen(
                 TextButton(onClick = actions.onOpenTasks, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
                     Text(stringResource(R.string.today_open_tasks))
                 }
+                TextButton(onClick = actions.onOpenCoupleProfile, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
+                    Text(stringResource(R.string.today_open_couple))
+                }
                 TextButton(onClick = actions.onOpenMyData, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
                     Text(stringResource(R.string.today_open_my_data))
                 }
@@ -135,6 +142,7 @@ fun TodayScreen(
                         )
                     }
                     AttentionSection(uiState.attention, actions)
+                    if (uiState.suggestCoupleProfile) CoupleProfilePrompt(actions.onOpenCoupleProfile)
                     TasksSection(uiState, actions)
                     uiState.nextDate?.let { NextDateSection(it, actions.onOpenDates) }
                 }
@@ -172,6 +180,20 @@ private fun AttentionSection(
                         Text(stringResource(R.string.today_attention_other))
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CoupleProfilePrompt(onOpen: () -> Unit) {
+    val spacing = Spacing()
+    OutlinedCard(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(spacing.md), verticalArrangement = Arrangement.spacedBy(spacing.xs)) {
+            Heading(text = stringResource(R.string.today_couple_prompt_title), style = MaterialTheme.typography.titleMedium)
+            Text(text = stringResource(R.string.today_couple_prompt_body), style = MaterialTheme.typography.bodyMedium)
+            TextButton(onClick = onOpen, modifier = Modifier.heightIn(min = spacing.touchTarget)) {
+                Text(stringResource(R.string.today_couple_prompt_action))
             }
         }
     }
@@ -226,7 +248,7 @@ private fun NextDateSection(
     }
 }
 
-private val previewActions = TodayActions({}, {}, {}, {}, {}, {}, {}, {})
+private val previewActions = TodayActions({}, {}, {}, {}, {}, {}, {}, {}, {})
 
 private val previewDate =
     UpcomingDate("a", DateLabel.RelativeBirthday("Léa"), DateKind.BIRTHDAY, LocalDate.of(2027, 3, 11), 6, 8, null)

@@ -2,11 +2,14 @@ package com.bastiensabos.betterhusband.domain
 
 import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
+import com.bastiensabos.betterhusband.domain.model.CoupleProfile
 import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.Idea
 import com.bastiensabos.betterhusband.domain.model.IdeaCategory
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
+import com.bastiensabos.betterhusband.domain.model.Interest
+import com.bastiensabos.betterhusband.domain.model.KidsAtHome
 import com.bastiensabos.betterhusband.domain.model.Partner
 import com.bastiensabos.betterhusband.domain.model.Relative
 import com.bastiensabos.betterhusband.domain.model.SizeKind
@@ -113,5 +116,16 @@ class DataExportTest {
 
         assertThat(json).startsWith("{\n  \"formatVersion\"")
         assertThat(json).endsWith("}\n")
+    }
+
+    @Test
+    fun `couple profile is exported, unanswered questions as null`() {
+        val profile = CoupleProfile(kids = KidsAtHome.YOUNG, interests = setOf(Interest.SPORT, Interest.CULTURE))
+
+        val json = DataExport.toJson(snapshot().copy(coupleProfile = profile))
+
+        assertThat(json).contains("\"kids\": \"YOUNG\"")
+        assertThat(json).contains("\"living\": null")
+        assertThat(json).contains("\"CULTURE\",\n      \"SPORT\"")
     }
 }

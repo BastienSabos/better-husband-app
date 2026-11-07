@@ -1,6 +1,7 @@
 package com.bastiensabos.betterhusband.domain
 
 import com.bastiensabos.betterhusband.data.repository.AttentionLogRepository
+import com.bastiensabos.betterhusband.data.repository.CoupleProfileRepository
 import com.bastiensabos.betterhusband.data.repository.HouseholdTaskRepository
 import com.bastiensabos.betterhusband.data.repository.IdeaRepository
 import com.bastiensabos.betterhusband.data.repository.ImportantDateRepository
@@ -20,6 +21,7 @@ class ExportUserDataUseCase
         private val ideas: IdeaRepository,
         private val tasks: HouseholdTaskRepository,
         private val attentions: AttentionLogRepository,
+        private val coupleProfile: CoupleProfileRepository,
         private val clock: Clock,
     ) {
         suspend operator fun invoke(): String =
@@ -31,6 +33,7 @@ class ExportUserDataUseCase
                     tasks = tasks.observeAll().first(),
                     attentions = attentions.observeAll().first(),
                     exportedAt = Instant.now(clock),
+                    coupleProfile = coupleProfile.observe().first(),
                 ),
             )
     }
@@ -47,6 +50,7 @@ class DeleteAllUserDataUseCase
         private val ideas: IdeaRepository,
         private val tasks: HouseholdTaskRepository,
         private val attentions: AttentionLogRepository,
+        private val coupleProfile: CoupleProfileRepository,
         private val reminders: ReminderScheduler,
     ) {
         suspend operator fun invoke() {
@@ -54,6 +58,7 @@ class DeleteAllUserDataUseCase
             ideas.deleteAll()
             tasks.deleteAll()
             attentions.deleteAll()
+            coupleProfile.deleteAll()
             reminders.reschedule(emptyList())
             partners.deletePartner()
         }
