@@ -43,6 +43,7 @@ import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.DateLabel
 import com.bastiensabos.betterhusband.domain.model.UpcomingDate
 import com.bastiensabos.betterhusband.ui.component.DateField
+import com.bastiensabos.betterhusband.ui.component.NotificationPermissionPrompt
 import com.bastiensabos.betterhusband.ui.theme.BetterHusbandTheme
 import com.bastiensabos.betterhusband.ui.theme.Spacing
 import java.time.LocalDate
@@ -104,6 +105,7 @@ fun DatesScreen(
                 Text(stringResource(R.string.partner_profile_back))
             }
             Text(text = stringResource(R.string.dates_title), style = MaterialTheme.typography.headlineMedium)
+            NotificationPermissionPrompt()
             when (val list = uiState.list) {
                 DatesListState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))

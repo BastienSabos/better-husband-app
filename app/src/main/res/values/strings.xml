@@ -64,4 +64,11 @@
     <string name="dates_kind_birthday">Anniversaire de naissance</string>
     <string name="dates_kind_anniversary">Date à fêter</string>
     <string name="dates_kind_other">Autre</string>
+    <string name="notif_channel_name">Dates importantes</string>
+    <string name="notif_channel_description">Rappels avant les dates qui comptent.</string>
+    <string name="notif_public_title">Tu as un rappel</string>
+    <string name="notif_public_text">Déverrouille ton téléphone pour voir lequel.</string>
+    <string name="notif_today">C\'est aujourd\'hui</string>
+    <string name="notif_permission_prompt">Pour être prévenu 14 jours, 3 jours et le jour même, active les notifications. Elles restent discrètes sur l\'écran verrouillé.</string>
+    <string name="notif_permission_action">Activer les rappels</string>
 </resources>
