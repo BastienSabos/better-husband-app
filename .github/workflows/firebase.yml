@@ -1,0 +1,49 @@
+name: Firebase
+
+# Règles Firestore et Cloud Functions du mode duo (dossier firebase/). Ne tourne que si ce dossier change : les
+# minutes d'Actions sont comptées.
+on:
+  pull_request:
+    paths: ["firebase/**", ".github/workflows/firebase.yml"]
+  push:
+    branches: [main]
+    paths: ["firebase/**", ".github/workflows/firebase.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: firebase-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  firebase:
+    name: Firebase rules & functions
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: firebase
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            firebase/package-lock.json
+            firebase/functions/package-lock.json
+
+      # L'émulateur Firestore demande un JDK récent.
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - run: npm ci
+      - run: npm test
+
+      - run: npm --prefix functions ci
+      - run: npm run test:functions
