@@ -3,6 +3,7 @@ package com.bastiensabos.betterhusband.data.repository
 import app.cash.turbine.test
 import com.bastiensabos.betterhusband.data.local.dao.ImportantDateDao
 import com.bastiensabos.betterhusband.data.local.entity.ImportantDateEntity
+import com.bastiensabos.betterhusband.data.local.entity.SyncColumns
 import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
 import com.google.common.truth.Truth.assertThat
@@ -44,6 +45,20 @@ class RoomImportantDateRepositoryTest {
         }
 
     @Test
+    fun `editing a date keeps its uid and sharing`() =
+        runTest {
+            val day = LocalDate.of(2027, 6, 1)
+            val id = repository.save(ImportantDate(title = "Rencontre", kind = DateKind.ANNIVERSARY, date = day, recurring = true))
+            val shared = dao.syncOf(id)!!.copy(shared = true, revision = 42, author = "alex")
+            dao.upsert(dao.snapshot().single().copy(sync = shared))
+
+            repository.save(ImportantDate(id = id, title = "Notre rencontre", kind = DateKind.ANNIVERSARY, date = day, recurring = true))
+
+            assertThat(dao.syncOf(id)).isEqualTo(shared)
+            assertThat(dao.snapshot().single().title).isEqualTo("Notre rencontre")
+        }
+
+    @Test
     fun `unknown kind falls back to other and delete removes`() =
         runTest {
             dao.upsert(ImportantDateEntity(title = "X", kind = "FROM_THE_FUTURE", date = LocalDate.of(2027, 1, 1), recurring = false))
@@ -61,6 +76,10 @@ class RoomImportantDateRepositoryTest {
         private var nextId = 1L
 
         override fun observeAll(): Flow<List<ImportantDateEntity>> = state
+
+        fun snapshot() = state.value
+
+        override suspend fun syncOf(id: Long): SyncColumns? = state.value.firstOrNull { it.id == id }?.sync
 
         override suspend fun upsert(entity: ImportantDateEntity): Long {
             val id = if (entity.id == 0L) nextId++ else entity.id

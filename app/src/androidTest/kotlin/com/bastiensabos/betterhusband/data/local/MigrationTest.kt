@@ -121,7 +121,41 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun migrate8To9AddsSyncColumnsAndDuoTables() {
+        helper.createDatabase(DB_NAME, 8).use {
+            it.execSQL(
+                "INSERT INTO household_task (title, `repeat`, created_on, last_done_on) " +
+                    "VALUES ('Poubelles', 'WEEKLY', '2027-01-04', NULL), ('Linge', 'DAILY', '2027-01-04', NULL)",
+            )
+            it.execSQL(
+                "INSERT INTO important_date (title, kind, date, recurring) VALUES ('Rencontre', 'ANNIVERSARY', '2019-06-01', 1)",
+            )
+        }
+
+        val db = helper.runMigrationsAndValidate(DB_NAME, 9, true, MIGRATION_8_9)
+
+        db.query("SELECT uid, shared, deleted FROM household_task").use {
+            val uids = mutableSetOf<String>()
+            while (it.moveToNext()) {
+                uids += it.getString(0)
+                assertThat(it.getInt(1)).isEqualTo(0)
+                assertThat(it.getInt(2)).isEqualTo(0)
+            }
+            assertThat(uids).hasSize(2)
+            assertThat(uids.all { uid -> UUID_V4.matches(uid) }).isTrue()
+        }
+        db.query("SELECT uid FROM important_date").use {
+            it.moveToFirst()
+            assertThat(UUID_V4.matches(it.getString(0))).isTrue()
+        }
+        db.execSQL("INSERT INTO wish (owner, text, created_at, uid) VALUES ('alex', 'Un carnet', 1, 'a')")
+        db.execSQL("INSERT INTO duo_member (member_id, is_me) VALUES ('alex', 1)")
+        db.execSQL("INSERT INTO duo_state (id, duo_id, last_seen, pushed_until, ended) VALUES (1, 'd', 0, 0, 0)")
+    }
+
     private companion object {
+        val UUID_V4 = Regex("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")
         const val DB_NAME = "migration-test"
     }
 }
