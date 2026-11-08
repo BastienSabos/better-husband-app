@@ -3,16 +3,16 @@
 
 [versions]
 # AGP et Gradle se mettent à jour ensemble (voir la table de compatibilité AGP).
-androidGradlePlugin = "9.3.2"
-kotlin = "2.3.0"
-ksp = "2.3.4"
+androidGradlePlugin = "9.5.1"
+kotlin = "2.4.21"
+ksp = "2.3.13"
 hilt = "2.59"
 androidxHilt = "1.2.0"
 androidxHiltNavigationCompose = "1.2.0"
 androidxNavigation = "2.10.2"
 # Contraintes seulement : Navigation tire 1.7.3 et 1.1.0, room-testing et androidx.test 1.8.1 et 1.2.0 ; AGP exige les
 # mêmes versions dans l'appli et ses tests instrumentés.
-kotlinxSerialization = "1.8.1"
+kotlinxSerialization = "1.12.0"
 # Chiffrement du mode duo (ADR 0004) : X25519, HKDF, AES-GCM. tink-android plutôt que tink : protobuf-lite, comme Firestore.
 tink = "1.24.0"
 androidxConcurrent = "1.2.0"
@@ -25,7 +25,7 @@ androidxLifecycle = "2.10.0"
 androidxRoom = "2.8.3"
 androidxWork = "2.10.0"
 androidxTestExt = "1.3.0-rc01"
-kotlinxCoroutines = "1.10.1"
+kotlinxCoroutines = "1.11.0"
 sqlcipher = "4.20.0"
 junit4 = "4.13.2"
 robolectric = "4.17"
