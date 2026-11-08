@@ -1,0 +1,124 @@
+rules_version = '2';
+
+// Règles du mode duo (docs/adr/0004-synchro-duo-chiffree-de-bout-en-bout.md).
+// Firestore ne stocke que des blocs chiffrés : ces règles décident seulement QUI peut lire et écrire QUOI, jamais
+// ce que le bloc contient (le serveur ne le voit pas). Tests : firebase/tests/rules.test.ts.
+//
+// Un téléphone n'a qu'un compte anonyme. Le duo a exactement deux membres. Quitter le duo (effacement) passe par la
+// Cloud Function `leaveDuo` : aucune règle n'autorise de suppression d'un duo ou d'un bloc depuis l'app.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function duoPath(duoId) {
+      return /databases/$(database)/documents/duos/$(duoId);
+    }
+
+    function isMember(duoId) {
+      return signedIn()
+        && exists(duoPath(duoId))
+        && request.auth.uid in get(duoPath(duoId)).data.members;
+    }
+
+    function onlyKeys(allowed) {
+      return request.resource.data.keys().hasOnly(allowed);
+    }
+
+    // Un duo : la liste des deux membres, créé par le premier avec lui seul, puis complété une fois par l'hôte
+    // après avoir vérifié la preuve de l'invité (côté app).
+    match /duos/{duoId} {
+      allow get: if signedIn() && request.auth.uid in resource.data.members;
+
+      allow create: if signedIn()
+        && onlyKeys(['members', 'createdAt', 'lastActivity'])
+        && request.resource.data.members == [request.auth.uid]
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.lastActivity == request.time;
+
+      // L'hôte (premier membre) ajoute le second membre, et rien d'autre ne change.
+      allow update: if signedIn()
+        && resource.data.members.size() == 1
+        && resource.data.members[0] == request.auth.uid
+        && onlyKeys(['members', 'createdAt', 'lastActivity'])
+        && request.resource.data.members.size() == 2
+        && request.resource.data.members[0] == request.auth.uid
+        && request.resource.data.members[1] != request.auth.uid
+        && request.resource.data.createdAt == resource.data.createdAt;
+
+      // Les blocs : chiffrés, de taille bornée, écrits par un membre qui s'en déclare l'auteur. `updatedAt` est
+      // l'heure du serveur : c'est elle qui ordonne la lecture incrémentale.
+      match /blobs/{blobId} {
+        allow get, list: if isMember(duoId);
+
+        allow create, update: if isMember(duoId)
+          && blobId.matches('^[0-9a-f]{32}$')
+          && onlyKeys(['ciphertext', 'updatedAt', 'author'])
+          && request.resource.data.ciphertext is bytes
+          && request.resource.data.ciphertext.size() > 0
+          && request.resource.data.ciphertext.size() <= 16384
+          && request.resource.data.updatedAt == request.time
+          && request.resource.data.author == request.auth.uid;
+      }
+
+      // Le jeton de notification de chaque téléphone : lisible et modifiable par son seul propriétaire (la Function
+      // le lit avec les droits d'administration).
+      match /devices/{uid} {
+        allow get: if signedIn() && request.auth.uid == uid && isMember(duoId);
+
+        allow create, update: if signedIn()
+          && request.auth.uid == uid
+          && isMember(duoId)
+          && onlyKeys(['fcmToken'])
+          && request.resource.data.fcmToken is string
+          && request.resource.data.fcmToken.size() <= 4096;
+
+        allow delete: if signedIn() && request.auth.uid == uid;
+      }
+    }
+
+    // Les invitations : lisibles par leur identifiant seulement (pas de liste), 24 h au plus, créées pour un duo qui
+    // n'a encore que son créateur. Le secret du lien n'est jamais écrit ici.
+    match /invites/{inviteId} {
+      allow get: if signedIn() && resource.data.expiresAt > request.time;
+
+      allow create: if signedIn()
+        && onlyKeys(['duoId', 'createdBy', 'publicKeyA', 'expiresAt'])
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.duoId is string
+        && get(duoPath(request.resource.data.duoId)).data.members == [request.auth.uid]
+        && request.resource.data.publicKeyA is bytes
+        && request.resource.data.publicKeyA.size() == 32
+        && request.resource.data.expiresAt > request.time
+        && request.resource.data.expiresAt <= request.time + duration.value(24, 'h');
+
+      allow delete: if signedIn() && resource.data.createdBy == request.auth.uid;
+
+      // La demande de l'invité : sa clé publique et la preuve qu'il a reçu le lien. Une seule par compte, jamais
+      // modifiée ; seul l'hôte la lit.
+      match /join/{uid} {
+        allow create: if signedIn()
+          && request.auth.uid == uid
+          && get(/databases/$(database)/documents/invites/$(inviteId)).data.expiresAt > request.time
+          && onlyKeys(['publicKeyB', 'proof'])
+          && request.resource.data.publicKeyB is bytes
+          && request.resource.data.publicKeyB.size() == 32
+          && request.resource.data.proof is bytes
+          && request.resource.data.proof.size() == 32;
+
+        allow get: if signedIn()
+          && (request.auth.uid == uid
+            || get(/databases/$(database)/documents/invites/$(inviteId)).data.createdBy == request.auth.uid);
+
+        // L'hôte ne connaît pas encore l'identifiant de l'invité : il liste les demandes de son invitation.
+        allow list: if signedIn()
+          && get(/databases/$(database)/documents/invites/$(inviteId)).data.createdBy == request.auth.uid;
+
+        allow delete: if signedIn()
+          && get(/databases/$(database)/documents/invites/$(inviteId)).data.createdBy == request.auth.uid;
+      }
+    }
+  }
+}

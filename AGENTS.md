@@ -72,6 +72,8 @@ Voir `docs/architecture.md`. En bref :
 ./gradlew check                  # tout ce qui précède, la porte de qualité locale
 ```
 
+Mode duo (dossier `firebase/`, règles Firestore et Cloud Functions) : `cd firebase && npm ci && npm test`, voir `firebase/README.md`.
+
 Un test unique : `./gradlew testDebugUnitTest --tests "*.TodayViewModelTest"`.
 
 ## Conventions
