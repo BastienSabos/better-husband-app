@@ -5,13 +5,18 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.bastiensabos.betterhusband.data.local.entity.HouseholdTaskEntity
+import com.bastiensabos.betterhusband.data.local.entity.SyncColumns
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 @Dao
 interface HouseholdTaskDao {
-    @Query("SELECT * FROM household_task ORDER BY id")
+    @Query("SELECT * FROM household_task WHERE deleted = 0 ORDER BY id")
     fun observeAll(): Flow<List<HouseholdTaskEntity>>
+
+    /** Colonnes de synchro de la ligne, pour qu'une modification n'en change pas l'identifiant ni le partage. */
+    @Query("SELECT uid, shared, revision, author, deleted, local_changed_at FROM household_task WHERE id = :id")
+    suspend fun syncOf(id: Long): SyncColumns?
 
     /** Retourne l'identifiant de la ligne (créée ou remplacée). */
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -12,12 +12,15 @@ import com.bastiensabos.betterhusband.data.local.MIGRATION_4_5
 import com.bastiensabos.betterhusband.data.local.MIGRATION_5_6
 import com.bastiensabos.betterhusband.data.local.MIGRATION_6_7
 import com.bastiensabos.betterhusband.data.local.MIGRATION_7_8
+import com.bastiensabos.betterhusband.data.local.MIGRATION_8_9
 import com.bastiensabos.betterhusband.data.local.dao.AttentionLogDao
 import com.bastiensabos.betterhusband.data.local.dao.CoupleProfileDao
+import com.bastiensabos.betterhusband.data.local.dao.DuoDao
 import com.bastiensabos.betterhusband.data.local.dao.HouseholdTaskDao
 import com.bastiensabos.betterhusband.data.local.dao.IdeaDao
 import com.bastiensabos.betterhusband.data.local.dao.ImportantDateDao
 import com.bastiensabos.betterhusband.data.local.dao.PartnerDao
+import com.bastiensabos.betterhusband.data.local.dao.WishDao
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -48,8 +51,16 @@ object DatabaseModule {
             .databaseBuilder(context, AppDatabase::class.java, AppDatabase.NAME)
             .openHelperFactory(SupportOpenHelperFactory(keyProvider.passphrase()))
             // Jamais de migration destructive : on ne perd pas les souvenirs d'un couple.
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8)
-            .build()
+            .addMigrations(
+                MIGRATION_1_2,
+                MIGRATION_2_3,
+                MIGRATION_3_4,
+                MIGRATION_4_5,
+                MIGRATION_5_6,
+                MIGRATION_6_7,
+                MIGRATION_7_8,
+                MIGRATION_8_9,
+            ).build()
     }
 
     @Provides
@@ -63,6 +74,12 @@ object DatabaseModule {
 
     @Provides
     fun provideHouseholdTaskDao(database: AppDatabase): HouseholdTaskDao = database.householdTaskDao()
+
+    @Provides
+    fun provideWishDao(database: AppDatabase): WishDao = database.wishDao()
+
+    @Provides
+    fun provideDuoDao(database: AppDatabase): DuoDao = database.duoDao()
 
     @Provides
     fun provideAttentionLogDao(database: AppDatabase): AttentionLogDao = database.attentionLogDao()

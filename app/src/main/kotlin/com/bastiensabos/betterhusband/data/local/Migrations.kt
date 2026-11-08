@@ -90,3 +90,45 @@ val MIGRATION_7_8 =
             db.execSQL("ALTER TABLE `couple_profile` ADD COLUMN `family` TEXT NOT NULL DEFAULT ''")
         }
     }
+
+/**
+ * v8 → v9 : mode duo (ADR 0004, `docs/duo.md`). Les tâches et les dates gagnent un identifiant stable et les colonnes
+ * de synchro (tout reste privé : `shared` = 0) ; trois tables nouvelles : envies, membres du duo, état de la synchro.
+ */
+val MIGRATION_8_9 =
+    object : Migration(8, 9) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            for (table in listOf("household_task", "important_date")) {
+                db.execSQL("ALTER TABLE `$table` ADD COLUMN `uid` TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE `$table` ADD COLUMN `shared` INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE `$table` ADD COLUMN `revision` INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE `$table` ADD COLUMN `author` TEXT")
+                db.execSQL("ALTER TABLE `$table` ADD COLUMN `deleted` INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE `$table` ADD COLUMN `local_changed_at` INTEGER NOT NULL DEFAULT 0")
+                // Un UUID version 4 par ligne existante (randomblob est évalué pour chaque ligne).
+                db.execSQL("UPDATE `$table` SET `uid` = $UUID_V4_SQL")
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_${table}_uid` ON `$table` (`uid`)")
+            }
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `wish` " +
+                    "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner` TEXT NOT NULL, `text` TEXT NOT NULL, " +
+                    "`link` TEXT, `created_at` INTEGER NOT NULL, `uid` TEXT NOT NULL DEFAULT '', " +
+                    "`shared` INTEGER NOT NULL DEFAULT 0, `revision` INTEGER NOT NULL DEFAULT 0, `author` TEXT, " +
+                    "`deleted` INTEGER NOT NULL DEFAULT 0, `local_changed_at` INTEGER NOT NULL DEFAULT 0)",
+            )
+            db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_wish_uid` ON `wish` (`uid`)")
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `duo_member` " +
+                    "(`member_id` TEXT NOT NULL, `is_me` INTEGER NOT NULL, PRIMARY KEY(`member_id`))",
+            )
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `duo_state` " +
+                    "(`id` INTEGER NOT NULL, `duo_id` TEXT NOT NULL, `last_seen` INTEGER NOT NULL, " +
+                    "`pushed_until` INTEGER NOT NULL, `ended` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+            )
+        }
+    }
+
+private const val UUID_V4_SQL =
+    "lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || " +
+        "substr('89ab', abs(random()) % 4 + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))"

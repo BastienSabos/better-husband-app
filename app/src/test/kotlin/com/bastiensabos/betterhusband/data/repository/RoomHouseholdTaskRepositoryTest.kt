@@ -3,6 +3,7 @@ package com.bastiensabos.betterhusband.data.repository
 import app.cash.turbine.test
 import com.bastiensabos.betterhusband.data.local.dao.HouseholdTaskDao
 import com.bastiensabos.betterhusband.data.local.entity.HouseholdTaskEntity
+import com.bastiensabos.betterhusband.data.local.entity.SyncColumns
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
 import com.google.common.truth.Truth.assertThat
@@ -60,6 +61,29 @@ class RoomHouseholdTaskRepositoryTest {
         }
 
     @Test
+    fun `editing a task keeps its uid and sharing`() =
+        runTest {
+            val id = repository.save(HouseholdTask(title = "Linge", repeat = TaskRepeat.DAILY, createdOn = created))
+            val shared = dao.syncOf(id)!!.copy(shared = true, revision = 42, author = "alex")
+            dao.upsert(dao.snapshot().single().copy(sync = shared))
+
+            repository.save(HouseholdTask(id = id, title = "Linge sale", repeat = TaskRepeat.DAILY, createdOn = created))
+
+            assertThat(dao.syncOf(id)).isEqualTo(shared)
+            assertThat(dao.snapshot().single().title).isEqualTo("Linge sale")
+        }
+
+    @Test
+    fun `new tasks get distinct uids and stay private`() =
+        runTest {
+            val first = repository.save(HouseholdTask(title = "A", repeat = TaskRepeat.DAILY, createdOn = created))
+            val second = repository.save(HouseholdTask(title = "B", repeat = TaskRepeat.DAILY, createdOn = created))
+
+            assertThat(dao.syncOf(first)!!.uid).isNotEqualTo(dao.syncOf(second)!!.uid)
+            assertThat(dao.syncOf(first)!!.shared).isFalse()
+        }
+
+    @Test
     fun `delete all clears every task`() =
         runTest {
             repository.save(HouseholdTask(title = "A", repeat = TaskRepeat.DAILY, createdOn = created))
@@ -75,6 +99,10 @@ class RoomHouseholdTaskRepositoryTest {
         private var nextId = 1L
 
         override fun observeAll(): Flow<List<HouseholdTaskEntity>> = state
+
+        fun snapshot() = state.value
+
+        override suspend fun syncOf(id: Long): SyncColumns? = state.value.firstOrNull { it.id == id }?.sync
 
         override suspend fun upsert(entity: HouseholdTaskEntity): Long {
             val id = if (entity.id == 0L) nextId++ else entity.id

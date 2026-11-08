@@ -2,6 +2,7 @@ package com.bastiensabos.betterhusband.data.repository
 
 import com.bastiensabos.betterhusband.data.local.dao.HouseholdTaskDao
 import com.bastiensabos.betterhusband.data.local.entity.HouseholdTaskEntity
+import com.bastiensabos.betterhusband.data.local.entity.SyncColumns
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
 import dagger.Binds
@@ -40,7 +41,7 @@ class RoomHouseholdTaskRepository
     ) : HouseholdTaskRepository {
         override fun observeAll(): Flow<List<HouseholdTask>> = dao.observeAll().map { list -> list.map { it.toDomain() } }
 
-        override suspend fun save(task: HouseholdTask): Long = dao.upsert(task.toEntity())
+        override suspend fun save(task: HouseholdTask): Long = dao.upsert(task.toEntity(if (task.id == 0L) null else dao.syncOf(task.id)))
 
         override suspend fun setLastDone(
             id: Long,
@@ -62,13 +63,14 @@ internal fun HouseholdTaskEntity.toDomain() =
         lastDoneOn = lastDoneOn,
     )
 
-internal fun HouseholdTask.toEntity() =
+internal fun HouseholdTask.toEntity(sync: SyncColumns? = null) =
     HouseholdTaskEntity(
         id = id,
         title = title.trim(),
         repeat = repeat.name,
         createdOn = createdOn,
         lastDoneOn = lastDoneOn,
+        sync = sync ?: SyncColumns(),
     )
 
 @Module
