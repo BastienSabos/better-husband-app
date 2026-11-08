@@ -1,6 +1,6 @@
 # Mode duo : données partagées
 
-Complète l'ADR 0004 (serveur et chiffrement). Ce document dit **ce qui est partagé, ce qui ne l'est jamais**, comment
+Complète l'ADR 0004 (Firebase et chiffrement). Ce document dit **ce qui est partagé, ce qui ne l'est jamais**, comment
 les tables évoluent et ce que chacun garde à la sortie du duo. Spec : `docs/spec.md`, « v1.1 ».
 
 ## Principe
@@ -61,9 +61,9 @@ Nouvelles tables :
 - `wish` : `id`, `uid`, `owner` (membre), `text`, `link` (facultatif), `created_at`, plus les colonnes ci-dessus.
 - `duo_member` : `member_id` (UUID), `is_me`. Deux lignes au plus. Le prénom affiché vient de la fiche partenaire,
   il n'est pas synchronisé.
-- `duo_state` (une ligne) : `duo_id`, `last_seq` (dernier `seq` reçu), `pushed_until` (dernier `local_changed_at`
-  envoyé), `ended` (le serveur a répondu `410`). La clé de couple et le jeton d'appareil ne sont **pas** dans Room :
-  ils sont chiffrés par le Keystore dans les préférences privées, comme la clé SQLCipher.
+- `duo_state` (une ligne) : `duo_id`, `last_seen` (horodatage serveur du dernier bloc reçu), `pushed_until` (dernier
+  `local_changed_at` envoyé), `ended` (le document du duo a disparu). La clé de couple n'est **pas** dans Room :
+  elle est chiffrée par le Keystore dans les préférences privées, comme la clé SQLCipher.
 
 Une suppression d'un élément non partagé reste un effacement immédiat, comme en v1. Les marqueurs d'un élément
 partagé s'effacent 90 jours après avoir été envoyés (règle du budget planner, ADR 0018 du dépôt frère, simplifiée :
@@ -128,8 +128,10 @@ disparaissent. Chacun peut ensuite tout effacer depuis « Mes données », comme
 2. Domaine : `sharedScope`, `DuoMerge`, format de bloc et bornes, avec tests (Kotlin pur, vérifiable dans le cloud).
 3. Domaine : chiffrement (Tink), dérivation de clés, invitation et code de vérification, avec vecteurs de test.
 4. Room v9 : colonnes de synchro, tables `wish`, `duo_member`, `duo_state`, `MigrationTest`.
-5. Serveur `server/` (Worker + D1) : API, tests, job CI, déploiement manuel.
-6. App : client HTTP, permission `INTERNET`, `DuoSyncWorker`, politique de confidentialité mise à jour.
+5. Firebase `firebase/` : règles Firestore et leurs tests (émulateur), Cloud Functions (notification de synchro,
+   sortie du duo), job CI, déploiement manuel.
+6. App : SDK Firebase (Auth, Firestore, Messaging, App Check), `DuoSyncWorker`, politique de confidentialité et
+   formulaire « Sécurité des données » mis à jour.
 7. Écrans : inviter et rejoindre (QR, lien, code de vérification), choix de l'existant à partager.
 8. Écrans : envies (« Mes envies », « Ses envies », « Je m'en occupe »), qui fait quoi dans le foyer, dates
    partagées.
