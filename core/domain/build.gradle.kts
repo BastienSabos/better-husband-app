@@ -25,6 +25,8 @@ kotlin {
 }
 
 dependencies {
+    // JAR Java pur (sans ressource Android) : utilisable dans ce module et dans :app.
+    implementation(libs.tink.android)
     testImplementation(libs.junit)
     testImplementation(libs.truth)
 }

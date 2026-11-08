@@ -13,6 +13,8 @@ androidxNavigation = "2.10.2"
 # Contraintes seulement : Navigation tire 1.7.3 et 1.1.0, room-testing et androidx.test 1.8.1 et 1.2.0 ; AGP exige les
 # mêmes versions dans l'appli et ses tests instrumentés.
 kotlinxSerialization = "1.8.1"
+# Chiffrement du mode duo (ADR 0004) : X25519, HKDF, AES-GCM. tink-android plutôt que tink : protobuf-lite, comme Firestore.
+tink = "1.24.0"
 androidxConcurrent = "1.2.0"
 androidxActivity = "1.9.3"
 androidxBiometric = "1.1.0"
@@ -43,6 +45,7 @@ androidx-biometric = { group = "androidx.biometric", name = "biometric", version
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+tink-android = { group = "com.google.crypto.tink", name = "tink-android", version.ref = "tink" }
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 androidx-concurrent-futures-ktx = { group = "androidx.concurrent", name = "concurrent-futures-ktx", version.ref = "androidxConcurrent" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
