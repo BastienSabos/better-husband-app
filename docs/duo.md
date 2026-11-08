@@ -69,6 +69,10 @@ Une suppression d'un élément non partagé reste un effacement immédiat, comme
 partagé s'effacent 90 jours après avoir été envoyés (règle du budget planner, ADR 0018 du dépôt frère, simplifiée :
 il n'y a qu'un pair et le serveur garde la dernière version).
 
+## Synchro (`DuoSyncEngine`)
+
+Une synchro lit les blocs écrits depuis la dernière lecture (avec 5 minutes de marge, la fusion étant idempotente), les déchiffre, vérifie que chaque bloc porte l'identifiant que sa clé en déduit, applique les bornes ci-dessous à **tout** le lot, fusionne, puis envoie ce qui a changé ici. Un bloc illisible (autre clé, octet modifié) est ignoré et compté ; un bloc hors bornes fait refuser tout le lot sans rien écrire. Tant qu'un bloc reste refusé, la synchro bute dessus : l'app devra afficher « synchro en attente » plutôt que d'ignorer en silence. Ce qui arrive de l'autre téléphone n'est pas renvoyé. Une écriture faite dans la même milliseconde que le début d'une synchro peut repartir une fois (sans effet, par idempotence).
+
 ## Format d'un bloc
 
 Avant chiffrement, un bloc est un JSON versionné, sans champ superflu :
@@ -130,7 +134,8 @@ disparaissent. Chacun peut ensuite tout effacer depuis « Mes données », comme
 4. Room v9 : colonnes de synchro, tables `wish`, `duo_member`, `duo_state`, `MigrationTest`.
 5. Firebase `firebase/` : règles Firestore et leurs tests (émulateur), Cloud Functions (notification de synchro,
    sortie du duo), job CI, déploiement manuel.
-6. App : SDK Firebase (Auth, Firestore, Messaging, App Check), `DuoSyncWorker`, politique de confidentialité et
+6a. Domaine : moteur de synchro (`DuoSyncEngine`) derrière deux ports, `DuoMailbox` (le serveur) et `DuoStore` (la base), avec leurs faux en test : lecture, déchiffrement, bornes, fusion, envoi.
+6b. App : SDK Firebase (Auth, Firestore, Messaging, App Check), `DuoSyncWorker`, politique de confidentialité et
    formulaire « Sécurité des données » mis à jour.
 7. Écrans : inviter et rejoindre (QR, lien, code de vérification), choix de l'existant à partager.
 8. Écrans : envies (« Mes envies », « Ses envies », « Je m'en occupe »), qui fait quoi dans le foyer, dates

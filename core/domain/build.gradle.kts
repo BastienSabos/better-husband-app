@@ -27,6 +27,9 @@ kotlin {
 dependencies {
     // JAR Java pur (sans ressource Android) : utilisable dans ce module et dans :app.
     implementation(libs.tink.android)
+    // Lecture des blocs reçus de l'autre téléphone (entrée non fiable) : un analyseur éprouvé plutôt qu'écrit à la main.
+    // Arbre JSON seulement (`parseToJsonElement`), sans le plugin de sérialisation.
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     testImplementation(libs.truth)
 }
