@@ -25,6 +25,20 @@ class DuoInviteViewModelTest {
     private val host by lazy { DuoInviteViewModel(server, clock, StandardTestDispatcher(mainRule.dispatcher.scheduler)) }
     private val guest by lazy { DuoInviteViewModel(server, clock, StandardTestDispatcher(mainRule.dispatcher.scheduler)) }
 
+    /**
+     * Les deux ViewModels interrogent le serveur en boucle tant qu'ils attendent : sans les arrêter, `runTest` avance le
+     * temps virtuel à l'infini une fois le corps du test fini.
+     */
+    private fun runDuoTest(body: suspend TestScope.() -> Unit) =
+        runTest {
+            try {
+                body()
+            } finally {
+                host.onCancel()
+                guest.onCancel()
+            }
+        }
+
     private fun TestScope.settle() {
         runCurrent()
         advanceTimeBy(5_000)
@@ -39,7 +53,7 @@ class DuoInviteViewModelTest {
 
     @Test
     fun `creating the link waits for the other phone`() =
-        runTest {
+        runDuoTest {
             host.onCreateLink("duo.example")
             settle()
 
@@ -50,7 +64,7 @@ class DuoInviteViewModelTest {
 
     @Test
     fun `both phones show the same verification code once the guest has joined`() =
-        runTest {
+        runDuoTest {
             host.onCreateLink("duo.example")
             settle()
             guest.onLinkInputChange((host.uiState.value.stage as DuoStage.HostWaiting).url)
@@ -66,7 +80,7 @@ class DuoInviteViewModelTest {
 
     @Test
     fun `a pasted text that is not an invitation is refused without leaving the screen`() =
-        runTest {
+        runDuoTest {
             guest.onLinkInputChange("coucou")
             guest.onJoin()
             settle()
@@ -77,7 +91,7 @@ class DuoInviteViewModelTest {
 
     @Test
     fun `an unknown invitation says it expired`() =
-        runTest {
+        runDuoTest {
             guest.onLinkInputChange("https://duo.example/i/${"a".repeat(32)}#${"A".repeat(22)}")
             guest.onJoin()
             settle()
@@ -87,7 +101,7 @@ class DuoInviteViewModelTest {
 
     @Test
     fun `cancelling goes back to the explanation`() =
-        runTest {
+        runDuoTest {
             host.onCreateLink("duo.example")
             settle()
             host.onCancel()
