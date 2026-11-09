@@ -137,7 +137,8 @@ disparaissent. Chacun peut ensuite tout effacer depuis « Mes données », comme
 6a. Domaine : moteur de synchro (`DuoSyncEngine`) derrière deux ports, `DuoMailbox` (le serveur) et `DuoStore` (la base), avec leurs faux en test : lecture, déchiffrement, bornes, fusion, envoi.
 6b. App : SDK Firebase (Auth, Firestore, Messaging, App Check), `DuoSyncWorker`, politique de confidentialité et
    formulaire « Sécurité des données » mis à jour.
-7. Écrans : inviter et rejoindre (QR, lien, code de vérification), choix de l'existant à partager.
+7a. Domaine : lien d'invitation, `DuoInviteHost` et `DuoInviteGuest` derrière le port `DuoInviteServer`, avec un faux serveur en mémoire (tant que le projet Firebase n'existe pas).
+7b. Écrans : inviter et rejoindre (QR, lien, code de vérification), choix de l'existant à partager.
 8. Écrans : envies (« Mes envies », « Ses envies », « Je m'en occupe »), qui fait quoi dans le foyer, dates
    partagées.
 9. Sortie du duo, effacement des marqueurs, captures et relecture vie privée finale.
