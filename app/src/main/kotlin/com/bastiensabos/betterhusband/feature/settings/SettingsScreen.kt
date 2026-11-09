@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -36,6 +37,7 @@ fun SettingsScreen(
     onOpenCoupleProfile: () -> Unit,
     onOpenMyData: () -> Unit,
     modifier: Modifier = Modifier,
+    onOpenDuo: (() -> Unit)? = null,
 ) {
     Scaffold(
         modifier = modifier,
@@ -43,6 +45,7 @@ fun SettingsScreen(
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState())) {
             SettingsRow(Icons.Outlined.FavoriteBorder, R.string.today_open_couple, R.string.settings_couple_body, onOpenCoupleProfile)
+            onOpenDuo?.let { SettingsRow(Icons.Outlined.Group, R.string.settings_duo, R.string.settings_duo_body, it) }
             SettingsRow(Icons.Outlined.Lock, R.string.today_open_my_data, R.string.settings_my_data_body, onOpenMyData)
         }
     }

@@ -270,4 +270,26 @@
     <string name="dates_deleted">Date supprimée</string>
     <string name="tasks_deleted">Tâche supprimée</string>
     <string name="today_task_done">Tâche faite</string>
+    <!-- Mode duo : inviter ou rejoindre. -->
+    <string name="duo_title">Mode duo</string>
+    <string name="settings_duo">Mode duo</string>
+    <string name="settings_duo_body">Partager des envies et des tâches avec ton ou ta partenaire (version d\'essai).</string>
+    <string name="duo_shared_title">Ce qui sera partagé</string>
+    <string name="duo_shared_body">Vos envies, les tâches du foyer et les dates que vous choisissez ensemble. Tout est chiffré : le serveur ne peut rien lire.</string>
+    <string name="duo_never_title">Ce qui ne l\'est jamais</string>
+    <string name="duo_never_body">La fiche de ton ou ta partenaire, ton carnet d\'idées, tes attentions et tes séries restent à toi, y compris quand tu t\'occupes d\'une de ses envies.</string>
+    <string name="duo_create_link">Inviter mon ou ma partenaire</string>
+    <string name="duo_join_title">Tu as reçu un lien ?</string>
+    <string name="duo_join_field">Colle le lien ici</string>
+    <string name="duo_join">Rejoindre</string>
+    <string name="duo_host_body">Envoie ce lien à ton ou ta partenaire. Il ne marche qu\'une fois et expire au bout de 24 heures.</string>
+    <string name="duo_share_link">Envoyer le lien</string>
+    <string name="duo_host_waiting">En attente de la réponse…</string>
+    <string name="duo_guest_waiting">Ton invitation est envoyée, en attente de l\'autre téléphone…</string>
+    <string name="duo_joined_title">Le duo est prêt</string>
+    <string name="duo_joined_body">Si vous voulez vérifier que personne ne s\'est glissé entre vous, comparez ces quatre mots sur vos deux téléphones. C\'est facultatif.</string>
+    <string name="duo_done">Terminé</string>
+    <string name="duo_notice_link_invalid">Ce lien n\'a pas l\'air d\'une invitation. Colle-le en entier.</string>
+    <string name="duo_notice_link_unavailable">Cette invitation a expiré ou a déjà servi. Demande un nouveau lien.</string>
+    <string name="duo_notice_refused">Quelqu\'un a répondu sans avoir le lien : sa demande a été refusée.</string>
 </resources>
