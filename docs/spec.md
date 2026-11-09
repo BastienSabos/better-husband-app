@@ -106,7 +106,34 @@ Sortie visée sur le Play Store la semaine du 8 février 2027 : 10 semaines de t
 
 **À prévoir avant la bêta :** compte Google Play Console (25 $), nom définitif de l'app, politique de confidentialité hébergée, 12 testeurs recrutés.
 
-**Ensuite, v1.1 mode duo (environ 4 semaines, mi-février à mi-mars 2027) :** comptes, invitation du ou de la partenaire, synchro Supabase, listes de cadeaux et d'envies partagées, tâches du foyer partagées, carnet privé conservé de chaque côté.
+
+## Après la v1 : v1.1 et v2
+
+### v1.1 : mode duo (environ 4 semaines, mi-février à mi-mars 2027)
+
+Le mode duo reste une invitation optionnelle : l'app est complète en solo et rien ne change pour qui n'invite personne.
+
+1. **Comptes et invitation** du ou de la partenaire, par lien ou QR code.
+2. **Liste d'envies partagée** : chacun note ses envies, l'autre s'en sert pour les cadeaux.
+3. **Tâches du foyer partagées**, cochées par l'un ou l'autre, avec un « qui fait quoi » léger.
+4. **Dates communes** partagées (anniversaire de rencontre, dates des enfants).
+5. **Carnet privé conservé** de chaque côté : surprises et idées cadeaux invisibles pour l'autre.
+6. **Chiffrement de bout en bout** : le serveur ne voit que des données illisibles. Demande un ADR (la v1 n'a ni serveur ni permission `INTERNET`) et une mise à jour de la politique de confidentialité.
+7. **Sortie du duo propre** : chacun garde ses données, ce qui était partagé est supprimé ou copié. Indispensable en cas de séparation.
+8. **Passage du solo au duo** sans perdre ce qui a été saisi en v1.
+
+### v2
+
+- **Coach IA** (API Claude via un proxy serveur) et freemium, voir « Choix techniques ».
+- **Rituel « point couple » hebdo** : 10 minutes guidées, trois questions, une action pour la semaine.
+- **Bilan mensuel**, à partir de l'historique des attentions et des séries.
+- **Widget écran d'accueil** avec l'attention du jour.
+- **Import Google Agenda et Contacts** pour pré-remplir les anniversaires.
+- **Export chiffré en fichier** pour restaurer ses données après un changement de téléphone (la sauvegarde cloud reste interdite en v1 ; le duo servira de synchro).
+- **Calendrier de garde alternée**, dans la suite des familles recomposées.
+- **Rappel d'une idée notée** avant la date qui lui correspond.
+
+Repoussés à une v2.x : module enfants, planificateur de soirées, mode charge mentale complet.
 
 ## Questions ouvertes
 
