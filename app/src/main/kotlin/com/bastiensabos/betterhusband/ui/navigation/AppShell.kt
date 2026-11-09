@@ -39,9 +39,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.bastiensabos.betterhusband.BuildConfig
 import com.bastiensabos.betterhusband.R
 import com.bastiensabos.betterhusband.feature.couple.CoupleProfileRoute
 import com.bastiensabos.betterhusband.feature.dates.DatesRoute
+import com.bastiensabos.betterhusband.feature.duo.DuoInviteRoute
 import com.bastiensabos.betterhusband.feature.ideas.IdeasRoute
 import com.bastiensabos.betterhusband.feature.mydata.MyDataRoute
 import com.bastiensabos.betterhusband.feature.mydata.PrivacyPolicyScreen
@@ -61,6 +63,7 @@ object Routes {
     const val COUPLE = "couple"
     const val MY_DATA = "my-data"
     const val PRIVACY = "privacy"
+    const val DUO = "duo"
 }
 
 /** Un onglet de premier niveau : icône pleine quand il est sélectionné, en contour sinon (Material 3). */
@@ -202,10 +205,13 @@ private fun AppNavHost(nav: NavHostController) {
                 onBack = back,
                 onOpenCoupleProfile = { nav.navigate(Routes.COUPLE) },
                 onOpenMyData = { nav.navigate(Routes.MY_DATA) },
+                // Version d'essai : le duo n'a pas encore de serveur, il n'apparaît donc pas dans l'APK publié.
+                onOpenDuo = if (BuildConfig.DEBUG) ({ nav.navigate(Routes.DUO) }) else null,
             )
         }
         composable(Routes.COUPLE) { CoupleProfileRoute(onFinish = back) }
         composable(Routes.MY_DATA) { MyDataRoute(onBack = back, onOpenPrivacy = { nav.navigate(Routes.PRIVACY) }) }
         composable(Routes.PRIVACY) { PrivacyPolicyScreen(onBack = back) }
+        composable(Routes.DUO) { DuoInviteRoute(onBack = back) }
     }
 }

@@ -138,7 +138,7 @@ disparaissent. Chacun peut ensuite tout effacer depuis « Mes données », comme
 6b. App : SDK Firebase (Auth, Firestore, Messaging, App Check), `DuoSyncWorker`, politique de confidentialité et
    formulaire « Sécurité des données » mis à jour.
 7a. Domaine : lien d'invitation, `DuoInviteHost` et `DuoInviteGuest` derrière le port `DuoInviteServer`, avec un faux serveur en mémoire (tant que le projet Firebase n'existe pas).
-7b. Écrans : inviter et rejoindre (QR, lien, code de vérification), choix de l'existant à partager.
+7b. Écrans : inviter et rejoindre (lien à partager ou à coller, code de vérification en 4 mots), derrière le faux serveur et visibles seulement en debug. Reste pour une PR suivante : QR code (dépendance à valider), lien d'application (domaine à choisir), choix de l'existant à partager.
 8. Écrans : envies (« Mes envies », « Ses envies », « Je m'en occupe »), qui fait quoi dans le foyer, dates
    partagées.
 9. Sortie du duo, effacement des marqueurs, captures et relecture vie privée finale.
