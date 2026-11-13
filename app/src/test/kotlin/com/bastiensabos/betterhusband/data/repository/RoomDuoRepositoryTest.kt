@@ -32,12 +32,13 @@ class RoomDuoRepositoryTest {
     @Test
     fun `joining keeps the duo, a member id for me and the key in the vault`() =
         runTest {
-            repository.join(DuoJoined("duo-1", keys))
+            repository.join(DuoJoined("duo-1", keys, asHost = true))
 
             repository.observeSession().test {
                 val session = awaitItem()!!
                 assertThat(session.duoId).isEqualTo("duo-1")
-                assertThat(session.memberId).isNotEmpty()
+                assertThat(session.memberId).isEqualTo(keys.memberId(host = true))
+                assertThat(session.partnerMemberId).isEqualTo(keys.memberId(host = false))
                 assertThat(session.ended).isFalse()
             }
             assertThat(repository.keys()!!.verificationCode()).isEqualTo(keys.verificationCode())
@@ -46,7 +47,7 @@ class RoomDuoRepositoryTest {
     @Test
     fun `the key never lands in the database rows`() =
         runTest {
-            repository.join(DuoJoined("duo-1", keys))
+            repository.join(DuoJoined("duo-1", keys, asHost = true))
 
             assertThat(dao.members.value.toString() + dao.state.value.toString()).doesNotContain(keys.exportRoot().toList().toString())
             assertThat(vault.stored).isEqualTo(keys.exportRoot())
@@ -55,26 +56,26 @@ class RoomDuoRepositoryTest {
     @Test
     fun `joining again replaces the previous duo`() =
         runTest {
-            repository.join(DuoJoined("duo-1", keys))
+            repository.join(DuoJoined("duo-1", keys, asHost = true))
             val first =
                 dao.members.value
-                    .single()
+                    .single { it.isMe }
                     .memberId
 
-            repository.join(DuoJoined("duo-2", CoupleKeys(ByteArray(32) { 7 })))
+            repository.join(DuoJoined("duo-2", CoupleKeys(ByteArray(32) { 7 }), asHost = false))
 
             repository.observeSession().test {
                 val session = awaitItem()!!
                 assertThat(session.duoId).isEqualTo("duo-2")
                 assertThat(session.memberId).isNotEqualTo(first)
             }
-            assertThat(dao.members.value).hasSize(1)
+            assertThat(dao.members.value).hasSize(2)
         }
 
     @Test
     fun `delete all forgets the duo and the key`() =
         runTest {
-            repository.join(DuoJoined("duo-1", keys))
+            repository.join(DuoJoined("duo-1", keys, asHost = true))
 
             repository.deleteAll()
 
@@ -86,7 +87,7 @@ class RoomDuoRepositoryTest {
     @Test
     fun `a lost key makes keys null without failing`() =
         runTest {
-            repository.join(DuoJoined("duo-1", keys))
+            repository.join(DuoJoined("duo-1", keys, asHost = true))
             vault.stored = null
 
             assertThat(repository.keys()).isNull()
@@ -95,10 +96,10 @@ class RoomDuoRepositoryTest {
     @Test
     fun `a keystore refusal keeps the previous duo untouched`() =
         runTest {
-            repository.join(DuoJoined("duo-1", keys))
+            repository.join(DuoJoined("duo-1", keys, asHost = true))
             vault.failOnSave = true
 
-            runCatching { repository.join(DuoJoined("duo-2", CoupleKeys(ByteArray(32) { 7 }))) }
+            runCatching { repository.join(DuoJoined("duo-2", CoupleKeys(ByteArray(32) { 7 }), asHost = false)) }
 
             repository.observeSession().test { assertThat(awaitItem()!!.duoId).isEqualTo("duo-1") }
         }

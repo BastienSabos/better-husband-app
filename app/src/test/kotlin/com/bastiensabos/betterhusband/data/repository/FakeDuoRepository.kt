@@ -17,7 +17,7 @@ class FakeDuoRepository(
     override suspend fun join(joined: DuoJoined) {
         check(!failOnJoin) { "Keystore indisponible" }
         this.joined = joined
-        state.value = DuoSession(joined.duoId, "me", ended = false)
+        state.value = DuoSession(joined.duoId, joined.myMemberId, ended = false, partnerMemberId = joined.partnerMemberId)
     }
 
     override fun keys(): CoupleKeys? = joined?.keys

@@ -20,6 +20,9 @@ class DuoInviteFlowTest {
 
         assertThat(atGuest.duoId).isEqualTo(atHost.duoId)
         assertThat(atGuest.keys.verificationCode()).isEqualTo(atHost.keys.verificationCode())
+        assertThat(atHost.myMemberId).isEqualTo(atGuest.partnerMemberId)
+        assertThat(atGuest.myMemberId).isEqualTo(atHost.partnerMemberId)
+        assertThat(atHost.myMemberId).isNotEqualTo(atGuest.myMemberId)
         val blob = atHost.keys.blobId(SharedType.WISH, "w")
         assertThat(atGuest.keys.open(atHost.keys.seal("ok".toByteArray(), "d", blob), "d", blob)).isEqualTo("ok".toByteArray())
     }

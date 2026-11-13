@@ -48,7 +48,12 @@ interface DuoInviteServer {
 class DuoJoined(
     val duoId: String,
     val keys: CoupleKeys,
-)
+    /** Ce téléphone a créé l'invitation. */
+    val asHost: Boolean,
+) {
+    val myMemberId: String get() = keys.memberId(host = asHost)
+    val partnerMemberId: String get() = keys.memberId(host = !asHost)
+}
 
 sealed interface HostStep {
     data object Waiting : HostStep
@@ -87,7 +92,7 @@ class DuoInviteHost private constructor(
         return try {
             DuoInvitation.verifyProof(join.proof, secret, exchange)
             server.accept(inviteId)
-            HostStep.Joined(DuoJoined(duoId, DuoInvitation.coupleKey(keyPair, join.guestPublic, secret, exchange)))
+            HostStep.Joined(DuoJoined(duoId, DuoInvitation.coupleKey(keyPair, join.guestPublic, secret, exchange), asHost = true))
         } catch (_: InvalidInvitationProofException) {
             server.dropJoin(inviteId)
             HostStep.Refused
@@ -119,7 +124,8 @@ class DuoInviteGuest private constructor(
     private val invite: InviteRecord,
     private val keys: CoupleKeys,
 ) {
-    fun poll(): GuestStep = if (server.isAccepted(invite.inviteId)) GuestStep.Joined(DuoJoined(invite.duoId, keys)) else GuestStep.Waiting
+    fun poll(): GuestStep =
+        if (server.isAccepted(invite.inviteId)) GuestStep.Joined(DuoJoined(invite.duoId, keys, asHost = false)) else GuestStep.Waiting
 
     companion object {
         /** @throws InviteUnavailableException si l'invitation est inconnue ou expirée. */
