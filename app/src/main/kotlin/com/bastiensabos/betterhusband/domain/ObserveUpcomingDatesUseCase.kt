@@ -60,7 +60,7 @@ class ObserveUpcomingDatesUseCase
         }
 
         private fun ImportantDate.toUpcoming(today: LocalDate) =
-            upcoming("date-$id", DateLabel.Custom(title), kind, date, recurring, today, id)
+            upcoming("date-$id", DateLabel.Custom(title), kind, date, recurring, today, id)?.copy(shared = shared)
 
         private fun upcoming(
             key: String,

@@ -3,8 +3,10 @@ package com.bastiensabos.betterhusband.feature.dates
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bastiensabos.betterhusband.R
+import com.bastiensabos.betterhusband.data.repository.DuoRepository
 import com.bastiensabos.betterhusband.data.repository.IdeaRepository
 import com.bastiensabos.betterhusband.data.repository.ImportantDateRepository
+import com.bastiensabos.betterhusband.data.repository.PartnerRepository
 import com.bastiensabos.betterhusband.domain.IdeaSuggestions
 import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
 import com.bastiensabos.betterhusband.domain.model.DateKind
@@ -34,7 +36,13 @@ class DatesViewModel
         observeUpcomingDates: ObserveUpcomingDatesUseCase,
         private val importantDateRepository: ImportantDateRepository,
         ideaRepository: IdeaRepository,
+        duoRepository: DuoRepository,
+        partners: PartnerRepository,
     ) : ViewModel() {
+        private val duo =
+            combine(duoRepository.observeSession(), partners.observePartner()) { session, partner ->
+                session?.let { DatesDuo(partner?.firstName) }
+            }
         private val editor = MutableStateFlow<DateEditorState?>(null)
         private val undo = MutableStateFlow<UndoNotice?>(null)
 
@@ -52,7 +60,8 @@ class DatesViewModel
                 },
                 editor,
                 undo,
-            ) { list, editorState, undoNotice -> DatesUiState(list, editorState, undoNotice) }
+                duo,
+            ) { list, editorState, undoNotice, duo -> DatesUiState(list, editorState, undoNotice, duo) }
                 .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), DatesUiState())
 
         fun onAddClick() {
@@ -62,7 +71,7 @@ class DatesViewModel
         fun onEdit(id: Long) {
             viewModelScope.launch {
                 val date = importantDateRepository.observeAll().first().firstOrNull { it.id == id } ?: return@launch
-                editor.value = DateEditorState(date.id, date.title, date.kind, date.date, date.recurring)
+                editor.value = DateEditorState(date.id, date.title, date.kind, date.date, date.recurring, date.shared)
             }
         }
 
@@ -73,6 +82,8 @@ class DatesViewModel
         fun onDateChange(value: LocalDate?) = editor.update { it?.copy(date = value) }
 
         fun onRecurringChange(value: Boolean) = editor.update { it?.copy(recurring = value) }
+
+        fun onSharedChange(value: Boolean) = editor.update { it?.copy(shared = value) }
 
         fun onDismissEditor() {
             editor.value = null
@@ -90,6 +101,7 @@ class DatesViewModel
                         kind = state.kind,
                         date = date,
                         recurring = state.recurring,
+                        shared = state.shared,
                     ),
                 )
                 editor.value = null

@@ -131,6 +131,9 @@
     <string name="dates_editor_date_label">Date</string>
     <string name="dates_editor_recurring">Revient chaque année</string>
     <string name="dates_editor_delete">Supprimer</string>
+    <string name="dates_editor_shared_with">Partager avec %1$s</string>
+    <string name="dates_editor_shared">Partager avec ton duo</string>
+    <string name="dates_row_shared">Partagée</string>
     <string name="dates_kind_birthday">Anniversaire de naissance</string>
     <string name="dates_kind_anniversary">Date à fêter</string>
     <string name="dates_kind_other">Autre</string>

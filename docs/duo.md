@@ -17,7 +17,7 @@ compte des changements en attente.
 |---|---|---|
 | Envies (`wish`, nouvelle table) | Partagée, toujours | Chacun note ses propres envies ; l'autre les voit en lecture |
 | Tâches du foyer | Partagée par défaut | « Seulement pour moi » possible tâche par tâche |
-| Dates | Au choix, date par date | Proposé pour les anniversaires de couple et les dates des enfants |
+| Dates | Au choix, date par date | Interrupteur « Partager avec… » dans l'éditeur d'une date, en duo seulement ; décoché par défaut. Ne plus partager garde la date ici et la retire chez l'autre (marqueur de suppression de l'ancien `uid`, nouvel `uid` local) |
 | Fiche partenaire (goûts, tailles, proches) | **Jamais** | Chacun a sa fiche sur l'autre |
 | Carnet d'idées (cadeaux, sorties, surprises) | **Jamais** | Y compris « je m'en occupe » sur une envie de l'autre |
 | Journal des attentions, séries | **Jamais** | |

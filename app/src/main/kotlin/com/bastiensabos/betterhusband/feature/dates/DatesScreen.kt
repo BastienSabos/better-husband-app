@@ -86,6 +86,7 @@ fun DatesRoute(
                 onKindChange = viewModel::onKindChange,
                 onDateChange = viewModel::onDateChange,
                 onRecurringChange = viewModel::onRecurringChange,
+                onSharedChange = viewModel::onSharedChange,
                 onSave = viewModel::onSave,
                 onDelete = viewModel::onDelete,
                 onDismiss = viewModel::onDismissEditor,
@@ -107,6 +108,7 @@ data class DateEditorActions(
     val onDismiss: () -> Unit,
     val onUndo: () -> Unit = {},
     val onUndoDismissed: () -> Unit = {},
+    val onSharedChange: (Boolean) -> Unit = {},
 )
 
 @Composable
@@ -168,7 +170,7 @@ fun DatesScreen(
             }
         }
     }
-    uiState.editor?.let { DateEditorDialog(it, editor) }
+    uiState.editor?.let { DateEditorDialog(it, uiState.duo, editor) }
 }
 
 /** Place laissée sous la liste pour que la dernière date ne reste pas cachée par le bouton flottant. */
@@ -305,8 +307,9 @@ private fun UpcomingDateRow(
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = item.label.text(), style = MaterialTheme.typography.titleMedium)
                 val yearsText = years?.let { pluralStringResource(R.plurals.dates_years, it, it) }
+                val sharedText = if (item.shared) stringResource(R.string.dates_row_shared) else null
                 Text(
-                    text = listOfNotNull(daysUntilText(item.daysUntil), yearsText).joinToString(" · "),
+                    text = listOfNotNull(daysUntilText(item.daysUntil), yearsText, sharedText).joinToString(" · "),
                     style = MaterialTheme.typography.bodyMedium,
                     color = colors.onSurfaceVariant,
                 )
@@ -335,6 +338,7 @@ internal fun daysUntilText(days: Long): String =
 @Composable
 private fun DateEditorDialog(
     state: DateEditorState,
+    duo: DatesDuo?,
     actions: DateEditorActions,
 ) {
     val spacing = Spacing()
@@ -377,6 +381,15 @@ private fun DateEditorDialog(
                     Text(stringResource(R.string.dates_editor_recurring))
                     Switch(checked = state.recurring, onCheckedChange = null)
                 }
+                if (duo != null) {
+                    SwitchRow(
+                        label =
+                            duo.partnerName?.let { stringResource(R.string.dates_editor_shared_with, it) }
+                                ?: stringResource(R.string.dates_editor_shared),
+                        checked = state.shared,
+                        onCheckedChange = actions.onSharedChange,
+                    )
+                }
             }
         },
         confirmButton = {
@@ -391,6 +404,26 @@ private fun DateEditorDialog(
             }
         },
     )
+}
+
+@Composable
+private fun SwitchRow(
+    label: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = Spacing().touchTarget)
+                .toggleable(value = checked, onValueChange = onCheckedChange, role = Role.Switch),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Spacing().sm),
+    ) {
+        Text(text = label, modifier = Modifier.weight(1f))
+        Switch(checked = checked, onCheckedChange = null)
+    }
 }
 
 @Composable
@@ -432,7 +465,16 @@ private fun DatesScreenReadyPreview() {
                     DatesListState.Ready(
                         listOf(
                             UpcomingDate("a", DateLabel.RelativeBirthday("Léa"), DateKind.BIRTHDAY, LocalDate.of(2027, 3, 11), 1, 38, null),
-                            UpcomingDate("b", DateLabel.Custom("Mariage"), DateKind.ANNIVERSARY, LocalDate.of(2027, 6, 20), 102, 12, 7),
+                            UpcomingDate(
+                                "b",
+                                DateLabel.Custom("Mariage"),
+                                DateKind.ANNIVERSARY,
+                                LocalDate.of(2027, 6, 20),
+                                102,
+                                12,
+                                7,
+                                shared = true,
+                            ),
                         ),
                     ),
                 ),
@@ -461,7 +503,12 @@ private fun DatesScreenEmptyPreview() {
 private fun DatesEditorPreview() {
     BetterHusbandTheme(dynamicColor = false) {
         DatesScreen(
-            uiState = DatesUiState(DatesListState.Empty, DateEditorState(title = "Mariage", date = LocalDate.of(2015, 6, 20))),
+            uiState =
+                DatesUiState(
+                    DatesListState.Empty,
+                    DateEditorState(title = "Mariage", date = LocalDate.of(2015, 6, 20), shared = true),
+                    duo = DatesDuo(partnerName = "Camille"),
+                ),
             onAddClick = {},
             onEdit = {},
             editor = previewActions,
