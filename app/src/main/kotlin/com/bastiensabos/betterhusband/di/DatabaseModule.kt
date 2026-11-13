@@ -13,6 +13,7 @@ import com.bastiensabos.betterhusband.data.local.MIGRATION_5_6
 import com.bastiensabos.betterhusband.data.local.MIGRATION_6_7
 import com.bastiensabos.betterhusband.data.local.MIGRATION_7_8
 import com.bastiensabos.betterhusband.data.local.MIGRATION_8_9
+import com.bastiensabos.betterhusband.data.local.MIGRATION_9_10
 import com.bastiensabos.betterhusband.data.local.dao.AttentionLogDao
 import com.bastiensabos.betterhusband.data.local.dao.CoupleProfileDao
 import com.bastiensabos.betterhusband.data.local.dao.DuoDao
@@ -60,6 +61,7 @@ object DatabaseModule {
                 MIGRATION_6_7,
                 MIGRATION_7_8,
                 MIGRATION_8_9,
+                MIGRATION_9_10,
             ).build()
     }
 

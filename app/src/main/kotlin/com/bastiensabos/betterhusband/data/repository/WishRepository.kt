@@ -21,6 +21,7 @@ data class Wish(
     val id: Long,
     val text: String,
     val createdAt: Long,
+    val uid: String = "",
 )
 
 /** Les envies du duo : les miennes, que l'autre voit, et les siennes, que je vois en lecture seule. */
@@ -55,7 +56,7 @@ class RoomWishRepository
                 if (session == null) {
                     emptyList()
                 } else {
-                    rows.filter { keep(it.owner, session.memberId) }.map { Wish(it.id, it.text, it.createdAt) }
+                    rows.filter { keep(it.owner, session.memberId) }.map { Wish(it.id, it.text, it.createdAt, it.sync.uid) }
                 }
             }
 

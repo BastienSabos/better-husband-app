@@ -63,11 +63,44 @@ class RoomIdeaRepositoryTest {
             }
         }
 
+    @Test
+    fun `taking care of a wish creates one private gift idea linked to it`() =
+        runTest {
+            val first = repository.addForWish(" Une soirée sans écran ", "wish-uid")
+            val again = repository.addForWish("Une soirée sans écran", "wish-uid")
+
+            assertThat(again).isEqualTo(first)
+            val idea = repository.observeAll().first().single()
+            assertThat(idea.text).isEqualTo("Une soirée sans écran")
+            assertThat(idea.category).isEqualTo(IdeaCategory.GIFT)
+            assertThat(idea.wishUid).isEqualTo("wish-uid")
+        }
+
+    @Test
+    fun `undo keeps the link to the wish`() =
+        runTest {
+            val id = repository.addForWish("Un livre", "wish-uid")
+            val idea = repository.observeAll().first().single()
+            repository.delete(id)
+
+            repository.restore(idea)
+
+            assertThat(
+                repository
+                    .observeAll()
+                    .first()
+                    .single()
+                    .wishUid,
+            ).isEqualTo("wish-uid")
+        }
+
     private class FakeIdeaDao : IdeaDao {
         private val state = MutableStateFlow<List<IdeaEntity>>(emptyList())
         private var nextId = 1L
 
         override fun observeAll(): Flow<List<IdeaEntity>> = state
+
+        override suspend fun findByWish(wishUid: String): IdeaEntity? = state.value.firstOrNull { it.wishUid == wishUid }
 
         override suspend fun insert(entity: IdeaEntity): Long {
             // Comme Room : un identifiant fourni est gardé (restauration), sinon le suivant.

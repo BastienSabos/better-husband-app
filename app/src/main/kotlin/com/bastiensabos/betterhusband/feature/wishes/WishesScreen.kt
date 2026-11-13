@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -49,6 +50,7 @@ fun WishesRoute(
         onDraftChange = viewModel::onDraftChange,
         onAdd = viewModel::onAdd,
         onDelete = viewModel::onDelete,
+        onTakeCare = viewModel::onTakeCare,
         modifier = modifier,
     )
 }
@@ -62,6 +64,7 @@ fun WishesScreen(
     onAdd: () -> Unit,
     onDelete: (Long) -> Unit,
     modifier: Modifier = Modifier,
+    onTakeCare: (Wish) -> Unit = {},
 ) {
     val spacing = Spacing()
     Scaffold(modifier = modifier, topBar = { BackTopBar(title = stringResource(R.string.wishes_title), onBack = onBack) }) { padding ->
@@ -94,7 +97,7 @@ fun WishesScreen(
             if (state.theirs.isEmpty()) {
                 item { Text(stringResource(R.string.wishes_theirs_empty)) }
             }
-            items(state.theirs, key = { -it.id }) { wish -> ListItem(headlineContent = { Text(wish.text) }) }
+            items(state.theirs, key = { -it.id }) { wish -> TheirWishRow(wish, taken = wish.uid in state.takenCare, onTakeCare) }
         }
     }
 }
@@ -115,10 +118,33 @@ private fun MyWishRow(
     )
 }
 
+@Composable
+private fun TheirWishRow(
+    wish: Wish,
+    taken: Boolean,
+    onTakeCare: (Wish) -> Unit,
+) {
+    ListItem(
+        headlineContent = { Text(wish.text) },
+        supportingContent = if (taken) ({ Text(stringResource(R.string.wishes_taken_care)) }) else null,
+        trailingContent =
+            if (taken) {
+                null
+            } else {
+                {
+                    TextButton(onClick = { onTakeCare(wish) }, modifier = Modifier.heightIn(min = Spacing().touchTarget)) {
+                        Text(stringResource(R.string.wishes_take_care))
+                    }
+                }
+            },
+    )
+}
+
 private val previewState =
     WishesUiState(
         mine = listOf(Wish(1, "Le dernier album de mon groupe préféré", 0)),
-        theirs = listOf(Wish(2, "Une soirée sans écran", 0)),
+        theirs = listOf(Wish(2, "Une soirée sans écran", 0, "u2"), Wish(3, "Un week-end à la mer", 0, "u3")),
+        takenCare = setOf("u3"),
     )
 
 @Preview(showBackground = true)

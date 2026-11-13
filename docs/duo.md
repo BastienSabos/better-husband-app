@@ -54,7 +54,7 @@ Colonnes ajoutées aux tables partageables (`household_task`, `important_date`) 
 | `deleted` | `INTEGER NOT NULL` | marqueur de suppression d'un élément partagé (pas d'effacement physique avant envoi) |
 | `local_changed_at` | `INTEGER NOT NULL` | instant de l'écriture locale, sert à savoir ce qui reste à envoyer |
 
-Colonnes propres à une table : `household_task.assignee` et `household_task.last_done_by`, ajoutées avec l'écran du foyer (PR 8) ; `idea.wish_uid`, ajoutée avec « Je m'en occupe » (PR 8). La migration v9 ne porte que ce qui est commun (PR 4).
+Colonnes propres à une table : `household_task.assignee` et `household_task.last_done_by`, ajoutées avec l'écran du foyer (PR 8) ; `idea.wish_uid`, ajoutée avec « Je m'en occupe » (migration v10). La migration v9 ne porte que ce qui est commun (PR 4).
 
 Nouvelles tables :
 

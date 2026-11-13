@@ -129,6 +129,14 @@ val MIGRATION_8_9 =
         }
     }
 
+/** v10 : une idée peut répondre à une envie de l'autre (« Je m'en occupe »). */
+val MIGRATION_9_10 =
+    object : Migration(9, 10) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `idea` ADD COLUMN `wish_uid` TEXT")
+        }
+    }
+
 private const val UUID_V4_SQL =
     "lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || " +
         "substr('89ab', abs(random()) % 4 + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))"
