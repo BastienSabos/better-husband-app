@@ -30,7 +30,7 @@ jobs:
           if [ -n "$OAUTH" ] || [ -n "$API_KEY" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; else
             echo "::notice::Aucun secret Claude configuré, étape ignorée (voir docs/ai-harness.md)."; echo "ok=false" >> "$GITHUB_OUTPUT"; fi
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         if: steps.auth.outputs.ok == 'true'
         with:
           fetch-depth: 0
