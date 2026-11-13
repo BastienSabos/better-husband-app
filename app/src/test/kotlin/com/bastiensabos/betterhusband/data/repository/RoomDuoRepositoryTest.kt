@@ -118,6 +118,8 @@ class RoomDuoRepositoryTest {
 
         override fun observeAll(): Flow<List<WishEntity>> = MutableStateFlow(emptyList())
 
+        override suspend fun find(id: Long): WishEntity? = null
+
         override suspend fun upsert(entity: WishEntity): Long = 0
 
         override suspend fun deleteAll() {

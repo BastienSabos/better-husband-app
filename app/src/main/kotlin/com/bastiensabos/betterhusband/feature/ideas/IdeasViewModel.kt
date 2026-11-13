@@ -3,6 +3,7 @@ package com.bastiensabos.betterhusband.feature.ideas
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bastiensabos.betterhusband.R
+import com.bastiensabos.betterhusband.data.repository.DuoRepository
 import com.bastiensabos.betterhusband.data.repository.IdeaRepository
 import com.bastiensabos.betterhusband.domain.model.Idea
 import com.bastiensabos.betterhusband.domain.model.IdeaCategory
@@ -24,6 +25,7 @@ class IdeasViewModel
     @Inject
     constructor(
         private val ideaRepository: IdeaRepository,
+        duoRepository: DuoRepository,
     ) : ViewModel() {
         private val local = MutableStateFlow(IdeasUiState())
 
@@ -31,13 +33,13 @@ class IdeasViewModel
         private var deleted: Idea? = null
 
         val uiState: StateFlow<IdeasUiState> =
-            combine(ideaRepository.observeAll(), local) { ideas, state ->
+            combine(ideaRepository.observeAll(), duoRepository.observeSession(), local) { ideas, session, state ->
                 val list =
                     when {
                         ideas.isEmpty() -> IdeasListState.Empty
                         else -> IdeasListState.Ready(ideas.filter { state.filter == null || it.category == state.filter })
                     }
-                state.copy(list = list)
+                state.copy(list = list, wishesAvailable = session != null)
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), IdeasUiState())
 
         fun onDraftChange(value: String) = local.update { it.copy(draft = value.take(MAX_TEXT_LENGTH)) }

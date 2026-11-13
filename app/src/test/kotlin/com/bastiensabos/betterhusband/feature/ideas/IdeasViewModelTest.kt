@@ -1,5 +1,7 @@
 package com.bastiensabos.betterhusband.feature.ideas
 
+import com.bastiensabos.betterhusband.data.repository.DuoSession
+import com.bastiensabos.betterhusband.data.repository.FakeDuoRepository
 import com.bastiensabos.betterhusband.data.repository.FakeIdeaRepository
 import com.bastiensabos.betterhusband.domain.model.IdeaCategory
 import com.bastiensabos.betterhusband.testutil.MainDispatcherRule
@@ -17,8 +19,10 @@ class IdeasViewModelTest {
 
     private val repository = FakeIdeaRepository()
 
+    private val duo = FakeDuoRepository()
+
     // Créé au premier usage, donc après MainDispatcherRule : sinon viewModelScope part sur un autre Main.
-    private val viewModel by lazy { IdeasViewModel(repository) }
+    private val viewModel by lazy { IdeasViewModel(repository, duo) }
 
     /** Garde le flux actif (WhileSubscribed) pendant le test. */
     private fun TestScope.collectState() {
@@ -34,6 +38,18 @@ class IdeasViewModelTest {
             collectState()
 
             assertThat(viewModel.uiState.value.list).isEqualTo(IdeasListState.Empty)
+        }
+
+    @Test
+    fun `offers the wishes only once a duo is joined`() =
+        runTest {
+            collectState()
+            assertThat(viewModel.uiState.value.wishesAvailable).isFalse()
+
+            duo.state.value = DuoSession("duo-1", "me", ended = false)
+            advanceUntilIdle()
+
+            assertThat(viewModel.uiState.value.wishesAvailable).isTrue()
         }
 
     @Test

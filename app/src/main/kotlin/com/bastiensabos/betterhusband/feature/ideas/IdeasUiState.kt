@@ -34,6 +34,8 @@ data class IdeasUiState(
     val editor: IdeaEditorState? = null,
     /** Idée qui vient d'être supprimée, encore récupérable. */
     val undo: UndoNotice? = null,
+    /** Un duo est rejoint : l'onglet propose les envies. */
+    val wishesAvailable: Boolean = false,
 ) {
     val canAdd: Boolean get() = draft.isNotBlank()
 }

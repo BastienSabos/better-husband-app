@@ -293,4 +293,14 @@
     <string name="duo_notice_link_unavailable">Cette invitation a expiré ou a déjà servi. Demande un nouveau lien.</string>
     <string name="duo_notice_save_failed">Impossible de ranger la clé du duo sur ce téléphone. Réessaie avec un nouveau lien.</string>
     <string name="duo_notice_refused">Quelqu\'un a répondu sans avoir le lien : sa demande a été refusée.</string>
+    <!-- Envies du duo. -->
+    <string name="wishes_title">Envies</string>
+    <string name="wishes_open">Envies du duo</string>
+    <string name="wishes_mine_title">Mes envies</string>
+    <string name="wishes_mine_body">Ton ou ta partenaire les voit. Note ce qui te ferait plaisir, même petit.</string>
+    <string name="wishes_input_label">Une envie</string>
+    <string name="wishes_add">Ajouter</string>
+    <string name="wishes_delete_description">Retirer l\'envie : %1$s</string>
+    <string name="wishes_theirs_title">Ses envies</string>
+    <string name="wishes_theirs_empty">Rien pour l\'instant. Ce que ton ou ta partenaire note apparaîtra ici.</string>
 </resources>

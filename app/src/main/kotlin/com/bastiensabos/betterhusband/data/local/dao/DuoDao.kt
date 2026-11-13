@@ -14,6 +14,9 @@ interface WishDao {
     @Query("SELECT * FROM wish WHERE deleted = 0 ORDER BY created_at DESC, id DESC")
     fun observeAll(): Flow<List<WishEntity>>
 
+    @Query("SELECT * FROM wish WHERE id = :id")
+    suspend fun find(id: Long): WishEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: WishEntity): Long
 
