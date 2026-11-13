@@ -154,6 +154,21 @@ class MigrationTest {
         db.execSQL("INSERT INTO duo_state (id, duo_id, last_seen, pushed_until, ended) VALUES (1, 'd', 0, 0, 0)")
     }
 
+    @Test
+    fun migrate9To10LinksIdeasToWishes() {
+        helper.createDatabase(DB_NAME, 9).use {
+            it.execSQL("INSERT INTO idea (text, category, created_at, done) VALUES ('Pivoines', 'GIFT', 1, 0)")
+        }
+
+        val db = helper.runMigrationsAndValidate(DB_NAME, 10, true, MIGRATION_9_10)
+
+        db.query("SELECT text, wish_uid FROM idea").use {
+            it.moveToFirst()
+            assertThat(it.getString(0)).isEqualTo("Pivoines")
+            assertThat(it.isNull(1)).isTrue()
+        }
+    }
+
     private companion object {
         val UUID_V4 = Regex("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")
         const val DB_NAME = "migration-test"

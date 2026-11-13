@@ -12,6 +12,9 @@ interface IdeaDao {
     @Query("SELECT * FROM idea ORDER BY done, created_at DESC, id DESC")
     fun observeAll(): Flow<List<IdeaEntity>>
 
+    @Query("SELECT * FROM idea WHERE wish_uid = :wishUid LIMIT 1")
+    suspend fun findByWish(wishUid: String): IdeaEntity?
+
     /** Retourne l'identifiant de la ligne créée. */
     @Insert
     suspend fun insert(entity: IdeaEntity): Long

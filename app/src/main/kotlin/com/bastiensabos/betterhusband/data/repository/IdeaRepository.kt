@@ -36,6 +36,15 @@ interface IdeaRepository {
         done: Boolean,
     )
 
+    /**
+     * « Je m'en occupe » : crée une idée cadeau privée liée à l'envie [wishUid], ou rend celle qui existe déjà (un
+     * double appui n'en crée pas deux). Rien ne part vers l'autre.
+     */
+    suspend fun addForWish(
+        text: String,
+        wishUid: String,
+    ): Long
+
     suspend fun delete(id: Long)
 
     /** Remet une idée supprimée telle qu'elle était (même identifiant, même date, même état) : « Annuler ». */
@@ -72,6 +81,21 @@ class RoomIdeaRepository
             done: Boolean,
         ) = dao.setDone(id, done)
 
+        override suspend fun addForWish(
+            text: String,
+            wishUid: String,
+        ): Long =
+            dao.findByWish(wishUid)?.id
+                ?: dao.insert(
+                    IdeaEntity(
+                        text = text.trim(),
+                        category = IdeaCategory.GIFT.name,
+                        createdAt = clock.millis(),
+                        done = false,
+                        wishUid = wishUid,
+                    ),
+                )
+
         override suspend fun delete(id: Long) = dao.delete(id)
 
         override suspend fun restore(idea: Idea) {
@@ -82,6 +106,7 @@ class RoomIdeaRepository
                     category = idea.category.name,
                     createdAt = idea.createdAt.toEpochMilli(),
                     done = idea.done,
+                    wishUid = idea.wishUid,
                 ),
             )
         }
@@ -97,6 +122,7 @@ internal fun IdeaEntity.toDomain() =
         category = IdeaCategory.entries.firstOrNull { it.name == category } ?: IdeaCategory.ATTENTION,
         createdAt = Instant.ofEpochMilli(createdAt),
         done = done,
+        wishUid = wishUid,
     )
 
 @Module

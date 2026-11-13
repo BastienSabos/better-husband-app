@@ -38,6 +38,16 @@ class FakeIdeaRepository(
         state.value = state.value.map { if (it.id == id) it.copy(done = done) else it }
     }
 
+    override suspend fun addForWish(
+        text: String,
+        wishUid: String,
+    ): Long {
+        state.value.firstOrNull { it.wishUid == wishUid }?.let { return it.id }
+        val id = nextId++
+        state.value = listOf(Idea(id, text.trim(), IdeaCategory.GIFT, Instant.EPOCH.plusSeconds(id), wishUid = wishUid)) + state.value
+        return id
+    }
+
     override suspend fun delete(id: Long) {
         state.value = state.value.filterNot { it.id == id }
     }

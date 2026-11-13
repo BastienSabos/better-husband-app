@@ -15,4 +15,6 @@ data class Idea(
     val category: IdeaCategory,
     val createdAt: Instant,
     val done: Boolean = false,
+    /** L'envie de l'autre dont cette idée s'occupe (« Je m'en occupe »), ou `null`. Jamais partagée. */
+    val wishUid: String? = null,
 )

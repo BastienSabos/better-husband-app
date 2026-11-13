@@ -302,5 +302,7 @@
     <string name="wishes_add">Ajouter</string>
     <string name="wishes_delete_description">Retirer l\'envie : %1$s</string>
     <string name="wishes_theirs_title">Ses envies</string>
+    <string name="wishes_take_care">Je m\'en occupe</string>
+    <string name="wishes_taken_care">Dans ton carnet d\'idées, rien n\'est dit à ton ou ta partenaire.</string>
     <string name="wishes_theirs_empty">Rien pour l\'instant. Ce que ton ou ta partenaire note apparaîtra ici.</string>
 </resources>

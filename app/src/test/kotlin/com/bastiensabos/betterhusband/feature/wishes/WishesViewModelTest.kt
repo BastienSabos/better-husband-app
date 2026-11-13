@@ -1,5 +1,6 @@
 package com.bastiensabos.betterhusband.feature.wishes
 
+import com.bastiensabos.betterhusband.data.repository.FakeIdeaRepository
 import com.bastiensabos.betterhusband.data.repository.FakeWishRepository
 import com.bastiensabos.betterhusband.data.repository.Wish
 import com.bastiensabos.betterhusband.testutil.MainDispatcherRule
@@ -15,10 +16,11 @@ import org.junit.Test
 class WishesViewModelTest {
     @get:Rule val mainRule = MainDispatcherRule()
 
-    private val repository = FakeWishRepository(theirs = listOf(Wish(1, "Une soirée sans écran", 0)))
+    private val repository = FakeWishRepository(theirs = listOf(Wish(1, "Une soirée sans écran", 0, "wish-1")))
+    private val ideas = FakeIdeaRepository()
 
     // Créé au premier usage, donc après MainDispatcherRule : sinon viewModelScope part sur un autre Main.
-    private val viewModel by lazy { WishesViewModel(repository) }
+    private val viewModel by lazy { WishesViewModel(repository, ideas) }
 
     private fun TestScope.collectState() {
         backgroundScope.launch { viewModel.uiState.collect {} }
@@ -95,5 +97,34 @@ class WishesViewModelTest {
             advanceUntilIdle()
 
             assertThat(viewModel.uiState.value.mine).isEmpty()
+        }
+
+    @Test
+    fun `taking care of their wish adds a private idea and marks the wish`() =
+        runTest {
+            collectState()
+
+            viewModel.onTakeCare(
+                viewModel.uiState.value.theirs
+                    .single(),
+            )
+            viewModel.onTakeCare(
+                viewModel.uiState.value.theirs
+                    .single(),
+            )
+            advanceUntilIdle()
+
+            assertThat(
+                ideas.state.value
+                    .single()
+                    .wishUid,
+            ).isEqualTo("wish-1")
+            assertThat(viewModel.uiState.value.takenCare).containsExactly("wish-1")
+            // Rien ne change côté envies : l'autre ne voit rien.
+            assertThat(
+                repository.theirs.value
+                    .single()
+                    .text,
+            ).isEqualTo("Une soirée sans écran")
         }
 }

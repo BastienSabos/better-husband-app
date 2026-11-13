@@ -12,4 +12,6 @@ data class IdeaEntity(
     /** Millisecondes depuis l'epoch UTC. */
     @ColumnInfo(name = "created_at") val createdAt: Long,
     @ColumnInfo(name = "done") val done: Boolean,
+    /** `uid` de l'envie de l'autre à laquelle l'idée répond ; l'idée reste privée (`docs/duo.md`). */
+    @ColumnInfo(name = "wish_uid") val wishUid: String? = null,
 )
