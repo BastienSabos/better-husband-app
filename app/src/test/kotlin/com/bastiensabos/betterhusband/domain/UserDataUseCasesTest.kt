@@ -8,6 +8,8 @@ import com.bastiensabos.betterhusband.data.repository.FakeHouseholdTaskRepositor
 import com.bastiensabos.betterhusband.data.repository.FakeIdeaRepository
 import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepository
 import com.bastiensabos.betterhusband.data.repository.FakePartnerRepository
+import com.bastiensabos.betterhusband.data.repository.FakeWishRepository
+import com.bastiensabos.betterhusband.data.repository.Wish
 import com.bastiensabos.betterhusband.data.work.FakeReminderScheduler
 import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.domain.model.AttentionLogEntry
@@ -40,11 +42,16 @@ class UserDataUseCasesTest {
     private val coupleProfile = FakeCoupleProfileRepository(CoupleProfile(kids = KidsAtHome.NONE))
     private val scheduler = FakeReminderScheduler()
     private val duo = FakeDuoRepository(DuoSession("duo-1", "me", ended = false))
+    private val wishes =
+        FakeWishRepository(
+            mine = listOf(Wish(1, "Un vélo", Instant.parse("2027-01-12T08:00:00Z").toEpochMilli())),
+            theirs = listOf(Wish(2, "Un album", Instant.parse("2027-01-15T08:00:00Z").toEpochMilli())),
+        )
 
     @Test
     fun `export gathers every repository and stamps the current time`() =
         runTest {
-            val json = ExportUserDataUseCase(partners, dates, ideas, tasks, attentions, coupleProfile, clock)()
+            val json = ExportUserDataUseCase(partners, dates, ideas, tasks, attentions, coupleProfile, wishes, duo, clock)()
 
             assertThat(json).contains("\"exportedAt\": \"2027-01-20T09:00:00Z\"")
             assertThat(json).contains("\"firstName\": \"Camille\"")
@@ -53,6 +60,10 @@ class UserDataUseCasesTest {
             assertThat(json).contains("\"title\": \"Courses\"")
             assertThat(json).contains("\"attentionId\": 3")
             assertThat(json).contains("\"kids\": \"NONE\"")
+            assertThat(json).contains("\"text\": \"Un vélo\",\n      \"createdAt\": \"2027-01-12T08:00:00Z\",\n      \"author\": \"me\"")
+            assertThat(
+                json,
+            ).contains("\"text\": \"Un album\",\n      \"createdAt\": \"2027-01-15T08:00:00Z\",\n      \"author\": \"partner\"")
         }
 
     @Test

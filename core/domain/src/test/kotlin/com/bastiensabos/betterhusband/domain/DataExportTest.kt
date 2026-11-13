@@ -129,4 +129,51 @@ class DataExportTest {
         assertThat(json).contains("\"CULTURE\",\n      \"SPORT\"")
         assertThat(json).contains("\"family\": []")
     }
+
+    @Test
+    fun `duo data is exported without member ids`() {
+        val data =
+            snapshot().copy(
+                dates =
+                    listOf(
+                        ImportantDate(
+                            title = "Rencontre",
+                            kind = DateKind.ANNIVERSARY,
+                            date = LocalDate.of(2019, 9, 14),
+                            recurring = true,
+                            shared = true,
+                        ),
+                    ),
+                ideas = listOf(Idea(text = "Album", category = IdeaCategory.GIFT, createdAt = exportedAt, wishUid = "w-1")),
+                tasks =
+                    listOf(
+                        HouseholdTask(
+                            title = "Courses",
+                            repeat = TaskRepeat.WEEKLY,
+                            createdOn = LocalDate.of(2027, 1, 4),
+                            assignee = "member-me",
+                            lastDoneBy = "member-other",
+                        ),
+                    ),
+                wishes = listOf(ExportedWish("Un vélo", exportedAt, mine = true), ExportedWish("Un album", exportedAt, mine = false)),
+                myMemberId = "member-me",
+            )
+
+        val json = DataExport.toJson(data)
+
+        assertThat(json).contains("\"shared\": true")
+        assertThat(json).contains("\"fromPartnerWish\": true")
+        assertThat(json).contains("\"assignee\": \"me\"")
+        assertThat(json).contains("\"lastDoneBy\": \"partner\"")
+        assertThat(json).contains("\"text\": \"Un vélo\",\n      \"createdAt\": \"2027-01-20T10:00:00Z\",\n      \"author\": \"me\"")
+        assertThat(json).contains("\"author\": \"partner\"")
+        assertThat(json).doesNotContain("member-")
+    }
+
+    @Test
+    fun `in solo there is no wish and nobody is assigned`() {
+        val json = DataExport.toJson(snapshot())
+
+        assertThat(json).contains("\"wishes\": []")
+    }
 }
