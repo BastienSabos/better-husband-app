@@ -291,5 +291,6 @@
     <string name="duo_done">Terminé</string>
     <string name="duo_notice_link_invalid">Ce lien n\'a pas l\'air d\'une invitation. Colle-le en entier.</string>
     <string name="duo_notice_link_unavailable">Cette invitation a expiré ou a déjà servi. Demande un nouveau lien.</string>
+    <string name="duo_notice_save_failed">Impossible de ranger la clé du duo sur ce téléphone. Réessaie avec un nouveau lien.</string>
     <string name="duo_notice_refused">Quelqu\'un a répondu sans avoir le lien : sa demande a été refusée.</string>
 </resources>

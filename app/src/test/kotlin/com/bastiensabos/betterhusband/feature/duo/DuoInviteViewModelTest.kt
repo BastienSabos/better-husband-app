@@ -1,5 +1,6 @@
 package com.bastiensabos.betterhusband.feature.duo
 
+import com.bastiensabos.betterhusband.data.repository.FakeDuoRepository
 import com.bastiensabos.betterhusband.domain.duo.DuoInviteLink
 import com.bastiensabos.betterhusband.domain.duo.InMemoryDuoInviteServer
 import com.bastiensabos.betterhusband.testutil.MainDispatcherRule
@@ -20,10 +21,11 @@ class DuoInviteViewModelTest {
 
     private val clock = Clock.fixed(Instant.parse("2027-01-20T09:00:00Z"), ZoneOffset.UTC)
     private val server = InMemoryDuoInviteServer()
+    private val duo = FakeDuoRepository()
 
     // Deux « téléphones » sur le même faux serveur ; créés au premier usage, après MainDispatcherRule.
-    private val host by lazy { DuoInviteViewModel(server, clock, StandardTestDispatcher(mainRule.dispatcher.scheduler)) }
-    private val guest by lazy { DuoInviteViewModel(server, clock, StandardTestDispatcher(mainRule.dispatcher.scheduler)) }
+    private val host by lazy { DuoInviteViewModel(server, duo, clock, StandardTestDispatcher(mainRule.dispatcher.scheduler)) }
+    private val guest by lazy { DuoInviteViewModel(server, duo, clock, StandardTestDispatcher(mainRule.dispatcher.scheduler)) }
 
     /**
      * Les deux ViewModels interrogent le serveur en boucle tant qu'ils attendent : sans les arrêter, `runTest` avance le
@@ -76,6 +78,7 @@ class DuoInviteViewModelTest {
             val atGuest = guest.uiState.value.stage as DuoStage.Joined
             assertThat(atGuest.code).isEqualTo(atHost.code)
             assertThat(atHost.code).hasSize(4)
+            assertThat(duo.joined).isNotNull()
         }
 
     @Test
@@ -107,5 +110,20 @@ class DuoInviteViewModelTest {
             host.onCancel()
 
             assertThat(host.uiState.value).isEqualTo(DuoInviteUiState())
+        }
+
+    @Test
+    fun `a keystore refusal goes back to the start instead of announcing a duo`() =
+        runDuoTest {
+            duo.failOnJoin = true
+            host.onCreateLink("duo.example")
+            settle()
+            guest.onLinkInputChange((host.uiState.value.stage as DuoStage.HostWaiting).url)
+            guest.onJoin()
+            settle()
+            settle()
+
+            assertThat(host.uiState.value).isEqualTo(DuoInviteUiState(notice = DuoNotice.SAVE_FAILED))
+            assertThat(duo.joined).isNull()
         }
 }

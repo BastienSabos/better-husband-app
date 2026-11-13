@@ -1,7 +1,9 @@
 package com.bastiensabos.betterhusband.domain
 
+import com.bastiensabos.betterhusband.data.repository.DuoSession
 import com.bastiensabos.betterhusband.data.repository.FakeAttentionLogRepository
 import com.bastiensabos.betterhusband.data.repository.FakeCoupleProfileRepository
+import com.bastiensabos.betterhusband.data.repository.FakeDuoRepository
 import com.bastiensabos.betterhusband.data.repository.FakeHouseholdTaskRepository
 import com.bastiensabos.betterhusband.data.repository.FakeIdeaRepository
 import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepository
@@ -37,6 +39,7 @@ class UserDataUseCasesTest {
     private val attentions = FakeAttentionLogRepository(listOf(AttentionLogEntry(today, attentionId = 3)))
     private val coupleProfile = FakeCoupleProfileRepository(CoupleProfile(kids = KidsAtHome.NONE))
     private val scheduler = FakeReminderScheduler()
+    private val duo = FakeDuoRepository(DuoSession("duo-1", "me", ended = false))
 
     @Test
     fun `export gathers every repository and stamps the current time`() =
@@ -55,7 +58,7 @@ class UserDataUseCasesTest {
     @Test
     fun `delete all empties every repository and cancels the reminders`() =
         runTest {
-            DeleteAllUserDataUseCase(partners, dates, ideas, tasks, attentions, coupleProfile, scheduler)()
+            DeleteAllUserDataUseCase(partners, dates, ideas, tasks, attentions, coupleProfile, scheduler, duo)()
 
             assertThat(partners.state.value).isNull()
             assertThat(dates.state.value).isEmpty()
@@ -63,6 +66,7 @@ class UserDataUseCasesTest {
             assertThat(tasks.state.value).isEmpty()
             assertThat(attentions.state.value).isEmpty()
             assertThat(coupleProfile.state.value).isEqualTo(CoupleProfile())
+            assertThat(duo.state.value).isNull()
             assertThat(scheduler.calls).containsExactly(emptyList<PlannedReminder>())
         }
 }

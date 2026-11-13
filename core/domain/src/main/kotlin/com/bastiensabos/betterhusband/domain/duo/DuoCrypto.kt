@@ -19,11 +19,14 @@ class UnreadableBlockException(
  * elle est rangée chiffrée par le Keystore côté application.
  */
 class CoupleKeys(
-    root: ByteArray,
+    private val root: ByteArray,
 ) {
     init {
         require(root.size == KEY_SIZE) { "La clé de couple fait $KEY_SIZE octets" }
     }
+
+    /** La clé racine, pour la ranger chiffrée par le Keystore et rien d'autre : ne jamais l'afficher ni la journaliser. */
+    fun exportRoot(): ByteArray = root.copyOf()
 
     private val dataKey = hkdf(root, "duo-v1 data")
     private val idKey = hkdf(root, "duo-v1 id")

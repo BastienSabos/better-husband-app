@@ -3,6 +3,7 @@ package com.bastiensabos.betterhusband.feature.mydata
 import com.bastiensabos.betterhusband.data.export.FakeDocumentWriter
 import com.bastiensabos.betterhusband.data.repository.FakeAttentionLogRepository
 import com.bastiensabos.betterhusband.data.repository.FakeCoupleProfileRepository
+import com.bastiensabos.betterhusband.data.repository.FakeDuoRepository
 import com.bastiensabos.betterhusband.data.repository.FakeHouseholdTaskRepository
 import com.bastiensabos.betterhusband.data.repository.FakeIdeaRepository
 import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepository
@@ -41,7 +42,16 @@ class MyDataViewModelTest {
     private fun newViewModel() =
         MyDataViewModel(
             ExportUserDataUseCase(partners, dates, ideas, tasks, attentions, coupleProfile, clock),
-            DeleteAllUserDataUseCase(partners, dates, ideas, tasks, attentions, coupleProfile, FakeReminderScheduler()),
+            DeleteAllUserDataUseCase(
+                partners,
+                dates,
+                ideas,
+                tasks,
+                attentions,
+                coupleProfile,
+                FakeReminderScheduler(),
+                FakeDuoRepository(),
+            ),
             writer,
             lockSettings,
             authenticator,

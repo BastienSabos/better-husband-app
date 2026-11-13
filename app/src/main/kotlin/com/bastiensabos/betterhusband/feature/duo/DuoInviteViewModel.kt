@@ -2,6 +2,7 @@ package com.bastiensabos.betterhusband.feature.duo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bastiensabos.betterhusband.data.repository.DuoRepository
 import com.bastiensabos.betterhusband.di.IoDispatcher
 import com.bastiensabos.betterhusband.domain.duo.DuoInviteGuest
 import com.bastiensabos.betterhusband.domain.duo.DuoInviteHost
@@ -31,6 +32,7 @@ class DuoInviteViewModel
     @Inject
     constructor(
         private val server: DuoInviteServer,
+        private val duo: DuoRepository,
         private val clock: Clock,
         @IoDispatcher private val io: CoroutineDispatcher,
     ) : ViewModel() {
@@ -59,7 +61,7 @@ class DuoInviteViewModel
                             }
 
                             is HostStep.Joined -> {
-                                return@launch finish(step.joined)
+                                return@launch keep(step.joined)
                             }
                         }
                     }
@@ -87,7 +89,7 @@ class DuoInviteViewModel
                     while (isActive) {
                         when (val step = withContext(io) { guest.poll() }) {
                             GuestStep.Waiting -> delay(POLL_MILLIS)
-                            is GuestStep.Joined -> return@launch finish(step.joined)
+                            is GuestStep.Joined -> return@launch keep(step.joined)
                         }
                     }
                 }
@@ -99,8 +101,17 @@ class DuoInviteViewModel
             state.update { DuoInviteUiState() }
         }
 
-        private fun finish(joined: DuoJoined) {
-            state.update { it.copy(stage = DuoStage.Joined(joined.keys.verificationCode()), notice = null) }
+        /** Garde le duo sur le téléphone avant d'annoncer qu'il est prêt : sinon la clé serait perdue en quittant l'écran. */
+        private suspend fun keep(joined: DuoJoined) {
+            val saved = runCatching { withContext(io) { duo.join(joined) } }
+            state.update {
+                if (saved.isSuccess) {
+                    it.copy(stage = DuoStage.Joined(joined.keys.verificationCode()), notice = null)
+                } else {
+                    // Le Keystore a refusé : rien n'a été gardé, on revient au début plutôt que d'annoncer un duo qui n'existe pas.
+                    DuoInviteUiState(notice = DuoNotice.SAVE_FAILED)
+                }
+            }
         }
 
         private companion object {

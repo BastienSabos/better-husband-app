@@ -101,6 +101,7 @@ private fun DuoNotice.message(): Int =
         DuoNotice.LINK_INVALID -> R.string.duo_notice_link_invalid
         DuoNotice.LINK_UNAVAILABLE -> R.string.duo_notice_link_unavailable
         DuoNotice.ANSWER_REFUSED -> R.string.duo_notice_refused
+        DuoNotice.SAVE_FAILED -> R.string.duo_notice_save_failed
     }
 
 @Composable
