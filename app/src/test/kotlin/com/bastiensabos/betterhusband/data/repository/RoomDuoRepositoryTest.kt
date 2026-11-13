@@ -2,6 +2,7 @@ package com.bastiensabos.betterhusband.data.repository
 
 import app.cash.turbine.test
 import com.bastiensabos.betterhusband.data.local.dao.DuoDao
+import com.bastiensabos.betterhusband.data.local.dao.DuoExitDao
 import com.bastiensabos.betterhusband.data.local.dao.WishDao
 import com.bastiensabos.betterhusband.data.local.entity.DuoMemberEntity
 import com.bastiensabos.betterhusband.data.local.entity.DuoStateEntity
@@ -19,7 +20,8 @@ class RoomDuoRepositoryTest {
     private val dao = FakeDuoDao()
     private val wishDao = FakeWishDao()
     private val vault = FakeCoupleKeyVault()
-    private val repository = RoomDuoRepository(dao, wishDao, vault)
+    private val exitDao = FakeDuoExitDao()
+    private val repository = RoomDuoRepository(dao, wishDao, exitDao, vault)
     private val keys = CoupleKeys(ByteArray(32) { it.toByte() })
 
     @Test
@@ -113,6 +115,56 @@ class RoomDuoRepositoryTest {
 
             assertThat(wishDao.rows).isEqualTo(0)
         }
+
+    @Test
+    fun `leaving runs the exit transaction then forgets the key`() =
+        runTest {
+            repository.join(DuoJoined("duo-1", keys, asHost = true))
+
+            repository.leave()
+
+            assertThat(exitDao.calls).isEqualTo(1)
+            assertThat(vault.stored).isNull()
+            assertThat(repository.keys()).isNull()
+        }
+
+    @Test
+    fun `a failed exit keeps the key`() =
+        runTest {
+            repository.join(DuoJoined("duo-1", keys, asHost = true))
+            exitDao.fail = true
+
+            runCatching { repository.leave() }
+
+            assertThat(vault.stored).isEqualTo(keys.exportRoot())
+        }
+
+    /** La transaction elle-même (SQL) se vérifie dans `DuoExitDaoTest` (androidTest). */
+    private class FakeDuoExitDao : DuoExitDao() {
+        var calls = 0
+        var fail = false
+
+        override suspend fun leave() {
+            check(!fail) { "Base indisponible" }
+            calls++
+        }
+
+        override suspend fun deleteWishes() = Unit
+
+        override suspend fun deleteTaskTombstones() = Unit
+
+        override suspend fun tasksToSolo() = Unit
+
+        override suspend fun deleteDateTombstones() = Unit
+
+        override suspend fun datesToSolo() = Unit
+
+        override suspend fun unlinkIdeas() = Unit
+
+        override suspend fun deleteMembers() = Unit
+
+        override suspend fun deleteState() = Unit
+    }
 
     private class FakeWishDao : WishDao {
         var rows = 0

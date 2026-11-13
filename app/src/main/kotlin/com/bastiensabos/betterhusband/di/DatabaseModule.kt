@@ -18,6 +18,7 @@ import com.bastiensabos.betterhusband.data.local.MIGRATION_9_10
 import com.bastiensabos.betterhusband.data.local.dao.AttentionLogDao
 import com.bastiensabos.betterhusband.data.local.dao.CoupleProfileDao
 import com.bastiensabos.betterhusband.data.local.dao.DuoDao
+import com.bastiensabos.betterhusband.data.local.dao.DuoExitDao
 import com.bastiensabos.betterhusband.data.local.dao.HouseholdTaskDao
 import com.bastiensabos.betterhusband.data.local.dao.IdeaDao
 import com.bastiensabos.betterhusband.data.local.dao.ImportantDateDao
@@ -84,6 +85,9 @@ object DatabaseModule {
 
     @Provides
     fun provideDuoDao(database: AppDatabase): DuoDao = database.duoDao()
+
+    @Provides
+    fun provideDuoExitDao(database: AppDatabase): DuoExitDao = database.duoExitDao()
 
     @Provides
     fun provideAttentionLogDao(database: AppDatabase): AttentionLogDao = database.attentionLogDao()

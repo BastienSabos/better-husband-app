@@ -1,5 +1,6 @@
 package com.bastiensabos.betterhusband.feature.duo
 
+import com.bastiensabos.betterhusband.data.repository.DuoSession
 import com.bastiensabos.betterhusband.data.repository.FakeDuoRepository
 import com.bastiensabos.betterhusband.domain.duo.DuoInviteLink
 import com.bastiensabos.betterhusband.domain.duo.InMemoryDuoInviteServer
@@ -125,5 +126,60 @@ class DuoInviteViewModelTest {
 
             assertThat(host.uiState.value).isEqualTo(DuoInviteUiState(notice = DuoNotice.SAVE_FAILED))
             assertThat(duo.joined).isNull()
+        }
+
+    @Test
+    fun `in a duo the screen offers to leave instead of inviting`() =
+        runDuoTest {
+            duo.state.value = DuoSession("duo-1", "me", ended = false)
+            // Créé ici : le ViewModel lit le duo gardé au démarrage, pas avant que la boucle de test tourne.
+            assertThat(host.uiState.value.inDuo).isFalse()
+            settle()
+
+            assertThat(host.uiState.value.inDuo).isTrue()
+            host.onCreateLink("duo.example")
+            settle()
+            assertThat(host.uiState.value.stage).isEqualTo(DuoStage.Intro)
+        }
+
+    @Test
+    fun `leaving asks first, then leaves the duo`() =
+        runDuoTest {
+            duo.state.value = DuoSession("duo-1", "me", ended = false)
+            settle()
+
+            host.onConfirmLeave()
+            settle()
+            assertThat(duo.left).isEqualTo(0)
+
+            host.onLeave()
+            assertThat(host.uiState.value.confirmLeave).isTrue()
+            host.onDismissLeave()
+            assertThat(host.uiState.value.confirmLeave).isFalse()
+
+            host.onLeave()
+            host.onConfirmLeave()
+            settle()
+
+            assertThat(duo.left).isEqualTo(1)
+            assertThat(host.uiState.value.inDuo).isFalse()
+            assertThat(host.uiState.value.confirmLeave).isFalse()
+        }
+
+    @Test
+    fun `a failed exit says so and keeps the duo`() =
+        runDuoTest {
+            duo.state.value = DuoSession("duo-1", "me", ended = false)
+            duo.failOnLeave = true
+            // Créé ici : le ViewModel lit le duo gardé au démarrage, pas avant que la boucle de test tourne.
+            assertThat(host.uiState.value.inDuo).isFalse()
+            settle()
+
+            host.onLeave()
+            host.onConfirmLeave()
+            settle()
+
+            assertThat(host.uiState.value.notice).isEqualTo(DuoNotice.LEAVE_FAILED)
+            assertThat(host.uiState.value.inDuo).isTrue()
         }
 }

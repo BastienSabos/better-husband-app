@@ -18,12 +18,16 @@ sealed interface DuoStage {
     ) : DuoStage
 }
 
-enum class DuoNotice { LINK_INVALID, LINK_UNAVAILABLE, ANSWER_REFUSED, SAVE_FAILED }
+enum class DuoNotice { LINK_INVALID, LINK_UNAVAILABLE, ANSWER_REFUSED, SAVE_FAILED, LEAVE_FAILED }
 
 data class DuoInviteUiState(
     val stage: DuoStage = DuoStage.Intro,
     val linkInput: String = "",
     val notice: DuoNotice? = null,
+    /** Un duo est déjà gardé sur ce téléphone : l'écran propose d'en sortir plutôt que d'inviter. */
+    val inDuo: Boolean = false,
+    /** La confirmation « Quitter le duo » est ouverte. */
+    val confirmLeave: Boolean = false,
 ) {
-    val canJoin: Boolean get() = stage == DuoStage.Intro && linkInput.isNotBlank()
+    val canJoin: Boolean get() = stage == DuoStage.Intro && !inDuo && linkInput.isNotBlank()
 }

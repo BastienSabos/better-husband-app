@@ -129,22 +129,22 @@ class DuoRulesTest {
     }
 
     @Test
-    fun `leaving keeps my wishes, tasks and dates and drops the other's wishes`() {
+    fun `leaving keeps tasks and dates in solo and drops every wish`() {
         val mine = wish(owner = "alex")
         val theirs = wish(owner = "camille")
         val chore = task(assignee = "camille", lastDoneBy = "alex")
         val anniversary = date()
 
-        val plan = DuoExit.plan(listOf(mine, theirs, chore, anniversary), me = "alex")
+        val plan = DuoExit.plan(listOf(mine, theirs, chore, anniversary))
 
-        assertThat(plan.keep).containsExactly(mine, chore.copy(assignee = null, lastDoneBy = null), anniversary)
-        assertThat(plan.drop).containsExactly(theirs)
+        assertThat(plan.keep).containsExactly(chore.copy(assignee = null, lastDoneBy = null), anniversary)
+        assertThat(plan.drop).containsExactly(mine, theirs)
     }
 
     @Test
     fun `leaving drops deletion markers`() {
-        val deleted = wish(owner = "alex", deleted = true)
+        val deleted = date().copy(meta = meta(deleted = true))
 
-        assertThat(DuoExit.plan(listOf(deleted), me = "alex")).isEqualTo(ExitPlan(keep = emptyList(), drop = listOf(deleted)))
+        assertThat(DuoExit.plan(listOf(deleted))).isEqualTo(ExitPlan(keep = emptyList(), drop = listOf(deleted)))
     }
 }
