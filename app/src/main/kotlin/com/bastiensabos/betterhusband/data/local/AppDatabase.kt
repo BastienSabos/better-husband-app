@@ -6,6 +6,7 @@ import androidx.room.TypeConverters
 import com.bastiensabos.betterhusband.data.local.dao.AttentionLogDao
 import com.bastiensabos.betterhusband.data.local.dao.CoupleProfileDao
 import com.bastiensabos.betterhusband.data.local.dao.DuoDao
+import com.bastiensabos.betterhusband.data.local.dao.DuoExitDao
 import com.bastiensabos.betterhusband.data.local.dao.HouseholdTaskDao
 import com.bastiensabos.betterhusband.data.local.dao.IdeaDao
 import com.bastiensabos.betterhusband.data.local.dao.ImportantDateDao
@@ -63,6 +64,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun wishDao(): WishDao
 
     abstract fun duoDao(): DuoDao
+
+    abstract fun duoExitDao(): DuoExitDao
 
     companion object {
         const val NAME = "better_husband.db"

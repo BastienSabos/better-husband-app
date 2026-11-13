@@ -122,18 +122,13 @@ data class ExitPlan(
 
 object DuoExit {
     /**
-     * Chacun garde ses envies, les tâches et les dates (copiées en solo, sans responsable) ; les envies de l'autre et
-     * les marqueurs de suppression disparaissent. Le carnet, la fiche et les attentions ne sont pas concernés : ils
-     * n'ont jamais été partagés.
+     * Chacun garde les tâches et les dates (copiées en solo, sans responsable) ; toutes les envies et les marqueurs de
+     * suppression disparaissent. Les envies ne servent qu'en duo et portent l'identifiant de membre de ce duo : les
+     * garder ferait des données invisibles en solo (`docs/duo.md`). Le carnet, la fiche et les attentions ne sont pas
+     * concernés : ils n'ont jamais été partagés.
      */
-    fun plan(
-        records: List<SharedRecord>,
-        me: String,
-    ): ExitPlan {
-        val (keep, drop) =
-            records.partition { record ->
-                !record.meta.deleted && (record !is SharedRecord.Wish || record.owner == me)
-            }
+    fun plan(records: List<SharedRecord>): ExitPlan {
+        val (keep, drop) = records.partition { record -> !record.meta.deleted && record !is SharedRecord.Wish }
         return ExitPlan(keep = keep.map(::toSolo), drop = drop)
     }
 

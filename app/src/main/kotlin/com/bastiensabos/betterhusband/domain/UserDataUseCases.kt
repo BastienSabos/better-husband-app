@@ -7,6 +7,8 @@ import com.bastiensabos.betterhusband.data.repository.HouseholdTaskRepository
 import com.bastiensabos.betterhusband.data.repository.IdeaRepository
 import com.bastiensabos.betterhusband.data.repository.ImportantDateRepository
 import com.bastiensabos.betterhusband.data.repository.PartnerRepository
+import com.bastiensabos.betterhusband.data.repository.Wish
+import com.bastiensabos.betterhusband.data.repository.WishRepository
 import com.bastiensabos.betterhusband.data.work.ReminderScheduler
 import kotlinx.coroutines.flow.first
 import java.time.Clock
@@ -23,10 +25,14 @@ class ExportUserDataUseCase
         private val tasks: HouseholdTaskRepository,
         private val attentions: AttentionLogRepository,
         private val coupleProfile: CoupleProfileRepository,
+        private val wishes: WishRepository,
+        private val duo: DuoRepository,
         private val clock: Clock,
     ) {
-        suspend operator fun invoke(): String =
-            DataExport.toJson(
+        suspend operator fun invoke(): String {
+            val mine = wishes.observeMine().first().map { it.toExport(mine = true) }
+            val theirs = wishes.observeTheirs().first().map { it.toExport(mine = false) }
+            return DataExport.toJson(
                 UserDataSnapshot(
                     partner = partners.observePartner().first(),
                     dates = dates.observeAll().first(),
@@ -35,8 +41,13 @@ class ExportUserDataUseCase
                     attentions = attentions.observeAll().first(),
                     exportedAt = Instant.now(clock),
                     coupleProfile = coupleProfile.observe().first(),
+                    wishes = mine + theirs,
+                    myMemberId = duo.observeSession().first()?.memberId,
                 ),
             )
+        }
+
+        private fun Wish.toExport(mine: Boolean) = ExportedWish(text, Instant.ofEpochMilli(createdAt), mine)
     }
 
 /**

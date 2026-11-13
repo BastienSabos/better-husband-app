@@ -8,6 +8,7 @@ import com.bastiensabos.betterhusband.data.repository.FakeHouseholdTaskRepositor
 import com.bastiensabos.betterhusband.data.repository.FakeIdeaRepository
 import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepository
 import com.bastiensabos.betterhusband.data.repository.FakePartnerRepository
+import com.bastiensabos.betterhusband.data.repository.FakeWishRepository
 import com.bastiensabos.betterhusband.data.security.FakeBiometricAuthenticator
 import com.bastiensabos.betterhusband.data.security.FakeLockSettings
 import com.bastiensabos.betterhusband.data.work.FakeReminderScheduler
@@ -41,7 +42,17 @@ class MyDataViewModelTest {
 
     private fun newViewModel() =
         MyDataViewModel(
-            ExportUserDataUseCase(partners, dates, ideas, tasks, attentions, coupleProfile, clock),
+            ExportUserDataUseCase(
+                partners,
+                dates,
+                ideas,
+                tasks,
+                attentions,
+                coupleProfile,
+                FakeWishRepository(),
+                FakeDuoRepository(),
+                clock,
+            ),
             DeleteAllUserDataUseCase(
                 partners,
                 dates,

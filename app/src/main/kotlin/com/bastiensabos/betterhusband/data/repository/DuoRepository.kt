@@ -1,6 +1,7 @@
 package com.bastiensabos.betterhusband.data.repository
 
 import com.bastiensabos.betterhusband.data.local.dao.DuoDao
+import com.bastiensabos.betterhusband.data.local.dao.DuoExitDao
 import com.bastiensabos.betterhusband.data.local.dao.WishDao
 import com.bastiensabos.betterhusband.data.local.entity.DuoMemberEntity
 import com.bastiensabos.betterhusband.data.local.entity.DuoStateEntity
@@ -36,6 +37,12 @@ interface DuoRepository {
     /** La clé de couple, ou `null` en solo (ou si le Keystore a perdu la clé). */
     fun keys(): CoupleKeys?
 
+    /**
+     * Quitte le duo sur ce téléphone : les tâches et les dates restent en solo, les envies et le duo disparaissent, la
+     * clé de couple est effacée. L'effacement côté serveur viendra avec le vrai client (Cloud Function `leaveDuo`).
+     */
+    suspend fun leave()
+
     suspend fun deleteAll()
 }
 
@@ -45,6 +52,7 @@ class RoomDuoRepository
     constructor(
         private val dao: DuoDao,
         private val wishes: WishDao,
+        private val exit: DuoExitDao,
         private val vault: CoupleKeyVault,
     ) : DuoRepository {
         override fun observeSession(): Flow<DuoSession?> =
@@ -65,6 +73,12 @@ class RoomDuoRepository
         }
 
         override fun keys(): CoupleKeys? = vault.load()?.let { CoupleKeys(it) }
+
+        override suspend fun leave() {
+            exit.leave()
+            // Après la base : si la transaction échoue, le duo reste entier, clé comprise.
+            vault.clear()
+        }
 
         override suspend fun deleteAll() {
             wishes.deleteAll()

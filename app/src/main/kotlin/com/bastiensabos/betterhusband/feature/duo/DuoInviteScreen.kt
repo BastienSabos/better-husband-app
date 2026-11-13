@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +19,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -53,6 +55,7 @@ fun DuoInviteRoute(
         onLinkInputChange = viewModel::onLinkInputChange,
         onCreateLink = viewModel::onCreateLink,
         onJoin = viewModel::onJoin,
+        leave = DuoLeaveActions(viewModel::onLeave, viewModel::onConfirmLeave, viewModel::onDismissLeave),
         onShare = { url ->
             val send =
                 Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, url)
@@ -61,6 +64,15 @@ fun DuoInviteRoute(
         modifier = modifier,
     )
 }
+
+/** Sortir du duo : demander, confirmer, renoncer. */
+data class DuoLeaveActions(
+    val onLeave: () -> Unit,
+    val onConfirm: () -> Unit,
+    val onDismiss: () -> Unit,
+)
+
+private val noLeave = DuoLeaveActions({}, {}, {})
 
 /** Inviter son ou sa partenaire, ou rejoindre avec un lien : ce qui sera partagé est dit avant tout. */
 @Composable
@@ -73,6 +85,7 @@ fun DuoInviteScreen(
     onJoin: () -> Unit,
     onShare: (String) -> Unit,
     modifier: Modifier = Modifier,
+    leave: DuoLeaveActions = noLeave,
 ) {
     Scaffold(modifier = modifier, topBar = { BackTopBar(title = stringResource(R.string.duo_title), onBack = onBack) }) { padding ->
         Column(
@@ -85,7 +98,7 @@ fun DuoInviteScreen(
             verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.md),
         ) {
             when (val stage = state.stage) {
-                DuoStage.Intro -> Intro(state, onLinkInputChange, onCreateLink, onJoin)
+                DuoStage.Intro -> if (state.inDuo) InDuo(leave.onLeave) else Intro(state, onLinkInputChange, onCreateLink, onJoin)
                 is DuoStage.HostWaiting -> HostWaiting(stage.url, onShare)
                 DuoStage.GuestWaiting -> Waiting(R.string.duo_guest_waiting)
                 is DuoStage.Joined -> Joined(stage.code.map(wordOf), onBack)
@@ -93,6 +106,7 @@ fun DuoInviteScreen(
             state.notice?.let { Text(stringResource(it.message()), color = MaterialTheme.colorScheme.error) }
         }
     }
+    if (state.confirmLeave) LeaveDialog(leave)
 }
 
 @StringRes
@@ -102,7 +116,30 @@ private fun DuoNotice.message(): Int =
         DuoNotice.LINK_UNAVAILABLE -> R.string.duo_notice_link_unavailable
         DuoNotice.ANSWER_REFUSED -> R.string.duo_notice_refused
         DuoNotice.SAVE_FAILED -> R.string.duo_notice_save_failed
+        DuoNotice.LEAVE_FAILED -> R.string.duo_notice_leave_failed
     }
+
+@Composable
+private fun InDuo(onLeave: () -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(AppTheme.spacing.md)) {
+        Heading(stringResource(R.string.duo_in_duo_title), MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.duo_in_duo_body))
+        OutlinedButton(onClick = onLeave, modifier = Modifier.fillMaxWidth().heightIn(min = AppTheme.spacing.touchTarget)) {
+            Text(stringResource(R.string.duo_leave))
+        }
+    }
+}
+
+@Composable
+private fun LeaveDialog(actions: DuoLeaveActions) {
+    AlertDialog(
+        onDismissRequest = actions.onDismiss,
+        title = { Text(stringResource(R.string.duo_leave_confirm_title)) },
+        text = { Text(stringResource(R.string.duo_leave_confirm_body)) },
+        confirmButton = { TextButton(onClick = actions.onConfirm) { Text(stringResource(R.string.duo_leave_confirm)) } },
+        dismissButton = { TextButton(onClick = actions.onDismiss) { Text(stringResource(R.string.duo_leave_cancel)) } },
+    )
+}
 
 @Composable
 private fun Intro(
@@ -199,5 +236,13 @@ private fun HostWaitingLargeFontPreview() {
 private fun JoinedPreview() {
     BetterHusbandTheme(dynamicColor = false) {
         DuoInviteScreen(DuoInviteUiState(stage = DuoStage.Joined(listOf(0, 1, 2, 3))), { previewWords[it] }, {}, {}, {}, {}, {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun LeaveConfirmPreview() {
+    BetterHusbandTheme(dynamicColor = false) {
+        DuoInviteScreen(DuoInviteUiState(inDuo = true, confirmLeave = true), { "" }, {}, {}, {}, {}, {})
     }
 }

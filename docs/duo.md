@@ -108,15 +108,20 @@ demandée, aucune notification envoyée à l'autre au-delà de « Le duo est ter
 
 | Donnée | Chez celui qui part | Chez l'autre |
 |---|---|---|
-| Ses propres envies | Gardées | Supprimées |
-| Envies de l'autre | Supprimées | Gardées |
+| Toutes les envies (les siennes et celles de l'autre) | Supprimées | Supprimées |
 | Tâches partagées | Copiées en solo | Copiées en solo |
 | Dates partagées | Copiées en solo | Copiées en solo |
 | Idées liées à une envie de l'autre | Gardées, lien coupé | Gardées, lien coupé |
 | Carnet, fiche, attentions | Inchangés (jamais partagés) | Inchangés |
 
-« Copiées en solo » = `shared` repasse à 0, `author` et `assignee` sont effacés, les marqueurs de suppression
-disparaissent. Chacun peut ensuite tout effacer depuis « Mes données », comme en v1.
+« Copiées en solo » = `shared` repasse à 0, `author`, `assignee` et `last_done_by` sont effacés, les marqueurs de
+suppression disparaissent. Les envies ne servent qu'en duo (aucun écran ne les montre en solo) et portent l'identifiant
+de membre de ce duo : les garder ferait des données invisibles, puis des envies attribuées à l'autre dans un duo
+suivant. Elles partent donc des deux côtés (décision du 2026-11-13, PR 9).
+
+Sur le téléphone, la sortie est une transaction Room (`DuoExitDao.leave`), puis la clé de couple est effacée du
+Keystore ; un échec de la transaction laisse le duo entier. L'effacement côté serveur (`leaveDuo`) et le « Le duo est
+terminé » chez l'autre viendront avec le vrai client (PR 6b). Chacun peut ensuite tout effacer depuis « Mes données », comme en v1.
 
 ## Questions ouvertes
 

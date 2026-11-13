@@ -17,6 +17,17 @@ data class UserDataSnapshot(
     val attentions: List<AttentionLogEntry>,
     val exportedAt: Instant,
     val coupleProfile: CoupleProfile = CoupleProfile(),
+    /** Envies du duo, les miennes et celles de l'autre (vides en solo). */
+    val wishes: List<ExportedWish> = emptyList(),
+    /** Mon identifiant de membre en duo : sert à écrire « me » ou « partner » plutôt qu'un identifiant opaque. */
+    val myMemberId: String? = null,
+)
+
+/** Une envie du duo telle qu'exportée : [mine] dit si c'est la mienne ou celle de l'autre. */
+data class ExportedWish(
+    val text: String,
+    val createdAt: Instant,
+    val mine: Boolean,
 )
 
 /**
@@ -33,15 +44,7 @@ object DataExport {
             "formatVersion" to FORMAT_VERSION,
             "exportedAt" to exportedAt.toString(),
             "partner" to partner?.toTree(),
-            "coupleProfile" to
-                linkedMapOf(
-                    "kids" to coupleProfile.kids?.name,
-                    "living" to coupleProfile.living?.name,
-                    "budget" to coupleProfile.budget?.name,
-                    "rhythm" to coupleProfile.rhythm?.name,
-                    "interests" to coupleProfile.interests.map { it.name }.sorted(),
-                    "family" to coupleProfile.family.map { it.name }.sorted(),
-                ),
+            "coupleProfile" to coupleProfile.toTree(),
             "importantDates" to
                 dates.map {
                     linkedMapOf(
@@ -49,6 +52,7 @@ object DataExport {
                         "kind" to it.kind.name,
                         "date" to it.date.toString(),
                         "recurring" to it.recurring,
+                        "shared" to it.shared,
                     )
                 },
             "ideas" to
@@ -58,6 +62,7 @@ object DataExport {
                         "category" to it.category.name,
                         "createdAt" to it.createdAt.toString(),
                         "done" to it.done,
+                        "fromPartnerWish" to (it.wishUid != null),
                     )
                 },
             "householdTasks" to
@@ -67,6 +72,8 @@ object DataExport {
                         "repeat" to it.repeat.name,
                         "createdOn" to it.createdOn.toString(),
                         "lastDoneOn" to it.lastDoneOn?.toString(),
+                        "assignee" to who(it.assignee),
+                        "lastDoneBy" to who(it.lastDoneBy),
                     )
                 },
             "attentions" to
@@ -77,6 +84,32 @@ object DataExport {
                         "done" to it.done,
                     )
                 },
+            "wishes" to
+                wishes.map {
+                    linkedMapOf(
+                        "text" to it.text,
+                        "createdAt" to it.createdAt.toString(),
+                        "author" to if (it.mine) ME else PARTNER,
+                    )
+                },
+        )
+
+    /** Un membre du duo, sans son identifiant : « me », « partner » ou `null` (personne, ou solo). */
+    private fun UserDataSnapshot.who(memberId: String?): String? =
+        when (memberId) {
+            null -> null
+            myMemberId -> ME
+            else -> PARTNER
+        }
+
+    private fun CoupleProfile.toTree(): Map<String, Any?> =
+        linkedMapOf(
+            "kids" to kids?.name,
+            "living" to living?.name,
+            "budget" to budget?.name,
+            "rhythm" to rhythm?.name,
+            "interests" to interests.map { it.name }.sorted(),
+            "family" to family.map { it.name }.sorted(),
         )
 
     private fun Partner.toTree(): Map<String, Any?> =
@@ -159,6 +192,8 @@ object DataExport {
         append('"')
     }
 
+    private const val ME = "me"
+    private const val PARTNER = "partner"
     private const val INDENT = "  "
     private const val HEX_RADIX = 16
     private const val UNICODE_DIGITS = 4

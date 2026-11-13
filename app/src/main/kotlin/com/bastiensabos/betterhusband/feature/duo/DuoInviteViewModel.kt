@@ -41,10 +41,14 @@ class DuoInviteViewModel
 
         private var polling: Job? = null
 
+        init {
+            viewModelScope.launch { duo.observeSession().collect { session -> state.update { it.copy(inDuo = session != null) } } }
+        }
+
         fun onLinkInputChange(value: String) = state.update { it.copy(linkInput = value.take(MAX_LINK_LENGTH), notice = null) }
 
         fun onCreateLink(host: String = LINK_HOST) {
-            if (state.value.stage != DuoStage.Intro) return
+            if (state.value.stage != DuoStage.Intro || state.value.inDuo) return
             polling =
                 viewModelScope.launch {
                     val invite = withContext(io) { DuoInviteHost.start(server, clock.millis()) }
@@ -99,6 +103,22 @@ class DuoInviteViewModel
         fun onCancel() {
             polling?.cancel()
             state.update { DuoInviteUiState() }
+        }
+
+        fun onLeave() = state.update { it.copy(confirmLeave = it.inDuo) }
+
+        fun onDismissLeave() = state.update { it.copy(confirmLeave = false) }
+
+        /** Sort du duo ici ; les tâches et les dates restent, en solo. */
+        fun onConfirmLeave() {
+            if (!state.value.confirmLeave) return
+            state.update { it.copy(confirmLeave = false) }
+            viewModelScope.launch {
+                val left = runCatching { withContext(io) { duo.leave() } }
+                state.update {
+                    if (left.isSuccess) DuoInviteUiState(inDuo = it.inDuo) else it.copy(notice = DuoNotice.LEAVE_FAILED)
+                }
+            }
         }
 
         /** Garde le duo sur le téléphone avant d'annoncer qu'il est prêt : sinon la clé serait perdue en quittant l'écran. */

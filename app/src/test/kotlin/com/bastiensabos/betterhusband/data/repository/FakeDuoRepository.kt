@@ -11,6 +11,8 @@ class FakeDuoRepository(
     val state = MutableStateFlow(initial)
     var joined: DuoJoined? = null
     var failOnJoin = false
+    var failOnLeave = false
+    var left = 0
 
     override fun observeSession(): Flow<DuoSession?> = state
 
@@ -21,6 +23,13 @@ class FakeDuoRepository(
     }
 
     override fun keys(): CoupleKeys? = joined?.keys
+
+    override suspend fun leave() {
+        check(!failOnLeave) { "Base indisponible" }
+        left++
+        joined = null
+        state.value = null
+    }
 
     override suspend fun deleteAll() {
         joined = null

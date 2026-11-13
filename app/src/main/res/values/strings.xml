@@ -300,6 +300,14 @@
     <string name="duo_notice_link_invalid">Ce lien n\'a pas l\'air d\'une invitation. Colle-le en entier.</string>
     <string name="duo_notice_link_unavailable">Cette invitation a expiré ou a déjà servi. Demande un nouveau lien.</string>
     <string name="duo_notice_save_failed">Impossible de ranger la clé du duo sur ce téléphone. Réessaie avec un nouveau lien.</string>
+    <string name="duo_in_duo_title">Tu es en duo</string>
+    <string name="duo_in_duo_body">Vos envies, les tâches du foyer et les dates que tu as choisies sont partagées. Ta fiche, ton carnet et tes attentions restent à toi.</string>
+    <string name="duo_leave">Quitter le duo</string>
+    <string name="duo_leave_confirm_title">Quitter le duo ?</string>
+    <string name="duo_leave_confirm_body">Tu gardes les tâches et les dates, seulement pour toi. Les envies, les tiennes comme les siennes, disparaissent de ce téléphone. Tu peux recréer un duo plus tard avec un nouveau lien.</string>
+    <string name="duo_leave_confirm">Quitter</string>
+    <string name="duo_leave_cancel">Rester</string>
+    <string name="duo_notice_leave_failed">La sortie du duo n\'a pas abouti. Rien n\'a changé : réessaie.</string>
     <string name="duo_notice_refused">Quelqu\'un a répondu sans avoir le lien : sa demande a été refusée.</string>
     <!-- Envies du duo. -->
     <string name="wishes_title">Envies</string>
