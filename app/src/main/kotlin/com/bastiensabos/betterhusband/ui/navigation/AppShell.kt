@@ -51,6 +51,7 @@ import com.bastiensabos.betterhusband.feature.partner.PartnerProfileRoute
 import com.bastiensabos.betterhusband.feature.settings.SettingsScreen
 import com.bastiensabos.betterhusband.feature.tasks.TasksRoute
 import com.bastiensabos.betterhusband.feature.today.TodayRoute
+import com.bastiensabos.betterhusband.feature.wishes.WishesRoute
 
 /** Routes de l'appli. Chaque entrée de pile a ses propres ViewModels, détruits quand on la quitte. */
 object Routes {
@@ -64,6 +65,7 @@ object Routes {
     const val MY_DATA = "my-data"
     const val PRIVACY = "privacy"
     const val DUO = "duo"
+    const val WISHES = "wishes"
 }
 
 /** Un onglet de premier niveau : icône pleine quand il est sélectionné, en contour sinon (Material 3). */
@@ -197,7 +199,7 @@ private fun AppNavHost(nav: NavHostController) {
             )
         }
         composable(Routes.DATES) { DatesRoute(onOpenIdeas = { nav.openTopLevel(Routes.IDEAS) }) }
-        composable(Routes.IDEAS) { IdeasRoute() }
+        composable(Routes.IDEAS) { IdeasRoute(onOpenWishes = { nav.navigate(Routes.WISHES) }) }
         composable(Routes.TASKS) { TasksRoute() }
         composable(Routes.PARTNER) { PartnerProfileRoute(onFinish = back) }
         composable(Routes.SETTINGS) {
@@ -213,5 +215,6 @@ private fun AppNavHost(nav: NavHostController) {
         composable(Routes.MY_DATA) { MyDataRoute(onBack = back, onOpenPrivacy = { nav.navigate(Routes.PRIVACY) }) }
         composable(Routes.PRIVACY) { PrivacyPolicyScreen(onBack = back) }
         composable(Routes.DUO) { DuoInviteRoute(onBack = back) }
+        composable(Routes.WISHES) { WishesRoute(onBack = back) }
     }
 }

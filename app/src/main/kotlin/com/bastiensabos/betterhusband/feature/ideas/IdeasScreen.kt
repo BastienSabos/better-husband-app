@@ -24,6 +24,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -70,10 +71,12 @@ data class IdeasActions(
     val onDismissEditor: () -> Unit,
     val onUndo: () -> Unit = {},
     val onUndoDismissed: () -> Unit = {},
+    val onOpenWishes: () -> Unit = {},
 )
 
 @Composable
 fun IdeasRoute(
+    onOpenWishes: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: IdeasViewModel = hiltViewModel(),
 ) {
@@ -95,6 +98,7 @@ fun IdeasRoute(
                 onDismissEditor = viewModel::onDismissEditor,
                 onUndo = viewModel::onUndo,
                 onUndoDismissed = viewModel::onUndoDismissed,
+                onOpenWishes = onOpenWishes,
             ),
         modifier = modifier,
     )
@@ -117,6 +121,13 @@ fun IdeasScreen(
             verticalArrangement = Arrangement.spacedBy(spacing.sm),
         ) {
             item { Heading(text = stringResource(R.string.ideas_title), style = MaterialTheme.typography.headlineMedium) }
+            if (uiState.wishesAvailable) {
+                item {
+                    OutlinedButton(onClick = actions.onOpenWishes, modifier = Modifier.fillMaxWidth().heightIn(min = spacing.touchTarget)) {
+                        Text(stringResource(R.string.wishes_open))
+                    }
+                }
+            }
             item {
                 // Capture rapide : une idée = un champ, une catégorie, un bouton.
                 Column(verticalArrangement = Arrangement.spacedBy(spacing.sm)) {
