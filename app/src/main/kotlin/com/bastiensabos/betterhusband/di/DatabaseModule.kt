@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.bastiensabos.betterhusband.data.local.AppDatabase
 import com.bastiensabos.betterhusband.data.local.DatabaseKeyProvider
 import com.bastiensabos.betterhusband.data.local.KeystoreDatabaseKeyProvider
+import com.bastiensabos.betterhusband.data.local.MIGRATION_10_11
 import com.bastiensabos.betterhusband.data.local.MIGRATION_1_2
 import com.bastiensabos.betterhusband.data.local.MIGRATION_2_3
 import com.bastiensabos.betterhusband.data.local.MIGRATION_3_4
@@ -62,6 +63,7 @@ object DatabaseModule {
                 MIGRATION_7_8,
                 MIGRATION_8_9,
                 MIGRATION_9_10,
+                MIGRATION_10_11,
             ).build()
     }
 

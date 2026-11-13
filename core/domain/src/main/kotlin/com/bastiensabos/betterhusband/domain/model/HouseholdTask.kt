@@ -20,4 +20,8 @@ data class HouseholdTask(
     val repeat: TaskRepeat,
     val createdOn: LocalDate,
     val lastDoneOn: LocalDate? = null,
+    /** Membre du duo qui s'en occupe, ou `null` : l'un ou l'autre (et toujours `null` en solo). */
+    val assignee: String? = null,
+    /** Membre du duo qui l'a faite en dernier ; `null` en solo. Pas de compteur ni de classement. */
+    val lastDoneBy: String? = null,
 )

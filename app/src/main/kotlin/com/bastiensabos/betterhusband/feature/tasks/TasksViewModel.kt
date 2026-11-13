@@ -3,7 +3,9 @@ package com.bastiensabos.betterhusband.feature.tasks
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bastiensabos.betterhusband.R
+import com.bastiensabos.betterhusband.data.repository.DuoRepository
 import com.bastiensabos.betterhusband.data.repository.HouseholdTaskRepository
+import com.bastiensabos.betterhusband.data.repository.PartnerRepository
 import com.bastiensabos.betterhusband.domain.TaskMath
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
@@ -27,14 +29,21 @@ class TasksViewModel
     constructor(
         private val repository: HouseholdTaskRepository,
         private val clock: Clock,
+        duoRepository: DuoRepository,
+        partners: PartnerRepository,
     ) : ViewModel() {
+        private val duo =
+            combine(duoRepository.observeSession(), partners.observePartner()) { session, partner ->
+                session?.let { TasksDuo(it.memberId, it.partnerMemberId, partner?.firstName) }
+            }
+
         private val local = MutableStateFlow(TasksUiState())
 
         /** La dernière tâche supprimée, tant que « Annuler » est proposé. */
         private var deleted: HouseholdTask? = null
 
         val uiState: StateFlow<TasksUiState> =
-            combine(repository.observeAll(), local) { tasks, state ->
+            combine(repository.observeAll(), local, duo) { tasks, state, duo ->
                 val today = LocalDate.now(clock)
                 val list =
                     if (tasks.isEmpty()) {
@@ -50,7 +59,7 @@ class TasksViewModel
                             },
                         )
                     }
-                state.copy(list = list)
+                state.copy(list = list, duo = duo)
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), TasksUiState())
 
         fun onDraftChange(value: String) = local.update { it.copy(draft = value.take(MAX_TITLE_LENGTH)) }
@@ -80,13 +89,16 @@ class TasksViewModel
 
         fun onEditorRepeatChange(value: TaskRepeat) = local.update { it.copy(editor = it.editor?.copy(repeat = value)) }
 
+        /** `null` : l'un ou l'autre. */
+        fun onEditorAssigneeChange(value: String?) = local.update { it.copy(editor = it.editor?.copy(assignee = value)) }
+
         fun onDismissEditor() = local.update { it.copy(editor = null) }
 
         fun onSaveEditor() {
             val editor = local.value.editor ?: return
             if (!editor.canSave) return
             viewModelScope.launch {
-                repository.save(editor.task.copy(title = editor.title, repeat = editor.repeat))
+                repository.save(editor.task.copy(title = editor.title, repeat = editor.repeat, assignee = editor.assignee))
                 local.update { it.copy(editor = null) }
             }
         }

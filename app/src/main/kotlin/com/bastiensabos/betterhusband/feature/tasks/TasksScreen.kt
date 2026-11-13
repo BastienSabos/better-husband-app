@@ -73,6 +73,7 @@ data class TasksActions(
     val onDismissEditor: () -> Unit,
     val onUndo: () -> Unit = {},
     val onUndoDismissed: () -> Unit = {},
+    val onEditorAssigneeChange: (String?) -> Unit = {},
 )
 
 @Composable
@@ -92,6 +93,7 @@ fun TasksRoute(
                 onEdit = viewModel::onEdit,
                 onEditorTitleChange = viewModel::onEditorTitleChange,
                 onEditorRepeatChange = viewModel::onEditorRepeatChange,
+                onEditorAssigneeChange = viewModel::onEditorAssigneeChange,
                 onSaveEditor = viewModel::onSaveEditor,
                 onDeleteEditor = viewModel::onDeleteEditor,
                 onDismissEditor = viewModel::onDismissEditor,
@@ -153,12 +155,12 @@ fun TasksScreen(
                 }
 
                 is TasksListState.Ready -> {
-                    items(list.items, key = { it.task.id }) { item -> TaskRow(item, actions) }
+                    items(list.items, key = { it.task.id }) { item -> TaskRow(item, uiState.duo, actions) }
                 }
             }
         }
     }
-    uiState.editor?.let { TaskEditorDialog(it, actions) }
+    uiState.editor?.let { TaskEditorDialog(it, uiState.duo, actions) }
 }
 
 @Composable
@@ -184,6 +186,7 @@ private fun RepeatChips(
 @Composable
 private fun TaskRow(
     item: TaskItem,
+    duo: TasksDuo?,
     actions: TasksActions,
 ) {
     val editDescription = stringResource(R.string.tasks_edit_description, item.task.title)
@@ -197,7 +200,10 @@ private fun TaskRow(
         headlineContent = {
             Text(text = item.task.title, textDecoration = if (item.done) TextDecoration.LineThrough else null)
         },
-        supportingContent = { Text(text = dueText(item)) },
+        supportingContent = {
+            val due = dueText(item)
+            Text(text = if (duo == null) due else stringResource(R.string.tasks_row_support_who, whoLabel(item.task.assignee, duo), due))
+        },
         trailingContent = {
             IconButton(onClick = { actions.onEdit(item.task) }) {
                 Icon(Icons.Outlined.Edit, contentDescription = editDescription)
@@ -219,9 +225,45 @@ private fun dueText(item: TaskItem): String {
     return stringResource(R.string.tasks_row_support, status, repeat)
 }
 
+/** « Toi », le prénom de l'autre, ou « L'un ou l'autre » : rien de plus (pas de compteur, pas de classement). */
+@Composable
+private fun whoLabel(
+    assignee: String?,
+    duo: TasksDuo,
+): String =
+    when (assignee) {
+        null -> stringResource(R.string.tasks_assignee_either)
+        duo.me -> stringResource(R.string.tasks_assignee_me)
+        else -> duo.partnerName ?: stringResource(R.string.tasks_assignee_partner)
+    }
+
+@Composable
+private fun AssigneeChips(
+    selected: String?,
+    duo: TasksDuo,
+    onSelect: (String?) -> Unit,
+) {
+    // L'autre n'est proposé que si son identifiant est connu (duo gardé avant que les identifiants soient tirés de la clé).
+    val choices = listOfNotNull(duo.me, duo.partner) + listOf(null)
+    Row(
+        modifier = Modifier.horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(Spacing().xs),
+    ) {
+        choices.forEach { member ->
+            FilterChip(
+                selected = selected == member,
+                onClick = { onSelect(member) },
+                label = { Text(whoLabel(member, duo)) },
+                modifier = Modifier.heightIn(min = Spacing().touchTarget),
+            )
+        }
+    }
+}
+
 @Composable
 private fun TaskEditorDialog(
     state: TaskEditorState,
+    duo: TasksDuo?,
     actions: TasksActions,
 ) {
     AlertDialog(
@@ -236,6 +278,10 @@ private fun TaskEditorDialog(
                     modifier = Modifier.fillMaxWidth(),
                 )
                 RepeatChips(selected = state.repeat, onSelect = actions.onEditorRepeatChange)
+                if (duo != null) {
+                    Text(stringResource(R.string.tasks_assignee_title), style = MaterialTheme.typography.titleSmall)
+                    AssigneeChips(selected = state.assignee, duo = duo, onSelect = actions.onEditorAssigneeChange)
+                }
             }
         },
         confirmButton = {
@@ -285,6 +331,23 @@ private fun TasksScreenReadyPreview() {
 private fun TasksScreenEmptyPreview() {
     BetterHusbandTheme(dynamicColor = false) {
         TasksScreen(TasksUiState(list = TasksListState.Empty), previewActions)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TasksDuoPreview() {
+    BetterHusbandTheme(dynamicColor = false) {
+        val duo = TasksDuo(me = "a", partner = "b", partnerName = "Camille")
+        val items = previewItems.mapIndexed { i, item -> item.copy(task = item.task.copy(assignee = listOf("a", "b", null)[i])) }
+        TasksScreen(
+            TasksUiState(
+                list = TasksListState.Ready(items),
+                duo = duo,
+                editor = TaskEditorState(items[1].task, items[1].task.title, items[1].task.repeat),
+            ),
+            previewActions,
+        )
     }
 }
 

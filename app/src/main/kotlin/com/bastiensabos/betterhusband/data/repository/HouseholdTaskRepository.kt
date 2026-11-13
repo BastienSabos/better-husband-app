@@ -10,6 +10,7 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import javax.inject.Inject
@@ -22,7 +23,7 @@ interface HouseholdTaskRepository {
     /** Crée (id = 0) ou met à jour une tâche, et retourne son identifiant. */
     suspend fun save(task: HouseholdTask): Long
 
-    /** Marque la tâche faite à [date], ou « pas faite » avec `null` (annuler : rétablir l'ancienne date). */
+    /** Marque la tâche faite à [date] (par moi, en duo), ou « pas faite » avec `null` (annuler : rétablir l'ancienne date). */
     suspend fun setLastDone(
         id: Long,
         date: LocalDate?,
@@ -38,6 +39,7 @@ class RoomHouseholdTaskRepository
     @Inject
     constructor(
         private val dao: HouseholdTaskDao,
+        private val duo: DuoRepository,
     ) : HouseholdTaskRepository {
         override fun observeAll(): Flow<List<HouseholdTask>> = dao.observeAll().map { list -> list.map { it.toDomain() } }
 
@@ -46,7 +48,11 @@ class RoomHouseholdTaskRepository
         override suspend fun setLastDone(
             id: Long,
             date: LocalDate?,
-        ) = dao.setLastDone(id, date)
+        ) {
+            // En duo, on retient qui l'a faite ; décocher efface aussi l'auteur.
+            val by = if (date == null) null else duo.observeSession().first()?.memberId
+            dao.setLastDone(id, date, by)
+        }
 
         override suspend fun delete(id: Long) = dao.delete(id)
 
@@ -61,6 +67,8 @@ internal fun HouseholdTaskEntity.toDomain() =
         repeat = TaskRepeat.entries.firstOrNull { it.name == repeat } ?: TaskRepeat.WEEKLY,
         createdOn = createdOn,
         lastDoneOn = lastDoneOn,
+        assignee = assignee,
+        lastDoneBy = lastDoneBy,
     )
 
 internal fun HouseholdTask.toEntity(sync: SyncColumns? = null) =
@@ -70,6 +78,8 @@ internal fun HouseholdTask.toEntity(sync: SyncColumns? = null) =
         repeat = repeat.name,
         createdOn = createdOn,
         lastDoneOn = lastDoneOn,
+        assignee = assignee,
+        lastDoneBy = lastDoneBy,
         sync = sync ?: SyncColumns(),
     )
 
