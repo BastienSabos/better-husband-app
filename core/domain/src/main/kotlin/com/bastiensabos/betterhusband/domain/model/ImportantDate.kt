@@ -10,7 +10,7 @@ enum class DateKind {
 
 /**
  * Date qui compte, saisie par l'utilisateur. Si [recurring], elle revient chaque année (anniversaire, fête) ;
- * sinon c'est un événement ponctuel (rendez-vous, voyage).
+ * sinon c'est un événement ponctuel (rendez-vous, voyage). En duo, [shared] la montre aussi à l'autre (`docs/duo.md`).
  */
 data class ImportantDate(
     val id: Long = 0,
@@ -18,6 +18,7 @@ data class ImportantDate(
     val kind: DateKind,
     val date: LocalDate,
     val recurring: Boolean,
+    val shared: Boolean = false,
 )
 
 /** D'où vient une échéance affichée. Le domaine ne porte aucun texte : l'UI traduit chaque libellé. */
@@ -49,4 +50,6 @@ data class UpcomingDate(
     val daysUntil: Long,
     val yearsSince: Int?,
     val editableId: Long?,
+    /** Date partagée avec l'autre membre du duo. */
+    val shared: Boolean = false,
 )

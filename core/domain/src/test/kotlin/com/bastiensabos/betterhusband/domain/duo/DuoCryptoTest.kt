@@ -120,4 +120,15 @@ class DuoCryptoTest {
         assertThat(rebuilt.open(original.seal("ok".toByteArray(), "d", blob), "d", blob)).isEqualTo("ok".toByteArray())
         assertThat(rebuilt.verificationCode()).isEqualTo(original.verificationCode())
     }
+
+    @Test
+    fun `member ids are stable, distinct per role and shaped like a uuid`() {
+        val keys = CoupleKeys(ByteArray(32) { it.toByte() })
+        val uuid = Regex("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+
+        assertThat(keys.memberId(host = true)).isEqualTo(CoupleKeys(ByteArray(32) { it.toByte() }).memberId(host = true))
+        assertThat(keys.memberId(host = true)).isNotEqualTo(keys.memberId(host = false))
+        assertThat(keys.memberId(host = true)).matches(uuid.pattern)
+        assertThat(keys.memberId(host = false)).isNotEqualTo(CoupleKeys(ByteArray(32) { 1 }).memberId(host = false))
+    }
 }

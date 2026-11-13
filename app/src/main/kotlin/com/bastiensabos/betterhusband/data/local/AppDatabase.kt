@@ -43,7 +43,7 @@ import com.bastiensabos.betterhusband.data.local.entity.WishEntity
         DuoMemberEntity::class,
         DuoStateEntity::class,
     ],
-    version = 10,
+    version = 11,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)

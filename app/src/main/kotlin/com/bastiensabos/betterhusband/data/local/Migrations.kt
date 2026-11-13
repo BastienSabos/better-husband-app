@@ -137,6 +137,15 @@ val MIGRATION_9_10 =
         }
     }
 
+/** v11 : qui s'occupe d'une tâche du foyer, et qui l'a faite en dernier (mode duo). */
+val MIGRATION_10_11 =
+    object : Migration(10, 11) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `household_task` ADD COLUMN `assignee` TEXT")
+            db.execSQL("ALTER TABLE `household_task` ADD COLUMN `last_done_by` TEXT")
+        }
+    }
+
 private const val UUID_V4_SQL =
     "lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)), 2) || '-' || " +
         "substr('89ab', abs(random()) % 4 + 1, 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)))"

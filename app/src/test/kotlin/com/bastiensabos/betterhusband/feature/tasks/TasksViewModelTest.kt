@@ -1,7 +1,12 @@
 package com.bastiensabos.betterhusband.feature.tasks
 
+import com.bastiensabos.betterhusband.data.repository.DuoSession
+import com.bastiensabos.betterhusband.data.repository.FakeDuoRepository
 import com.bastiensabos.betterhusband.data.repository.FakeHouseholdTaskRepository
+import com.bastiensabos.betterhusband.data.repository.FakePartnerRepository
+import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.domain.model.HouseholdTask
+import com.bastiensabos.betterhusband.domain.model.Partner
 import com.bastiensabos.betterhusband.domain.model.TaskRepeat
 import com.bastiensabos.betterhusband.testutil.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
@@ -23,9 +28,11 @@ class TasksViewModelTest {
     private val today = LocalDate.of(2027, 1, 20)
     private val clock = Clock.fixed(Instant.parse("2027-01-20T09:00:00Z"), ZoneOffset.UTC)
     private val repository = FakeHouseholdTaskRepository()
+    private val duo = FakeDuoRepository()
+    private val partners = FakePartnerRepository(Partner("Camille", AddressForm.NEUTRAL))
 
     // Créé au premier usage, donc après MainDispatcherRule : sinon viewModelScope part sur un autre Main.
-    private val viewModel by lazy { TasksViewModel(repository, clock) }
+    private val viewModel by lazy { TasksViewModel(repository, clock, duo, partners) }
 
     /** Garde le flux actif (WhileSubscribed) pendant le test. */
     private fun TestScope.collectState() {
@@ -191,5 +198,41 @@ class TasksViewModelTest {
 
             assertThat(repository.state.value).containsExactly(before)
             assertThat(viewModel.uiState.value.undo).isNull()
+        }
+
+    @Test
+    fun `in solo nothing about who does what is shown`() =
+        runTest {
+            collectState()
+
+            assertThat(viewModel.uiState.value.duo).isNull()
+        }
+
+    @Test
+    fun `in a duo the partner is named from the local partner profile`() =
+        runTest {
+            duo.state.value = DuoSession("duo-1", "me", ended = false, partnerMemberId = "other")
+            collectState()
+
+            assertThat(viewModel.uiState.value.duo).isEqualTo(TasksDuo(me = "me", partner = "other", partnerName = "Camille"))
+        }
+
+    @Test
+    fun `the editor saves who takes care of the task`() =
+        runTest {
+            duo.state.value = DuoSession("duo-1", "me", ended = false, partnerMemberId = "other")
+            repository.save(HouseholdTask(title = "Courses", repeat = TaskRepeat.WEEKLY, createdOn = today))
+            collectState()
+
+            viewModel.onEdit(repository.state.value.single())
+            viewModel.onEditorAssigneeChange("other")
+            viewModel.onSaveEditor()
+            advanceUntilIdle()
+
+            assertThat(
+                repository.state.value
+                    .single()
+                    .assignee,
+            ).isEqualTo("other")
         }
 }

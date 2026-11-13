@@ -5,6 +5,7 @@ import com.google.crypto.tink.subtle.AesGcmJce
 import com.google.crypto.tink.subtle.Hkdf
 import java.nio.ByteBuffer
 import java.security.GeneralSecurityException
+import java.util.UUID
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -31,6 +32,7 @@ class CoupleKeys(
     private val dataKey = hkdf(root, "duo-v1 data")
     private val idKey = hkdf(root, "duo-v1 id")
     private val verifyKey = hkdf(root, "duo-v1 verify")
+    private val memberKey = hkdf(root, "duo-v1 member")
 
     /**
      * Identifiant de bloc vu par le serveur : HMAC de `type ‖ uid`, tronqué à 16 octets, en hexadécimal. Stable (un
@@ -65,6 +67,15 @@ class CoupleKeys(
                 throw UnreadableBlockException("Bloc illisible", e)
             }
         return unpad(padded)
+    }
+
+    /**
+     * Identifiant de membre de l'hôte ([host] vrai) ou de l'invité, tiré de la clé : les deux téléphones connaissent
+     * les deux identifiants dès l'invitation, sans rien échanger de plus. Forme d'UUID, sans lien avec un compte.
+     */
+    fun memberId(host: Boolean): String {
+        val bytes = ByteBuffer.wrap(hmac(memberKey, (if (host) "host" else "guest").toByteArray()))
+        return UUID(bytes.long, bytes.long).toString()
     }
 
     /**

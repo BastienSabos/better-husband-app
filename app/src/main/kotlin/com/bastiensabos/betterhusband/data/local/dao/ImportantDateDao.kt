@@ -17,6 +17,9 @@ interface ImportantDateDao {
     @Query("SELECT uid, shared, revision, author, deleted, local_changed_at FROM important_date WHERE id = :id")
     suspend fun syncOf(id: Long): SyncColumns?
 
+    @Query("SELECT * FROM important_date WHERE id = :id")
+    suspend fun find(id: Long): ImportantDateEntity?
+
     /** Retourne l'identifiant de la ligne (créée ou remplacée). */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: ImportantDateEntity): Long

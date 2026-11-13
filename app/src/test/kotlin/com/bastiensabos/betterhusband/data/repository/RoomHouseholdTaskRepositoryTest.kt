@@ -9,13 +9,15 @@ import com.bastiensabos.betterhusband.domain.model.TaskRepeat
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import java.time.LocalDate
 
 class RoomHouseholdTaskRepositoryTest {
     private val dao = FakeHouseholdTaskDao()
-    private val repository = RoomHouseholdTaskRepository(dao)
+    private val duo = FakeDuoRepository()
+    private val repository = RoomHouseholdTaskRepository(dao, duo)
     private val created = LocalDate.of(2027, 1, 4)
 
     @Test
@@ -45,6 +47,65 @@ class RoomHouseholdTaskRepositoryTest {
                 repository.setLastDone(id, null)
                 assertThat(awaitItem().single().lastDoneOn).isNull()
             }
+        }
+
+    @Test
+    fun `in a duo, marking done remembers who did it and clearing it forgets`() =
+        runTest {
+            duo.state.value = DuoSession("duo-1", "me", ended = false, partnerMemberId = "other")
+            val id = repository.save(HouseholdTask(title = "Linge", repeat = TaskRepeat.DAILY, createdOn = created))
+
+            repository.setLastDone(id, LocalDate.of(2027, 1, 20))
+            assertThat(
+                repository
+                    .observeAll()
+                    .first()
+                    .single()
+                    .lastDoneBy,
+            ).isEqualTo("me")
+
+            repository.setLastDone(id, null)
+            assertThat(
+                repository
+                    .observeAll()
+                    .first()
+                    .single()
+                    .lastDoneBy,
+            ).isNull()
+        }
+
+    @Test
+    fun `in solo nobody is recorded as having done it`() =
+        runTest {
+            val id = repository.save(HouseholdTask(title = "Linge", repeat = TaskRepeat.DAILY, createdOn = created))
+
+            repository.setLastDone(id, LocalDate.of(2027, 1, 20))
+
+            assertThat(
+                repository
+                    .observeAll()
+                    .first()
+                    .single()
+                    .lastDoneBy,
+            ).isNull()
+        }
+
+    @Test
+    fun `the assignee survives a save`() =
+        runTest {
+            val id = repository.save(HouseholdTask(title = "Linge", repeat = TaskRepeat.DAILY, createdOn = created, assignee = "other"))
+
+            repository.save(
+                repository
+                    .observeAll()
+                    .first()
+                    .single()
+                    .copy(title = "Lessive"),
+            )
+
+            val task = repository.observeAll().first().single()
+            assertThat(task.id).isEqualTo(id)
+            assertThat(task.assignee).isEqualTo("other")
         }
 
     @Test
@@ -113,8 +174,9 @@ class RoomHouseholdTaskRepositoryTest {
         override suspend fun setLastDone(
             id: Long,
             date: LocalDate?,
+            by: String?,
         ) {
-            state.value = state.value.map { if (it.id == id) it.copy(lastDoneOn = date) else it }
+            state.value = state.value.map { if (it.id == id) it.copy(lastDoneOn = date, lastDoneBy = by) else it }
         }
 
         override suspend fun delete(id: Long) {

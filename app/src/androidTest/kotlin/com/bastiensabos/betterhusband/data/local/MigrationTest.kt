@@ -169,6 +169,26 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun migrate10To11AddsWhoDoesWhatToTasks() {
+        helper.createDatabase(DB_NAME, 10).use {
+            it.execSQL(
+                "INSERT INTO household_task (title, `repeat`, created_on, last_done_on, uid) " +
+                    "VALUES ('Poubelles', 'WEEKLY', '2027-01-04', '2027-01-10', 'u1')",
+            )
+        }
+
+        val db = helper.runMigrationsAndValidate(DB_NAME, 11, true, MIGRATION_10_11)
+
+        db.query("SELECT title, last_done_on, assignee, last_done_by FROM household_task").use {
+            it.moveToFirst()
+            assertThat(it.getString(0)).isEqualTo("Poubelles")
+            assertThat(it.getString(1)).isEqualTo("2027-01-10")
+            assertThat(it.isNull(2)).isTrue()
+            assertThat(it.isNull(3)).isTrue()
+        }
+    }
+
     private companion object {
         val UUID_V4 = Regex("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")
         const val DB_NAME = "migration-test"

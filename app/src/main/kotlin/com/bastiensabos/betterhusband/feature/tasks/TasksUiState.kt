@@ -29,9 +29,17 @@ data class TaskEditorState(
     val task: HouseholdTask,
     val title: String,
     val repeat: TaskRepeat,
+    val assignee: String? = task.assignee,
 ) {
     val canSave: Boolean get() = title.isNotBlank()
 }
+
+/** En duo : qui je suis, qui est l'autre et son prénom (pris dans la fiche partenaire locale, jamais synchronisé). */
+data class TasksDuo(
+    val me: String,
+    val partner: String?,
+    val partnerName: String?,
+)
 
 data class TasksUiState(
     val list: TasksListState = TasksListState.Loading,
@@ -41,6 +49,8 @@ data class TasksUiState(
     val editor: TaskEditorState? = null,
     /** Tâche qui vient d'être supprimée, encore récupérable. */
     val undo: UndoNotice? = null,
+    /** `null` en solo : rien sur « qui fait quoi » n'est affiché. */
+    val duo: TasksDuo? = null,
 ) {
     val canAdd: Boolean get() = draft.isNotBlank()
 }

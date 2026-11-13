@@ -22,10 +22,11 @@ interface HouseholdTaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: HouseholdTaskEntity): Long
 
-    @Query("UPDATE household_task SET last_done_on = :date WHERE id = :id")
+    @Query("UPDATE household_task SET last_done_on = :date, last_done_by = :by WHERE id = :id")
     suspend fun setLastDone(
         id: Long,
         date: LocalDate?,
+        by: String?,
     )
 
     @Query("DELETE FROM household_task WHERE id = :id")

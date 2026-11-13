@@ -1,13 +1,17 @@
 package com.bastiensabos.betterhusband.feature.dates
 
+import com.bastiensabos.betterhusband.data.repository.DuoSession
+import com.bastiensabos.betterhusband.data.repository.FakeDuoRepository
 import com.bastiensabos.betterhusband.data.repository.FakeIdeaRepository
 import com.bastiensabos.betterhusband.data.repository.FakeImportantDateRepository
 import com.bastiensabos.betterhusband.data.repository.FakePartnerRepository
 import com.bastiensabos.betterhusband.domain.ObserveUpcomingDatesUseCase
+import com.bastiensabos.betterhusband.domain.model.AddressForm
 import com.bastiensabos.betterhusband.domain.model.DateKind
 import com.bastiensabos.betterhusband.domain.model.DateLabel
 import com.bastiensabos.betterhusband.domain.model.IdeaCategory
 import com.bastiensabos.betterhusband.domain.model.ImportantDate
+import com.bastiensabos.betterhusband.domain.model.Partner
 import com.bastiensabos.betterhusband.testutil.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.launch
@@ -29,13 +33,17 @@ class DatesViewModelTest {
     private val clock = Clock.fixed(Instant.parse("2027-03-10T09:00:00Z"), ZoneOffset.UTC)
     private val repository = FakeImportantDateRepository()
     private val ideas = FakeIdeaRepository()
+    private val duo = FakeDuoRepository()
+    private val partners = FakePartnerRepository()
 
     // Créé au premier usage, donc après MainDispatcherRule : sinon viewModelScope part sur un autre Main.
     private val viewModel by lazy {
         DatesViewModel(
-            ObserveUpcomingDatesUseCase(FakePartnerRepository(), repository, clock),
+            ObserveUpcomingDatesUseCase(partners, repository, clock),
             repository,
             ideas,
+            duo,
+            partners,
         )
     }
 
@@ -163,5 +171,42 @@ class DatesViewModelTest {
             assertThat(ready.next.label).isEqualTo(DateLabel.Custom("Fête"))
             assertThat(ready.nextIdeas).isEqualTo(2)
             assertThat(ready.months.map { it.month }).containsExactly(YearMonth.of(2027, 5))
+        }
+
+    @Test
+    fun `in solo there is nothing to share`() =
+        runTest {
+            collectState()
+
+            assertThat(viewModel.uiState.value.duo).isNull()
+        }
+
+    @Test
+    fun `in a duo a date can be shared and editing it keeps the choice`() =
+        runTest {
+            duo.state.value = DuoSession("duo-1", "me", ended = false, partnerMemberId = "other")
+            partners.state.value = Partner("Camille", AddressForm.NEUTRAL)
+            collectState()
+            assertThat(viewModel.uiState.value.duo).isEqualTo(DatesDuo("Camille"))
+
+            viewModel.onAddClick()
+            viewModel.onTitleChange("Rencontre")
+            viewModel.onDateChange(LocalDate.of(2019, 9, 14))
+            viewModel.onKindChange(DateKind.ANNIVERSARY)
+            viewModel.onSharedChange(true)
+            viewModel.onSave()
+            advanceUntilIdle()
+
+            val saved = repository.state.value.single()
+            assertThat(saved.shared).isTrue()
+            val ready = viewModel.uiState.value.list as DatesListState.Ready
+            assertThat(ready.items.single().shared).isTrue()
+
+            viewModel.onEdit(saved.id)
+            advanceUntilIdle()
+            assertThat(
+                viewModel.uiState.value.editor
+                    ?.shared,
+            ).isTrue()
         }
 }

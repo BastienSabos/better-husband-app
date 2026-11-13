@@ -13,15 +13,16 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Le duo rejoint : qui je suis dedans, et si l'autre l'a quitté. L'autre membre n'est connu qu'à son premier bloc. */
+/** Le duo rejoint : qui je suis dedans, qui est l'autre, et si l'autre l'a quitté. */
 data class DuoSession(
     val duoId: String,
     val memberId: String,
     val ended: Boolean,
+    /** L'autre membre ; `null` pour un duo gardé avant que les identifiants ne soient tirés de la clé. */
+    val partnerMemberId: String? = null,
 )
 
 /** Le duo de ce téléphone. Les données sont dans la base chiffrée, la clé de couple dans le Keystore. */
@@ -49,7 +50,8 @@ class RoomDuoRepository
         override fun observeSession(): Flow<DuoSession?> =
             combine(dao.observeMembers(), dao.observeState()) { members, state ->
                 val me = members.firstOrNull { it.isMe }
-                if (me == null || state == null) null else DuoSession(state.duoId, me.memberId, state.ended)
+                val partner = members.firstOrNull { !it.isMe }
+                if (me == null || state == null) null else DuoSession(state.duoId, me.memberId, state.ended, partner?.memberId)
             }
 
         override suspend fun join(joined: DuoJoined) {
@@ -57,7 +59,8 @@ class RoomDuoRepository
             vault.save(joined.keys.exportRoot())
             dao.deleteMembers()
             dao.deleteState()
-            dao.upsertMember(DuoMemberEntity(memberId = UUID.randomUUID().toString(), isMe = true))
+            dao.upsertMember(DuoMemberEntity(memberId = joined.myMemberId, isMe = true))
+            dao.upsertMember(DuoMemberEntity(memberId = joined.partnerMemberId, isMe = false))
             dao.upsertState(DuoStateEntity(duoId = joined.duoId, lastSeen = 0, pushedUntil = 0, ended = false))
         }
 
