@@ -110,4 +110,14 @@ class DuoCryptoTest {
         const val GOLDEN_BLOB_ID = "02a914efe071916c6ef6875f4640d3c1"
         val GOLDEN_CODE = listOf(45, 44, 117, 119)
     }
+
+    @Test
+    fun `a key rebuilt from its exported root opens what the original sealed`() {
+        val original = CoupleKeys(ByteArray(32) { it.toByte() })
+        val rebuilt = CoupleKeys(original.exportRoot())
+        val blob = original.blobId(SharedType.WISH, "w")
+
+        assertThat(rebuilt.open(original.seal("ok".toByteArray(), "d", blob), "d", blob)).isEqualTo("ok".toByteArray())
+        assertThat(rebuilt.verificationCode()).isEqualTo(original.verificationCode())
+    }
 }

@@ -2,6 +2,7 @@ package com.bastiensabos.betterhusband.domain
 
 import com.bastiensabos.betterhusband.data.repository.AttentionLogRepository
 import com.bastiensabos.betterhusband.data.repository.CoupleProfileRepository
+import com.bastiensabos.betterhusband.data.repository.DuoRepository
 import com.bastiensabos.betterhusband.data.repository.HouseholdTaskRepository
 import com.bastiensabos.betterhusband.data.repository.IdeaRepository
 import com.bastiensabos.betterhusband.data.repository.ImportantDateRepository
@@ -39,7 +40,7 @@ class ExportUserDataUseCase
     }
 
 /**
- * Droit à l'effacement : vide toute la base et annule les rappels planifiés. La fiche partenaire part en dernier :
+ * Droit à l'effacement : vide toute la base (duo compris, clé de couple comprise) et annule les rappels planifiés. La fiche partenaire part en dernier :
  * sa disparition ramène l'app à l'onboarding, quand le reste est déjà effacé.
  */
 class DeleteAllUserDataUseCase
@@ -52,6 +53,7 @@ class DeleteAllUserDataUseCase
         private val attentions: AttentionLogRepository,
         private val coupleProfile: CoupleProfileRepository,
         private val reminders: ReminderScheduler,
+        private val duo: DuoRepository,
     ) {
         suspend operator fun invoke() {
             dates.deleteAll()
@@ -59,6 +61,7 @@ class DeleteAllUserDataUseCase
             tasks.deleteAll()
             attentions.deleteAll()
             coupleProfile.deleteAll()
+            duo.deleteAll()
             reminders.reschedule(emptyList())
             partners.deletePartner()
         }

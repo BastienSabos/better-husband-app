@@ -18,7 +18,7 @@ sealed interface DuoStage {
     ) : DuoStage
 }
 
-enum class DuoNotice { LINK_INVALID, LINK_UNAVAILABLE, ANSWER_REFUSED }
+enum class DuoNotice { LINK_INVALID, LINK_UNAVAILABLE, ANSWER_REFUSED, SAVE_FAILED }
 
 data class DuoInviteUiState(
     val stage: DuoStage = DuoStage.Intro,
