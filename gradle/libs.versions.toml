@@ -6,7 +6,7 @@
 androidGradlePlugin = "9.3.2"
 kotlin = "2.3.0"
 ksp = "2.3.4"
-hilt = "2.59"
+hilt = "2.60.1"
 androidxHilt = "1.2.0"
 androidxHiltNavigationCompose = "1.2.0"
 androidxNavigation = "2.10.2"
